@@ -1,0 +1,56 @@
+@import 'styles/theme';
+
+.profile {
+    &.container {
+        background: $background;
+        padding: 1em;
+        border-radius: $borderRadius;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        box-shadow: $dropShadow;
+    }
+    &.field {
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+    }
+    &.input {
+        height: 30px;
+        padding-left: 15px;
+        margin-left: -4px;
+        border: none;
+        border-radius: 0.75em;
+        margin-bottom: 10px;
+        background: transparentize(rgb(253, 253, 253), 0.85);
+        color: $textColor;
+    }
+    &.button-container {
+        display: flex;
+        justify-content: center;
+        margin-top: 2em;
+    }
+    & p,
+    h2 {
+        margin: 0.5em 0;
+    }
+}
+
+.user {
+    &.container {
+        margin: 0.5em 0;
+        width: 25em;
+        padding: 15px;
+        flex-direction: column;
+        border-radius: $borderRadius;
+        display: flex;
+        align-items: left;
+        background: lighten($background, 5);
+    }
+    &.user-info {
+        font-weight: 500;
+        margin-left: 5px;
+        margin-right: auto;
+        color: $accent;
+    }
+}
