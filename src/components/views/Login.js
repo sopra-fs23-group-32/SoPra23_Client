@@ -57,10 +57,9 @@ const Login = props => {
       alert(`Something went wrong during the login: \n${handleError(error)}`);
     }
   };
-  return (<div></div>
-  );};
+  
 
-  /*return ( 
+  return ( 
     <BaseContainer>
       <div className="login container">
         <div className="login form">
