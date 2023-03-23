@@ -12,7 +12,7 @@ It is possible to add multiple components inside a single file,
 however be sure not to clutter your files with an endless amount!
 As a rule of thumb, use one file per component and only add small,
 specific components that belong to the main one in the same file.
- */
+ */ 
 const FormField = props => {
   return (
     <div className="login field">
@@ -57,8 +57,10 @@ const Login = props => {
       alert(`Something went wrong during the login: \n${handleError(error)}`);
     }
   };
+  return (<div></div>
+  );};
 
-  return (
+  /*return ( 
     <BaseContainer>
       <div className="login container">
         <div className="login form">
@@ -90,5 +92,7 @@ const Login = props => {
 /**
  * You can get access to the history object's properties via the withRouter.
  * withRouter will pass updated match, location, and history props to the wrapped component whenever it renders.
- */
+ */ 
+
+
 export default Login;
