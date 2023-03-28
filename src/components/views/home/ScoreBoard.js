@@ -7,9 +7,9 @@ import { Button } from "components/ui/Button";
 import BaseContainer from "components/ui/BaseContainer";
 import PropTypes from "prop-types";
 
-import "styles/views/Home.scss";
+import "styles/views/home/ScoreBoard.scss";
 
-const Home = () => {
+const ScoreBoard = () => {
   // use react-router-dom's hook to access the history
   const history = useHistory();
 
@@ -20,24 +20,9 @@ const Home = () => {
   // more information can be found under https://reactjs.org/docs/hooks-state.html
   const [users, setUsers] = useState(null);
 
-  const doLogout = async () => {
-    try {
-      const username = localStorage.getItem("username")
-      const requestBody = JSON.stringify({username});
-      await api.put("/logout", requestBody);
-    }
-    catch (error) {
-      alert(`An error occurs during the login: \n${handleError(error)}`);
-    }
-
-    localStorage.removeItem("userId");
-    localStorage.removeItem("username");
-    history.push("/login");
-  };
-
   const goProfile = (profileId) => {
     localStorage.setItem("profileId", profileId);
-    history.push("/profile")
+    history.push("/home/profile")
   };
 
   // the effect hook can be used to react to change in your component.
@@ -56,12 +41,6 @@ const Home = () => {
 
         // Get the returned users and update the state.
         setUsers(response.data);
-
-        // console.log("request to:", response.request.responseURL);
-        // console.log("status code:", response.status);
-        // console.log("status text:", response.statusText);
-        // console.log("requested data:", response.data);
-        // See here to get more data.
         console.log(response);
       } catch (error) {
         console.error(
@@ -89,35 +68,28 @@ const Home = () => {
     user: PropTypes.object,
   };
 
-  let content = <Spinner />;
+  let userlist = <Spinner />;
 
   if (users) {
-    content = (
-      <div className="home">
-        <ul className="home user-list">
-          {users.map((user) => (
-            <Users user={user} key={user.userId} />
-          ))}
-        </ul>
-        <div className="login button-container">
-          <Button width="80%" onClick={() => goProfile(localStorage.getItem("userId"))}>
-            My Profile
-          </Button>
-          <Button width="80%" onClick={() => doLogout()}>
-            Logout
-          </Button>
-        </div>
-      </div>
+    userlist = (
+      <ul>{users.map((user) => (
+          <Users user={user} key={user.userId} />
+        ))}
+      </ul>
     );
   }
 
   return (
-    <BaseContainer className="home container">
-      <h2>Welcome, User {localStorage.getItem("username")}!</h2>
-      <p className="home paragraph">Users list:</p>
-      {content}
+    <BaseContainer className="scoreboard container">
+      <h2>Score Board</h2>
+      <div className="scoreboard user-list">{userlist}</div>
+      <div>
+        <Button width="150%" onClick={() => history.push("/home")}>
+          Return
+        </Button>
+      </div>
     </BaseContainer>
   );
 };
 
-export default Home;
+export default ScoreBoard;

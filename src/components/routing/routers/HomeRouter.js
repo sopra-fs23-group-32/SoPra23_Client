@@ -1,6 +1,8 @@
 import {Redirect, Route} from "react-router-dom";
-import Home from "components/views/Home";
 import PropTypes from 'prop-types';
+import Home from "components/views/home/Home";
+import Profile from "components/views/home/Profile"
+import ScoreBoard from "components/views/home/ScoreBoard"
 
 const HomeRouter = props => {
   /**
@@ -8,11 +10,17 @@ const HomeRouter = props => {
    */
   return (
     <div style={{display: 'flex', flexDirection: 'column'}}>
+      <Route exact path={`${props.base}`}>
+        <Redirect to={`${props.base}/dashboard`}/>
+      </Route>
       <Route exact path={`${props.base}/dashboard`}>
         <Home/>
       </Route>
-      <Route exact path={`${props.base}`}>
-        <Redirect to={`${props.base}/dashboard`}/>
+      <Route exact path={`${props.base}/scoreboard`}>
+        <ScoreBoard />
+      </Route>
+      <Route exact path={`${props.base}/profile`}>
+        <Profile />
       </Route>
     </div>
   );

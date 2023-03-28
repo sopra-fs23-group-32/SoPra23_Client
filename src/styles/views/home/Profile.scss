@@ -3,7 +3,7 @@
 .profile {
     &.container {
         background: $background;
-        padding: 1em;
+        padding: 2em;
         border-radius: $borderRadius;
         display: flex;
         flex-direction: column;
@@ -51,6 +51,7 @@
         font-weight: 500;
         margin-left: 5px;
         margin-right: auto;
+        margin-top: 2px;
         color: $accent;
     }
 }

@@ -6,7 +6,7 @@ import { Button } from "components/ui/Button";
 import BaseContainer from "components/ui/BaseContainer";
 import PropTypes from "prop-types";
 
-import "styles/views/Profile.scss";
+import "styles/views/home/Profile.scss";
 
 const FormField = (props) => {
   return (
@@ -14,6 +14,7 @@ const FormField = (props) => {
       <label className="profile label">{props.label}</label>
       <input
         className="profile input"
+        type={props.input_type}
         placeholder="enter here.."
         value={props.value}
         onChange={(e) => props.onChange(e.target.value)}
@@ -23,16 +24,20 @@ const FormField = (props) => {
 };
 FormField.propTypes = {
   label: PropTypes.string,
+  input_type: PropTypes.string,
   value: PropTypes.string,
   onChange: PropTypes.func,
 };
 
 const Profile = () => {
   // use react-router-dom's hook to access the history
-    const history = useHistory();
-    const [userProfile, setUserProfile] = useState(null);
-    const [username, setUsername] = useState(null);
-    const [birthDay, setBirthDay] = useState(null);
+  const history = useHistory();
+  // define a state variable (using the state hook).
+  // if this variable changes, the component will re-render, but the variable will
+  // keep its value throughout render cycles.
+  const [userProfile, setUserProfile] = useState(null);
+  const [username, setUsername] = useState(null);
+  const [birthDay, setBirthDay] = useState(null);
 
     const changeProfile = async () => {
         try {
@@ -89,7 +94,7 @@ const Profile = () => {
 
   const Profile = ({ user }) => (
     <div className="user container">
-      <div className="user user-info">Name: {user.username}</div>
+      <div className="user user-info">User Name: {user.username}</div>
       <div className="user user-info">Status: {user.status}</div>
       <div className="user user-info">
         Created in: {new Date(user.createDay).toDateString()}
@@ -112,13 +117,15 @@ const Profile = () => {
             <Profile user={userProfile} />
             <FormField
               label="Change username"
+              input_type="text"
               value={username}
-              onChange={(un) => setUsername(un)}
+              onChange={un => setUsername(un)}
             />
             <FormField
-              label="Set birthday (yyyy-MM-DD)"
+              label="Set birthday"
+              input_type="date"
               value={birthDay}
-              onChange={(bd) => setBirthDay(bd)}
+              onChange={bd => setBirthDay(bd)}
             />
             <div className="profile button-container">
               <Button
