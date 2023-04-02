@@ -19,8 +19,9 @@
 
 .content {
   opacity: 1;
+  font-size: 15px;
   padding: 40px;
-  border-radius: 8px;
+  border-radius: 10px;
   max-width: 500px;
   width: 100%;
 }
@@ -29,18 +30,6 @@
   opacity: 1;
   text-align: center;
   margin-bottom: 40px;
-}
-
-.subtitle {
-  font-family: "Roboto", sans-serif;
-  font-weight: 500;
-  font-size: 30px;
-  margin-top: 0;
-  color: #ffffff;
-  background-color: #1b8ceb;
-  padding: 10px;
-  display: inline-block;
-  border-radius: 4px;
 }
 
 .field {
@@ -67,12 +56,7 @@
   color:black;
 }
 
-.button-row {
-  display: flex;
-  flex-direction: row;
-  justify-content: space-between;
-  margin-top: 20px;
-}
+
 
 .login-button-container {
   display: flex;
@@ -82,12 +66,7 @@
   margin-top: 20px;
 }
 
-.alreadyhave {
-  font-family: "Roboto", sans-serif;
-  font-weight: 300;
-  font-size: 14px;
-  margin-right: 10px;
-}
+
 
 button {
   font-family: "Roboto", sans-serif;
@@ -112,16 +91,6 @@ button:disabled {
 }
 
 .button:hover {
-  background-color: #0e5eaf;
-}
-
-.button2 {
-  background-color: #1b8ceb;
-  color: #ffffff;
-  border: none;
-}
-
-.button2:hover {
   background-color: #0e5eaf;
 }
 

@@ -4,7 +4,6 @@ import {api, handleError} from 'helpers/api';
 import 'styles/views/Login.scss';
 import BaseContainer from "components/ui/BaseContainer";
 import { Button } from "components/ui/Button";
-import {Button2} from 'components/ui/Button';
 
 import PropTypes from "prop-types";
 import User from 'models/User';
