@@ -8,3 +8,11 @@ export const Button = props => (
     {props.children}
   </button>
 );
+export const Button2 = props => (
+  <button
+    {...props}
+    style={{width: props.width, ...props.style}}
+    className={`primary-button2 ${props.className}`}>
+    {props.children}
+  </button>
+);

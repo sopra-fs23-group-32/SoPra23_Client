@@ -4,6 +4,8 @@ import {api, handleError} from 'helpers/api';
 import 'styles/views/Login.scss';
 import BaseContainer from "components/ui/BaseContainer";
 import { Button } from "components/ui/Button";
+import {Button2} from 'components/ui/Button';
+
 import PropTypes from "prop-types";
 import User from 'models/User';
 
@@ -20,18 +22,45 @@ const FormField = props => {
           {props.label}</label>
         <input
           className="login input"
-          placeholder="enter here.."
+          placeholder="Enter Username here..."
           value={props.value}
           onChange={(e) => props.onChange(e.target.value)}
         />
       </div>
     );
 };
+
+const FormField2 = props => {
+  return (
+    <div className="login field">
+      <label className="login label">
+        {props.label}</label>
+      <input
+        type="password"
+        className="login input"
+        placeholder="Enter Password here..."
+        value={props.value}
+        onChange={(e) => props.onChange(e.target.value)}
+        onKeyDown={(event)=>{
+          props.onKeydown(event);
+        }}
+      />
+    </div>
+  );
+};
+
 FormField.propTypes = {
     label: PropTypes.string,
     value: PropTypes.string,
     onChange: PropTypes.func
 };
+FormField2.propTypes = {
+  label: PropTypes.string,
+  value: PropTypes.string,
+  onChange: PropTypes.func
+};
+
+
 
 const Login = props => {
     const history = useHistory();
@@ -56,37 +85,61 @@ const Login = props => {
         }
     };
 
+    const handleKeyDown = (e) => {
+      if (e.keyCode === 13) {
+        doLogin();
+      }
+    };
+    
+    
     return (
       <BaseContainer>
-        <div className="login container">
-          <div className="login form">
-            <FormField
-              label="Username" value={username}
-              onChange={(name) => setUsername(name)}
-            />
-            <FormField
-              label="Password" value={password}
-              onChange={(pwd) => setPassword(pwd)}
-            />
-            <div className="login button-container">
-              <Button
-                disabled={!username || !password}
-                width="80%"
-                onClick={() => doLogin()}
-              >
-                Log in
-              </Button>{" "}
-              <Button 
-                width="80%" 
-                onClick={() => history.push("/register")}
-              >
-                Register
-              </Button>
-            </div>
+<div id= "container">
+    <section className="container">
+  <div className="bg-image"></div>
+  <div className="content" >
+    
+  <div></div>
+  <div className="Logo"></div>
+  <div className="headerrow" >
+      <div className="headerp1" ><h1>User Login</h1></div>
+  </div>
+
+
+      <div className="login container">
+        <div className="login form">
+          <FormField
+            value={username}
+            onChange={un => setUsername(un)}
+            onKeyDown = {handleKeyDown}
+          />
+         
+          <FormField2
+            placeholder="mas"
+            value={password}
+            onChange={n => setPassword(n)}
+            onKeyDown = {handleKeyDown}
+          />
+
+      
+
+          <div className="register-button-container" >
+          <Button disabled={!username || !password}  width="100%" onClick={() => doLogin()}>Login</Button>
+
+          <td>&nbsp;&nbsp;&nbsp;</td>
+          <div className="login-button-container">
+
+          <Button   width="100%" onClick={() => history.push('/register')}>Register here</Button>
+
+          </div>
           </div>
         </div>
-      </BaseContainer>
-    );
+      </div>
+      </div>
+      </section>
+</div>
+    </BaseContainer>
+  );
 };
 
 /**

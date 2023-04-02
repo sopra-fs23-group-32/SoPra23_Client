@@ -32,12 +32,10 @@ const Home = () => {
 
   return (
     <BaseContainer className="home container">
-      <h2>
-        Welcome, User {localStorage.getItem("username")}!
-      </h2>
+  
       <div className="home button-container">
         <Button width="100%">
-          Game
+          Start Game
         </Button>
         <Button width="100%" onClick={() => history.push("/home/scoreboard")}>
           Score Board

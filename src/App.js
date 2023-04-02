@@ -10,9 +10,8 @@ import Footer from "components/views/Footer";
 const App = () => {
   return (
     <div>
-      <Header height="120" content="Guess the City!"/>
+      <Header id="titlea"height="120"  content="Guess the City!"/>
       <AppRouter/>
-      <Footer height="30" content="SoPra HS23 Group32  All rights reserve."/>
     </div>
   );
 };

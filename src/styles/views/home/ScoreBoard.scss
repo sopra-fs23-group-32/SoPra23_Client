@@ -4,18 +4,23 @@
   for more information visit https://sass-lang.com/guide
  */
 
+
+
 .scoreboard {
     &.container {
-      background: $background;
+      margin-top:40px;
+      background: transparent;
       padding: 1.5em;
       border-radius: $borderRadius;
       display: flex;
       flex-direction: column;
       align-items: center;
-      box-shadow: $dropShadow;
+      opacity: 1;
     }
     &.user-list {
       padding-left: 0;
+      background: transparent;
+
     }
     &.user-item {
       display: flex;
@@ -26,7 +31,7 @@
     &.button-container {
       display: flex;
       flex-direction: column;
-      justify-content: center;
+      justify-content: right;
       margin-top: 2em;
       row-gap: 2em;
     }
@@ -38,12 +43,12 @@
   .user {
     &.container {
       margin: 1em 0;
-      width: 20em;
       padding: 5px;
+
       flex-direction: column;
       border-radius: $borderRadius;
       display: flex;
-      background: lighten($background, 5);
+      background: transparent;
     }
     &.user-link {
       display: flex;

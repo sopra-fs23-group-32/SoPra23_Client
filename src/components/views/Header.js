@@ -1,5 +1,4 @@
 import React from "react";
-import {ReactLogo} from "components/ui/ReactLogo";
 import PropTypes from "prop-types";
 import "styles/views/Header.scss";
 
@@ -16,7 +15,6 @@ const Header = props => (
     <h1 className="header title">
       {props.content}
     </h1>
-    <ReactLogo width="80px" height="80px"/>
   </div>
 );
 
