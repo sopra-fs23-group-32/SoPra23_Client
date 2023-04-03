@@ -1,6 +1,5 @@
 import { useHistory } from "react-router-dom";
 import { Button } from "components/ui/Button";
-import BaseContainer from "components/ui/BaseContainer";
 import InformationContainer from "components/ui/BaseContainer";
 import Switch from 'react-switch';
 import React, {useState} from 'react';
