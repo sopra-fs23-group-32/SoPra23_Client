@@ -8,27 +8,9 @@ import PropTypes from "prop-types";
 
 import "styles/views/home/Profile.scss";
 
-const FormField = (props) => {
-  return (
-    <div className="profile field">
-      <label className="profile label">{props.label}</label>
-      <input className="profile input"
-        type={props.input_type}
-        placeholder="enter here.."
-        value={props.value}
-        onChange={(e) => props.onChange(e.target.value)}
-      />
-    </div>
-  );
-};
-FormField.propTypes = {
-  label: PropTypes.string,
-  input_type: PropTypes.string,
-  value: PropTypes.string,
-  onChange: PropTypes.func,
-};
 
 const Profile = () => {
+  // use react-router-dom's hook to access the history
   const history = useHistory();
   // define a state variable (using the state hook).
   // if this variable changes, the component will re-render, but the variable will
@@ -40,25 +22,26 @@ const Profile = () => {
   const [newPwd, setNewPwd] = useState(null);
 
   const changeProfile = async () => {
-    if(oldPwd !== null && oldPwd !== userProfile.password) {
-      alert(`Your old password is wrong, try again.\n`);
-    }
-    try {
-        let requestBody;
-        if(username === null) {
-          let username = localStorage.getItem("username");
-          requestBody = JSON.stringify({ username, newPwd, birthDay });
-        }
-        else{
-          requestBody = JSON.stringify({ username, newPwd, birthDay });
-        }
-        const userURL = "/users/" + localStorage.getItem("userId");
-        await api.put(userURL, requestBody);
-    } catch (error) {
-        alert(`Your new username is occupied, choose another one.\n${handleError(error)}`);
-    }
-    window.location.reload();
-  };
+      if(oldPwd !== null && oldPwd !== userProfile.password) {
+        alert(`Your old password is wrong, try again.\n`);
+      }
+      try {
+          let requestBody;
+          if(username === null) {
+            let username = localStorage.getItem("username");
+            requestBody = JSON.stringify({ username, newPwd, birthDay });
+          }
+          else{
+            requestBody = JSON.stringify({ username, newPwd, birthDay });
+          }
+          const userURL = "/users/" + localStorage.getItem("userId");
+          await api.put(userURL, requestBody);
+      } catch (error) {
+          alert(`Your new username is occupied, choose another one.\n${handleError(error)}`);
+      }
+      window.location.reload();
+    };
+
 
   useEffect(() => {
     // effect callbacks are synchronous to prevent race conditions. So we put the async function inside:
@@ -69,22 +52,17 @@ const Profile = () => {
 
         // delays continuous execution of an async operation for 1 s
         await new Promise((resolve) => setTimeout(resolve, 1000));
+
         // Get the returned users and update the state.
         setUserProfile(response.data);
 
-        // console.log("request to:", response.request.responseURL);
-        // console.log("status code:", response.status);
-        // console.log("status text:", response.statusText);
-        // console.log("requested data:", response.data);
-        // See here to get more data.
         console.log(response);
       } catch (error) {
         console.error(
-          `An error occurs while fetching the users: \n${handleError(error)}`
+          `An error occurs while fetching the user: \n${handleError(error)}`
         );
-        console.error("Details:", error);
         alert(
-          "Something went wrong while fetching the users!"
+          `Something went wrong while fetching the user: \n${handleError(error)}`
         );
       }
     }
@@ -92,17 +70,54 @@ const Profile = () => {
   }, []);
 
   const Profile = ({ user }) => (
-    <div className="user container">
-      <div className="user user-info">User Name: {user.username}</div>
-      <div className="user user-info">Status: {user.status}</div>
-      <div className="user user-info">
-        Created in: {new Date(user.createDay).toDateString()}
+    <div className="user-profile">
+      <div className="user-profile-field">
+        <label>Username</label>
+        {localStorage.getItem("profileId") === localStorage.getItem("userId") ? (
+          <>
+             <div>{user.username}</div>
+             <input type="text" value={username} onChange={e => setUsername(e.target.value)} />
+          </>
+        ) : (
+            <div>{user.username}</div>
+        )}
       </div>
-      <div className="user user-info">
-        Birthday: {new Date(user.birthDay).toDateString()}
+      <div className="user-profile-field">
+        <label>Status</label>
+        <div>{user.status}</div>
       </div>
+      <div className="user-profile-field">
+        <label>Created on</label>
+        <div>{new Date(user.createDay).toISOString().slice(0, 10)}</div>
+      </div>
+      <div className="user-profile-field">
+        <label>Birthday</label>
+        {localStorage.getItem("profileId") === localStorage.getItem("userId")? (
+            <>
+             <div>{user.birthDay? new Date(user.birthDay).toISOString().slice(0, 10) : "N/A"}</div>
+             <input type="date" value={birthDay} onChange={e => setBirthDay(e.target.value)} />
+            </>
+        ) : (
+            <div>{user.birthDay? new Date(user.birthDay).toISOString().slice(0, 10) : "N/A"}</div>
+        )}
+      </div>
+      {localStorage.getItem("profileId") === localStorage.getItem("userId") ? (
+        <>
+            <div className="user-profile-field">
+              <label>Enter Old Password</label>
+              <input type="password" value={oldPwd} onChange={e => setOldPwd(e.target.value)} />
+            </div>
+            <div className="user-profile-field">
+              <label>Set New Password</label>
+              <input type="password" value={newPwd} onChange={e => setNewPwd(e.target.value)} />
+            </div>
+        </>
+      ) : (
+        null
+      )}
     </div>
   );
+
   Profile.propTypes = {
     user: PropTypes.object,
   };
@@ -110,53 +125,34 @@ const Profile = () => {
   let content = <Spinner />;
 
   if (userProfile) {
-    if (localStorage.getItem("profileId") === localStorage.getItem("userId")) {
-        content = (
-          <div className="profile">
+    content = (
+        <div className="profile">
             <Profile user={userProfile} />
-            <FormField
-              label="Change username" input_type="text"
-              value={username} onChange={un => setUsername(un)}
-            />
-            <FormField
-              label="Set birthday" input_type="date"
-              value={birthDay} onChange={bd => setBirthDay(bd)}
-            />
-            <FormField
-              label="Enter Old Password" input_type="text"
-              value={oldPwd} onChange={pwd => setOldPwd(pwd)}
-            />
-            <FormField
-              label="Set New Password" input_type="text"
-              value={newPwd} onChange={pwd => setNewPwd(pwd)}
-              disabled={oldPwd===null}
-            />
             <div className="profile button-container">
-              <Button
-                width="80%" onClick={() => changeProfile()}
-                disabled={!username && !birthDay && !newPwd}
-              >
-                Save Change
-              </Button>
+              {localStorage.getItem("profileId") === localStorage.getItem("userId") ?
+                <Button
+                  width="70%"
+                  onClick={() => changeProfile()}
+                  disabled={!username && !birthDay && !newPwd}
+                >
+                  Save Change
+                </Button> :
+                null
+              }
             </div>
-          </div>
-        );
-      }
-    else{
-        content = (
-          <div className="profile">
-            <Profile user={userProfile} />
-          </div>
-        );
-    }
+        </div>
+    );
   }
+
 
   return (
     <BaseContainer className="profile container">
-      <h2>User Profile</h2>
+      <div className="headerrow" >
+          <div><h2>User Profile</h2></div>
+      </div>
       {content}
       <div className="profile button-container">
-        <Button width="300%"
+        <Button width="100%"
           onClick={() => {
             localStorage.removeItem("profileId");
             history.push("/home");

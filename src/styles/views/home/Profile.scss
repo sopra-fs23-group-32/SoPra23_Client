@@ -2,13 +2,15 @@
 
 .profile {
     &.container {
-        background: transparentize(rgb(65, 64, 64), 0.6);
+        background: transparentize(#f4f4f4, 0.2);
         padding: 1em;
         border-radius: $borderRadius;
         display: flex;
         flex-direction: column;
         align-items: center;
         box-shadow: $dropShadow;
+        width: 30%;
+        margin: 50px auto 0;
     }
     &.field {
         display: flex;
@@ -39,7 +41,12 @@
     }
     & p,
     h2 {
-        margin: 0em 0;
+        margin: 0.5em 0;
+        color:white;
+        background: #1979b8;
+        text-align: center;
+        width: 400px;
+        border-radius: 0.5em;
     }
 }
 
@@ -62,3 +69,29 @@
         color: $accent;
     }
 }
+
+.user-profile-field {
+  display: flex;
+  flex-direction: column;
+  margin-bottom: 16px;
+  border-radius: $borderRadius;
+  color: #494a49;
+}
+
+.user-profile-field label {
+  font-weight: bold;
+  margin-bottom: 8px;
+}
+
+.user-profile-field input {
+  border: none;
+  padding: 8px;
+  font-size: 16px;
+  background-color: #f9f9f9;
+  border-radius: $borderRadius;
+}
+
+.user-profile-field input:focus {
+  outline: none;
+}
+

@@ -3,7 +3,6 @@ import {api, handleError} from 'helpers/api';
 import User from 'models/User';
 import {useHistory} from 'react-router-dom';
 import {Button} from 'components/ui/Button';
-import {Button2} from 'components/ui/Button';
 import 'styles/views/Register.scss';
 import BaseContainer from "components/ui/BaseContainer";
 import PropTypes from "prop-types";
@@ -13,8 +12,6 @@ import PropTypes from "prop-types";
 
 const FormField = props => {
   return (
-    //comment
-    
     <div className="register field">
       <label className="register label">
         {props.label}
@@ -133,7 +130,7 @@ const Register = () => {
           <td>&nbsp;&nbsp;&nbsp;</td>
           <div className="login-button-container">
 
-          <Button2   width="100%" onClick={() => history.push('/login')}>Login here</Button2>
+          <Button   width="100%" onClick={() => history.push('/login')}>Login here</Button>
 
           </div>
           </div>

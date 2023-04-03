@@ -5,6 +5,23 @@
   padding-left: 15px;
   margin-right: auto;
   padding-right: 15px;
+  padding-bottom: 15px;
   max-width: $DESKTOP_WIDTH;
   color: $textColor;
+  background-color: #001F3F !important;
+  margin-top: 60px;
+}
+
+.information-container {
+  margin-left: auto;
+  padding-left: 15px;
+  margin-right: auto;
+  padding-right: 15px;
+  width: '100%';
+  text-align: left;
+  height: '100vh'; 
+  background-color: 'lightgray';
+  display: 'flex';
+  align-items: 'center'; 
+  justify-content: 'center'; 
 }

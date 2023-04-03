@@ -2,7 +2,6 @@ import { useHistory } from "react-router-dom";
 import { api, handleError } from "helpers/api";
 import { Button } from "components/ui/Button";
 // import { moment } from "moment";
-import BaseContainer from "components/ui/BaseContainer";
 
 import "styles/views/home/Home.scss";
 
@@ -31,25 +30,23 @@ const Home = () => {
   };
 
   return (
-    <BaseContainer className="home container">
       <div className="home button-container">
-        <Button width="150%">
+        <Button style={{fontSize: '45px', width : '25%', height: '100px'}} onClick={() => history.push("/lobby")}>
           Start Game
         </Button>
-        <Button width="150%" onClick={() => history.push("/home/scoreboard")}>
+        <Button style={{fontSize: '45px', width : '25%', height: '100px'}} onClick={() => history.push("/home/scoreboard")}>
           Score Board
         </Button>
-        <Button width="150%">
+        <Button style={{fontSize: '45px', width : '25%', height: '100px'}}>
           Game Statistics
         </Button>
-        <Button width="150%" onClick={() => goProfile(localStorage.getItem("userId"))}>
+        <Button style={{fontSize: '45px', width : '25%', height: '100px'}} onClick={() => goProfile(localStorage.getItem("userId"))}>
           My Profile
         </Button>
-        <Button width="150%" onClick={() => doLogout()}>
+        <Button style={{fontSize: '45px', width : '25%', height: '100px', marginTop: "40px"}} onClick={() => doLogout()}>
           Logout
         </Button>
-      </div>
-    </BaseContainer>
+        </div>
   );
 };
 
