@@ -133,7 +133,7 @@ const Register = () => {
           <td>&nbsp;&nbsp;&nbsp;</td>
           <div className="login-button-container">
 
-          <Button2   width="100%" onClick={() => history.push('/login')}>Login here</Button2>
+          <Button   width="100%" onClick={() => history.push('/login')}>Login here</Button>
 
           </div>
           </div>

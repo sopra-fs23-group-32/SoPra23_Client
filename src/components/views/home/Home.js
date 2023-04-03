@@ -33,7 +33,8 @@ const Home = () => {
   return (
     <BaseContainer className="home container">
       <div className="home button-container">
-        <Button width="150%">
+        <Button width="150%" onClick={() => history.push("/Lobby")}>
+          
           Start Game
         </Button>
         <Button width="150%" onClick={() => history.push("/home/scoreboard")}>

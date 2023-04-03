@@ -41,7 +41,7 @@ const FormField2 = props => {
         value={props.value}
         onChange={(e) => props.onChange(e.target.value)}
         onKeyDown={(event)=>{
-          props.onKeydown(event);
+          props.onKeyDown(event);
         }}
       />
     </div>
