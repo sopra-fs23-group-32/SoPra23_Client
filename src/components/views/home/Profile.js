@@ -103,14 +103,14 @@ const Profile = () => {
       </div>
       {localStorage.getItem("profileId") === localStorage.getItem("userId") ? (
         <>
-            <div className="user-profile-field">
-              <label>Enter Old Password</label>
-              <input type="password" value={oldPwd} onChange={e => setOldPwd(e.target.value)} />
-            </div>
-            <div className="user-profile-field">
-              <label>Set New Password</label>
-              <input type="password" value={newPwd} onChange={e => setNewPwd(e.target.value)} />
-            </div>
+          <div className="user-profile-field">
+            <label>Enter Old Password</label>
+            <input type="password" value={oldPwd} onChange={e => setOldPwd(e.target.value)} />
+          </div>
+          <div className="user-profile-field">
+            <label>Set New Password</label>
+            <input type="password" value={newPwd} onChange={e => setNewPwd(e.target.value)} />
+          </div>
         </>
       ) : (
         null
@@ -126,21 +126,20 @@ const Profile = () => {
 
   if (userProfile) {
     content = (
-        <div className="profile">
-            <Profile user={userProfile} />
-            <div className="profile button-container">
-              {localStorage.getItem("profileId") === localStorage.getItem("userId") ?
-                <Button
-                  width="70%"
-                  onClick={() => changeProfile()}
-                  disabled={!username && !birthDay && !newPwd}
-                >
-                  Save Change
-                </Button> :
-                null
-              }
-            </div>
+      <div className="profile">
+        <Profile user={userProfile} />
+        <div className="profile button-container">
+          {localStorage.getItem("profileId") === localStorage.getItem("userId") ?
+            <Button width="70%"
+              onClick={() => changeProfile()}
+              disabled={!username && !birthDay && !newPwd}
+            >
+              Save Change
+            </Button> :
+            null
+          }
         </div>
+      </div>
     );
   }
 
