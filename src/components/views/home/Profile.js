@@ -12,8 +12,7 @@ const FormField = (props) => {
   return (
     <div className="profile field">
       <label className="profile label">{props.label}</label>
-      <input
-        className="profile input"
+      <input className="profile input"
         type={props.input_type}
         placeholder="enter here.."
         value={props.value}
@@ -30,7 +29,6 @@ FormField.propTypes = {
 };
 
 const Profile = () => {
-  // use react-router-dom's hook to access the history
   const history = useHistory();
   // define a state variable (using the state hook).
   // if this variable changes, the component will re-render, but the variable will
@@ -38,26 +36,29 @@ const Profile = () => {
   const [userProfile, setUserProfile] = useState(null);
   const [username, setUsername] = useState(null);
   const [birthDay, setBirthDay] = useState(null);
+  const [oldPwd, setOldPwd] = useState(null);
+  const [newPwd, setNewPwd] = useState(null);
 
-    const changeProfile = async () => {
-        try {
-            let requestBody;
-            if(username === null){
-              let username = localStorage.getItem("username");
-            requestBody = JSON.stringify({ username, birthDay });
-            }
-            else{
-              requestBody = JSON.stringify({ username, birthDay });
-            }
-            const userURL = "/users/" + localStorage.getItem("userId");
-            await api.put(userURL, requestBody);
-        } catch (error) {
-            alert(
-                `Your new username is occupied, choose another one.\n${handleError(error)}`
-            );
+  const changeProfile = async () => {
+    if(oldPwd !== null && oldPwd !== userProfile.password) {
+      alert(`Your old password is wrong, try again.\n`);
+    }
+    try {
+        let requestBody;
+        if(username === null) {
+          let username = localStorage.getItem("username");
+          requestBody = JSON.stringify({ username, newPwd, birthDay });
         }
-        window.location.reload();
-    };
+        else{
+          requestBody = JSON.stringify({ username, newPwd, birthDay });
+        }
+        const userURL = "/users/" + localStorage.getItem("userId");
+        await api.put(userURL, requestBody);
+    } catch (error) {
+        alert(`Your new username is occupied, choose another one.\n${handleError(error)}`);
+    }
+    window.location.reload();
+  };
 
   useEffect(() => {
     // effect callbacks are synchronous to prevent race conditions. So we put the async function inside:
@@ -65,11 +66,9 @@ const Profile = () => {
       try {
         const userURL = "/users/" + localStorage.getItem("profileId");
         const response = await api.get(userURL);
-        // const response = await api.get("/users/1");
 
         // delays continuous execution of an async operation for 1 s
         await new Promise((resolve) => setTimeout(resolve, 1000));
-
         // Get the returned users and update the state.
         setUserProfile(response.data);
 
@@ -85,7 +84,7 @@ const Profile = () => {
         );
         console.error("Details:", error);
         alert(
-          "Something went wrong while fetching the users! See the console for details."
+          "Something went wrong while fetching the users!"
         );
       }
     }
@@ -116,27 +115,28 @@ const Profile = () => {
           <div className="profile">
             <Profile user={userProfile} />
             <FormField
-              label="Change username"
-              input_type="text"
-              value={username}
-              onChange={un => setUsername(un)}
+              label="Change username" input_type="text"
+              value={username} onChange={un => setUsername(un)}
             />
             <FormField
-              label="Set birthday"
-              input_type="date"
-              value={birthDay}
-              onChange={bd => setBirthDay(bd)}
+              label="Set birthday" input_type="date"
+              value={birthDay} onChange={bd => setBirthDay(bd)}
+            />
+            <FormField
+              label="Enter Old Password" input_type="text"
+              value={oldPwd} onChange={pwd => setOldPwd(pwd)}
+            />
+            <FormField
+              label="Set New Password" input_type="text"
+              value={newPwd} onChange={pwd => setNewPwd(pwd)}
+              disabled={oldPwd===null}
             />
             <div className="profile button-container">
               <Button
-                width="80%"
-                disabled={!username && !birthDay}
-                onClick={() => changeProfile()}
+                width="80%" onClick={() => changeProfile()}
+                disabled={!username && !birthDay && !newPwd}
               >
                 Save Change
-              </Button>
-              <Button width="80%" onClick={() => history.push("/home")}>
-                Return to Home
               </Button>
             </div>
           </div>
@@ -146,16 +146,6 @@ const Profile = () => {
         content = (
           <div className="profile">
             <Profile user={userProfile} />
-            <div className="profile button-container">
-              <Button width="80%"
-                onClick={() => {
-                  localStorage.removeItem("profileId");
-                  history.push("/home");
-                }}
-              >
-                Return to Home
-              </Button>
-            </div>
           </div>
         );
     }
@@ -165,6 +155,16 @@ const Profile = () => {
     <BaseContainer className="profile container">
       <h2>User Profile</h2>
       {content}
+      <div className="profile button-container">
+        <Button width="300%"
+          onClick={() => {
+            localStorage.removeItem("profileId");
+            history.push("/home");
+          }}
+        >
+          Return to Home
+        </Button>
+      </div>
     </BaseContainer>
   );
 };

@@ -32,21 +32,20 @@ const Home = () => {
 
   return (
     <BaseContainer className="home container">
-  
       <div className="home button-container">
-        <Button width="100%">
+        <Button width="150%">
           Start Game
         </Button>
-        <Button width="100%" onClick={() => history.push("/home/scoreboard")}>
+        <Button width="150%" onClick={() => history.push("/home/scoreboard")}>
           Score Board
         </Button>
-        <Button width="100%">
+        <Button width="150%">
           Game Statistics
         </Button>
-        <Button width="100%" onClick={() => goProfile(localStorage.getItem("userId"))}>
+        <Button width="150%" onClick={() => goProfile(localStorage.getItem("userId"))}>
           My Profile
         </Button>
-        <Button width="100%" onClick={() => doLogout()}>
+        <Button width="150%" onClick={() => doLogout()}>
           Logout
         </Button>
       </div>

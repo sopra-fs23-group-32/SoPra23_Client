@@ -1,5 +1,5 @@
 {
-  "name": "sopra-fs23-client-template",
+  "name": "sopra-fs23-client",
   "version": "0.1.0",
   "private": true,
   "dependencies": {

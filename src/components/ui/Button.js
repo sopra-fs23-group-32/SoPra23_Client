@@ -8,6 +8,7 @@ export const Button = props => (
     {props.children}
   </button>
 );
+
 export const Button2 = props => (
   <button
     {...props}

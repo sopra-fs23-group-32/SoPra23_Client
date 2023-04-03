@@ -6,12 +6,12 @@
 
 .home {
   &.container {
-    background: transparent;
-    padding: 3em;
+    background: transparentize(rgb(65, 64, 64), 0.9);
+    padding: 5em;
     border-radius: $borderRadius;
     display: flex;
     flex-direction: column;
-    // align-items: center;
+    align-items: center;
     box-shadow: $dropShadow;
   }
   &.user-list {

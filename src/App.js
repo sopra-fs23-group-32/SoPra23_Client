@@ -9,7 +9,7 @@ import AppRouter from "components/routing/routers/AppRouter";
 const App = () => {
   return (
     <div>
-      <Header id="titlea"height="120"  content="Guess the City!"/>
+      <Header id="titlea" height="120" content="Guess the City!"/>
       <AppRouter/>
     </div>
   );
