@@ -31,26 +31,23 @@ const Home = () => {
   };
 
   return (
-    <BaseContainer className="home container">
       <div className="home button-container">
-        <Button width="150%" onClick={() => history.push("/Lobby")}>
-          
+        <Button style={{fontSize: '45px', width : '40%' }} onClick={() => history.push("/lobby")}>
           Start Game
         </Button>
-        <Button width="150%" onClick={() => history.push("/home/scoreboard")}>
+        <Button style={{ width: '15%' }} onClick={() => history.push("/home/scoreboard")}>
           Score Board
         </Button>
-        <Button width="150%">
+        <Button style={{ width: '15%' }}>
           Game Statistics
         </Button>
-        <Button width="150%" onClick={() => goProfile(localStorage.getItem("userId"))}>
+        <Button style={{ width: '15%' }} onClick={() => goProfile(localStorage.getItem("userId"))}>
           My Profile
         </Button>
-        <Button width="150%" onClick={() => doLogout()}>
+        <Button style={{ width: '15%' }} onClick={() => doLogout()}>
           Logout
         </Button>
-      </div>
-    </BaseContainer>
+        </div>
   );
 };
 

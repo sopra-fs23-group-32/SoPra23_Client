@@ -1,9 +1,11 @@
 import { BrowserRouter, Redirect, Route, Switch } from "react-router-dom";
 import { HomeGuard } from "components/routing/routeProtectors/HomeGuard";
 import HomeRouter from "components/routing/routers/HomeRouter";
+import { LobbyGuard } from "components/routing/routeProtectors/LobbyGuard";
 import { LoginGuard } from "components/routing/routeProtectors/LoginGuard";
 import Login from "components/views/Login";
 import Register from "components/views/Register";
+import Lobby from "components/views/home/Lobby";
 
 /**
  * Main router of your application.
@@ -33,6 +35,11 @@ const AppRouter = () => {
           <HomeGuard>
             <HomeRouter base="/home" />
           </HomeGuard>
+        </Route>
+        <Route path="/lobby">
+          <LobbyGuard>
+            <Lobby />
+          </LobbyGuard>
         </Route>
       </Switch>
     </BrowserRouter>
