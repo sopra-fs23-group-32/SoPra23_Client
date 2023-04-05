@@ -7,7 +7,7 @@ import PropTypes from "prop-types";
 
 import "styles/views/home/Profile.scss";
 
-const ProfileInfo = ({ user, setUsername, setBirthDay, setOldPwd, setNewPwd }) => (
+const ProfileInfo = ({ user, setUsername, setBirthDay, setOldPwd, setPassword }) => (
     <div className="user-profile">
       <div className="user-profile-field">
         <label>Username</label>
@@ -42,11 +42,11 @@ const ProfileInfo = ({ user, setUsername, setBirthDay, setOldPwd, setNewPwd }) =
         <>
           <div className="user-profile-field">
             <label>Enter Old Password</label>
-            <input type="password" defaultValue={user.oldPwd} onChange={e => setOldPwd(e.target.value)} />
+            <input type="password" onChange={e => setOldPwd(e.target.value)} />
           </div>
           <div className="user-profile-field">
             <label>Set New Password</label>
-            <input type="password" defaultValue={user.newPwd} onChange={e => setNewPwd(e.target.value)} />
+            <input type="password" onChange={e => setPassword(e.target.value)} />
           </div>
         </>
       ) : (
@@ -71,7 +71,7 @@ const Profile = () => {
   const [username, setUsername] = useState(null);
   const [birthDay, setBirthDay] = useState(null);
   const [oldPwd, setOldPwd] = useState(null);
-  const [newPwd, setNewPwd] = useState(null);
+  const [password, setPassword] = useState(null);
 
   const changeProfile = async () => {
       if(oldPwd !== null && oldPwd !== userProfile.password) {
@@ -81,15 +81,15 @@ const Profile = () => {
           let requestBody;
           if(username === null) {
             let username = localStorage.getItem("username");
-            requestBody = JSON.stringify({ username, newPwd, birthDay });
+            requestBody = JSON.stringify({ username, password, birthDay });
           }
           else{
-            requestBody = JSON.stringify({ username, newPwd, birthDay });
+            requestBody = JSON.stringify({ username, password, birthDay });
           }
           const userURL = "/users/" + localStorage.getItem("userId");
           await api.put(userURL, requestBody);
       } catch (error) {
-          alert(`Your new username is occupied, choose another one.\n${handleError(error)}`);
+          alert(`Something went wrong while updating your profile.\n${handleError(error)}`);
       }
       window.location.reload();
     };
@@ -127,12 +127,12 @@ const Profile = () => {
   if (userProfile) {
     content = (
       <div className="profile">
-        <ProfileInfo user={userProfile} setUsername={setUsername} setBirthDay={setBirthDay} setOldPwd={setOldPwd} setNewPwd={setNewPwd} />
+        <ProfileInfo user={userProfile} setUsername={setUsername} setBirthDay={setBirthDay} setOldPwd={setOldPwd} setPassword={setPassword} />
         <div className="profile button-container">
           {localStorage.getItem("profileId") === localStorage.getItem("userId") ?
             <Button width="70%"
               onClick={() => changeProfile()}
-              disabled={!username && !birthDay && !newPwd}
+              disabled={!username && !birthDay && !password}
             >
               Save Change
             </Button> :
