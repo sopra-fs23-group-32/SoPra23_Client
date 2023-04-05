@@ -3,10 +3,62 @@ import { useHistory } from "react-router-dom";
 import { api, handleError } from "helpers/api";
 import { Spinner } from "components/ui/Spinner";
 import { Button } from "components/ui/Button";
-import BaseContainer from "components/ui/BaseContainer";
 import PropTypes from "prop-types";
 
 import "styles/views/home/Profile.scss";
+
+const ProfileInfo = ({ user, setUsername, setBirthDay, setOldPwd, setNewPwd }) => (
+    <div className="user-profile">
+      <div className="user-profile-field">
+        <label>Username</label>
+        {localStorage.getItem("profileId") === localStorage.getItem("userId") ? (
+          <>
+             <input type="text" defaultValue={user.username} onChange={e => setUsername(e.target.value)} />
+          </>
+        ) : (
+            <div>{user.username}</div>
+        )}
+      </div>
+      <div className="user-profile-field">
+        <label>Status</label>
+        <div>{user.status}</div>
+      </div>
+      <div className="user-profile-field">
+        <label>Created on</label>
+        <div>{new Date(user.createDay).toISOString().slice(0, 10)}</div>
+      </div>
+      <div className="user-profile-field">
+        <label>Birthday</label>
+        {localStorage.getItem("profileId") === localStorage.getItem("userId")? (
+            <>
+             <div>{user.birthDay? new Date(user.birthDay).toISOString().slice(0, 10) : "N/A"}</div>
+             <input type="date" defaultValue={user.birthDay} onChange={e => setBirthDay(e.target.value)} />
+            </>
+        ) : (
+            <div>{user.birthDay? new Date(user.birthDay).toISOString().slice(0, 10) : "N/A"}</div>
+        )}
+      </div>
+      {localStorage.getItem("profileId") === localStorage.getItem("userId") ? (
+        <>
+          <div className="user-profile-field">
+            <label>Enter Old Password</label>
+            <input type="password" defaultValue={user.oldPwd} onChange={e => setOldPwd(e.target.value)} />
+          </div>
+          <div className="user-profile-field">
+            <label>Set New Password</label>
+            <input type="password" defaultValue={user.newPwd} onChange={e => setNewPwd(e.target.value)} />
+          </div>
+        </>
+      ) : (
+        null
+      )}
+    </div>
+);
+
+ProfileInfo.propTypes = {
+user: PropTypes.object,
+
+};
 
 
 const Profile = () => {
@@ -69,65 +121,13 @@ const Profile = () => {
     fetchData();
   }, []);
 
-  const Profile = ({ user }) => (
-    <div className="user-profile">
-      <div className="user-profile-field">
-        <label>Username</label>
-        {localStorage.getItem("profileId") === localStorage.getItem("userId") ? (
-          <>
-             <div>{user.username}</div>
-             <input type="text" value={username} onChange={e => setUsername(e.target.value)} />
-          </>
-        ) : (
-            <div>{user.username}</div>
-        )}
-      </div>
-      <div className="user-profile-field">
-        <label>Status</label>
-        <div>{user.status}</div>
-      </div>
-      <div className="user-profile-field">
-        <label>Created on</label>
-        <div>{new Date(user.createDay).toISOString().slice(0, 10)}</div>
-      </div>
-      <div className="user-profile-field">
-        <label>Birthday</label>
-        {localStorage.getItem("profileId") === localStorage.getItem("userId")? (
-            <>
-             <div>{user.birthDay? new Date(user.birthDay).toISOString().slice(0, 10) : "N/A"}</div>
-             <input type="date" value={birthDay} onChange={e => setBirthDay(e.target.value)} />
-            </>
-        ) : (
-            <div>{user.birthDay? new Date(user.birthDay).toISOString().slice(0, 10) : "N/A"}</div>
-        )}
-      </div>
-      {localStorage.getItem("profileId") === localStorage.getItem("userId") ? (
-        <>
-          <div className="user-profile-field">
-            <label>Enter Old Password</label>
-            <input type="password" value={oldPwd} onChange={e => setOldPwd(e.target.value)} />
-          </div>
-          <div className="user-profile-field">
-            <label>Set New Password</label>
-            <input type="password" value={newPwd} onChange={e => setNewPwd(e.target.value)} />
-          </div>
-        </>
-      ) : (
-        null
-      )}
-    </div>
-  );
-
-  Profile.propTypes = {
-    user: PropTypes.object,
-  };
 
   let content = <Spinner />;
 
   if (userProfile) {
     content = (
       <div className="profile">
-        <Profile user={userProfile} />
+        <ProfileInfo user={userProfile} setUsername={setUsername} setBirthDay={setBirthDay} setOldPwd={setOldPwd} setNewPwd={setNewPwd} />
         <div className="profile button-container">
           {localStorage.getItem("profileId") === localStorage.getItem("userId") ?
             <Button width="70%"
@@ -145,10 +145,11 @@ const Profile = () => {
 
 
   return (
-    <BaseContainer className="profile container">
+    <div className="profile container">
       <div className="headerrow" >
           <div><h2>User Profile</h2></div>
       </div>
+      <br></br>
       {content}
       <div className="profile button-container">
         <Button width="100%"
@@ -160,7 +161,7 @@ const Profile = () => {
           Return to Home
         </Button>
       </div>
-    </BaseContainer>
+    </div>
   );
 };
 
