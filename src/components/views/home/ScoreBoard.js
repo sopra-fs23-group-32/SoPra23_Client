@@ -4,7 +4,6 @@ import { api, handleError } from "helpers/api";
 import { Spinner } from "components/ui/Spinner";
 import { Button } from "components/ui/Button";
 // import { moment } from "moment";
-import BaseContainer from "components/ui/BaseContainer";
 import PropTypes from "prop-types";
 
 import "styles/views/home/ScoreBoard.scss";
@@ -18,7 +17,7 @@ const ScoreBoard = () => {
   // keep its value throughout render cycles.
   // a component can have as many state variables as you like.
   // more information can be found under https://reactjs.org/docs/hooks-state.html
-  const [users, setUsers] = useState(null);
+  const [users, setUsers] = useState([]);
 
   const goProfile = (profileId) => {
     localStorage.setItem("profileId", profileId);
@@ -55,40 +54,68 @@ const ScoreBoard = () => {
     fetchData();
   }, []);
 
-  const Users = ({ user }) => (
-    <div className="user container">
-      <div className="user user-link">
-        <Button onClick={() => goProfile(user.userId)}>{user.username}</Button>
-        <div className="user user-info">ID: {user.userId}</div>
-      </div>
-      <div className="user user-info">Status: {user.status}</div>
-    </div>
-  );
-  Users.propTypes = {
+
+// remove this part if the backend returns already ranked users
+  //  sort the users array in descending order of their scores
+  const sortedUsers = users.sort((a, b) => b.totalScore - a.totalScore);
+  // assign each user a ranking ID based on their position in the array
+  const rankedUsers = sortedUsers.map((user, index) => ({
+    ...user,
+    rank: index + 1,
+  }));
+
+
+    const Users = ({ users }) => (
+        <div>
+          <table className="table">
+            <thead>
+              <tr>
+                <th>RANK</th>
+                <th>USERNAME</th>
+                <th>TOTAL SCORE</th>
+                <th>GAME NUMBER</th>
+                <th>STATUS</th>
+              </tr>
+            </thead>
+            <tbody>
+                {users.map((user, index) => (
+                <tr className={index % 2 !== 0 ? "odd" : "even"} key={user.id} onClick={() => goProfile(user.userId)}>
+                  <td style={{ width: "10%", textAlign: "center" }}>{user.rank}</td>
+                  <td style={{ width: "20%", textAlign: "center" }}>{user.username}</td>
+                  <td style={{ width: "10%", textAlign: "center" }}>{user.totalScore}</td>
+                  <td style={{ width: "10%", textAlign: "center" }}>{user.totalGameNum}</td>
+                  <td style={{ width: "15%", textAlign: "center" }}>{user.status}</td>
+                </tr>
+                ))}
+            </tbody>
+          </table>
+        </div>
+    );
+
+    Users.propTypes = {
     user: PropTypes.object,
-  };
+    };
 
   let userlist = <Spinner />;
 
   if (users) {
     userlist = (
-      <ul>{users.map((user) => (
-          <Users user={user} key={user.userId} />
-        ))}
-      </ul>
+      <Users users={rankedUsers} />
     );
   }
 
   return (
-    <BaseContainer className="scoreboard container">
+    <div className="scoreboard container">
       <h2>Score Board</h2>
-      <div className="scoreboard user-list">{userlist}</div>
+      <br></br>
+      {userlist}
+      <br></br>
       <div>
         <Button width="150%" onClick={() => history.push("/home")}>
           Return
         </Button>
       </div>
-    </BaseContainer>
+    </div>
   );
 };
 
