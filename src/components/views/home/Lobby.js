@@ -29,6 +29,8 @@ const Lobby = () => {
 
   const [players, setPlayers] = useState(null);
 
+
+
   useEffect(() => {
     // effect callbacks are synchronous to prevent race conditions. So we put the async function inside:
     async function fetchData() {
@@ -60,53 +62,59 @@ const Lobby = () => {
   return (
     <div className="lobby container">
       <p style={{fontSize: '48px', marginBottom: '5px'}}>
-        <div>Game Settings</div>
+        <div>Game Lobby</div>
       </p>
       <div className="lobby layout">
-        <InformationContainer className="lobby container_left" 
-        style={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
-          
-          <div style={{ display: 'grid', gridTemplateColumns: '1fr auto 1fr', alignItems: 'center', gap: '10px' }}>
-            <div style={{ textAlign: 'right' }}><span style={{ fontSize: '18px' }}>Singleplayer</span></div>
+        <InformationContainer className="lobby container_left" id="information-container">
+          <div style={{fontSize:'40px'}}>
+            Game Settings
+          </div>
+          <div style={{ display: 'grid', gridTemplateColumns: '1fr auto 1fr', gap: '10px' }}>
+            
+            <div style={{ textAlign: 'right' }}><span style={{ fontSize: '20px' }}>Singleplayer</span></div>
             <div>
               <Switch checked={isMultiplayer}
               onChange={handleToggle}
-              trackColor={{true: 'red', false: '#1979b8'}}
-              disableRipple
+              offColor="#1979b8"
+              onColor="#1979b8"
               checkedIcon={false}
               uncheckedIcon={false} />
             </div>
-            <div><span style={{ fontSize: '18px' }}>Multiplayer</span></div>
+            <div><span style={{ fontSize: '20px'}}>Multiplayer</span></div>
           </div>
           <div>
           <label className="lobby label">
               Pick a city category:
               <select name="selectedFruit"
+              style={{marginLeft:"10px", textAlign:"center"}}
               onChange={e => setSelectedCategory(e.target.value)}>
                 <option value="Europe">Europe</option>
                 <option value="Asia">Asia</option>
                 <option value="North America">North America</option>
+                <option value="South America">South America</option>
+                <option value="Africa">Africa</option>
+                <option value="Oceania">Oceania</option>
+                <option value="World">World</option>
               </select>
             </label>
           </div>
           <div>
             <label className="lobby label">
-              Enter rounds
-              <input className="lobby input"
-                placeholder="enter integer..."
-                value={gameRounds}
-                onChange={e => setGameRounds(e.target.value)}
-              />
+                Enter Number of Rounds:
+                <input className="lobby input" 
+                  style={{marginLeft:"10px", textAlign:"center"}}
+                  placeholder="enter number of rounds..."
+                  value={gameRounds}
+                  onChange={e => setGameRounds(e.target.value)}
+                />
             </label>
           </div>
         </InformationContainer>
 
         <InformationContainer className="lobby container_right" 
-        style={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
+        style={{ display: 'flex', flexDirection: 'column' }}>
           <p style={{ fontSize: '20px', marginBottom: '20px'}}>
-            <div>City Category: {selectedCategory}</div>
-            <div>Game Rounds: {gameRounds}</div>
-            <div>User list:</div>
+            <div>Users in the lobby:</div>
           </p>
           <div>
             {playerlist}
