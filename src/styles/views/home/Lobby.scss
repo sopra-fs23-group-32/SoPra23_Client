@@ -24,7 +24,7 @@
       border-radius: $borderRadius;
       display: flex;
       flex-direction: column;
-      align-items: center;
+      align-items: left;
       box-shadow: $dropShadow;
       row-gap: 2em;
     }
@@ -34,7 +34,7 @@
         border-radius: $borderRadius;
         display: flex;
         flex-direction: column;
-        align-items: center;
+        align-items: left;
         box-shadow: $dropShadow;
       }
     &.user-list {
