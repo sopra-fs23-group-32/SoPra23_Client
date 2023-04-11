@@ -24,7 +24,7 @@ const Lobby = () => {
 
   const [isMultiplayer, setIsMultiplayer] = useState(true);
   const handleToggle = () => {setIsMultiplayer(!isMultiplayer);};
-  const [selectedCategory, setSelectedCategory] = useState('Europe');
+  const [setSelectedCategory] = useState('Europe');
   const [gameRounds, setGameRounds] = useState(null);
 
   const [players, setPlayers] = useState(null);
