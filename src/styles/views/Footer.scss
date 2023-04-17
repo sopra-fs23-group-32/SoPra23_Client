@@ -1,0 +1,13 @@
+@import 'styles/theme';
+
+.footer {
+  &.container {
+    @include center;
+  }
+  &.title {
+    font-size: medium;
+    font-weight: 500;
+    color: $background;
+    text-align: center;
+  }
+}

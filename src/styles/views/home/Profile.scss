@@ -1,0 +1,56 @@
+@import 'styles/theme';
+
+.profile {
+    &.container {
+        background: #e6eaed;
+        padding: 1em;
+        border-radius: $borderRadius;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        box-shadow: $dropShadow;
+        width: 30%;
+        margin: 50px auto 0;
+    }
+
+    &.button-container {
+        display: flex;
+        justify-content: center;
+        margin-top: 2em;
+    }
+    & p,
+    h2 {
+        margin: 0.5em 0;
+        color:white;
+        background: #1979b8;
+        text-align: center;
+        width: 400px;
+        border-radius: 0.5em;
+    }
+}
+
+.user-profile-field {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  margin-bottom: 16px;
+  border-radius: $borderRadius;
+}
+
+.user-profile-field label {
+  font-weight: bold;
+  margin-bottom: 8px;
+}
+
+.user-profile-field input {
+  border: none;
+  padding: 8px;
+  font-size: 16px;
+  background-color: #d2d9df;
+  border-radius: $borderRadius;
+}
+
+.user-profile-field input:focus {
+  outline: none;
+}
+
