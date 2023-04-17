@@ -28,10 +28,98 @@ const Lobby = () => {
   const [gameRounds, setGameRounds] = useState(null);
 
   const [players, setPlayers] = useState(null);
+<<<<<<< HEAD
 
 
 
   useEffect(() => {
+=======
+  const [populationThreshold, setPopulationThreshold] = useState(2000000);
+
+  const getRandomCities = async () => {
+    const response = await api.get('/random-cities', {
+      params: {
+        category: setSelectedCategory,
+        populationThreshold: populationThreshold,
+      },
+    });
+    localStorage.setItem('randomcities', JSON.stringify(response.data));
+    const rightCity=response.data[0];
+    localStorage.setItem("rightCity",rightCity);
+    console.log("Right City: ", localStorage.getItem('rightCity'));
+    console.log("RANDOM CITIES: ", localStorage.getItem('randomcities'));
+
+
+  };
+  function show_image(src, width, height, alt) {
+    var img = document.createElement("img");
+    img.src = src;
+    img.width = width;
+    img.height = height;
+    img.alt = alt;
+
+    // This next line will just add it to the <body> tag
+    document.body.appendChild(img);
+}
+
+  const displayCityImage = async (cityName) => {
+    try {
+        const response = await api.post('/city-image', { cityName: cityName });
+        const imageUrl = response.data;
+        localStorage.setItem("imageUrl",imageUrl);
+        show_image(imageUrl,100,100,cityName);
+        console.log('imageUrl:', imageUrl);
+        return imageUrl;
+    } catch (error) {
+        console.log('Error saving city image:', error);
+        return '';
+    }
+};
+
+const startNewGame = async (rounds, countdownTime, category, populationThreshold) => {
+  try {
+    const response = await api.post('/start/singlemode', {
+      rounds: 4,
+      countdownTime: 4,
+      category: 'Europe',
+      populationThreshold: 2000000
+    });
+    const game = response.data;
+    console.log('game:', game);
+    return game;
+  } catch (error) {
+    console.log('Error starting new game:', error);
+    return null;
+  }
+};
+
+
+const startSingleModeGame = async (player,rounds, countdownTime, category, populationThreshold) => {
+  try {
+    console.log("Player: ",player,"Rounds: ",rounds, "countdownTime: ",countdownTime, "category: ",category,"populationsmin: ",populationThreshold)
+    const response = await api.post('/singlemode/start', {
+      player:player,
+      rounds: rounds,
+      countdownTime: 30,
+      category: category,
+      populationThreshold: 200000,
+    });
+    const game = response.data;
+    console.log('New single mode game started:', game);
+    localStorage.setItem("SingleModeGame_id",game.getId)
+  } catch (error) {
+    console.log('Error starting single mode game:', error);
+  }
+  history.push("/GamePage")
+}
+
+
+
+
+
+  useEffect(() => {    
+
+>>>>>>> master
     // effect callbacks are synchronous to prevent race conditions. So we put the async function inside:
     async function fetchData() {
       try {
@@ -124,14 +212,36 @@ const Lobby = () => {
 
 
       <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', marginBottom: '10px' }}>
+<<<<<<< HEAD
+=======
+        
+
+
+>>>>>>> master
         <Button style={{ display: 'inline-block', margin: '0 10px'}}
           disabled={!isMultiplayer}
           onClick={() => history.push("/home")}>
           Invite to Game
         </Button>
+<<<<<<< HEAD
         <Button style={{ display: 'inline-block', margin: '0 10px' }}
           onClick={() => history.push("/home")}>
           Start Game
+=======
+
+        
+
+        <Button style={{ display: 'inline-block', margin: '0 10px' }}
+          disabled={isMultiplayer}
+          onClick={() => startSingleModeGame(localStorage.getItem('userId'),gameRounds,30,setSelectedCategory,populationThreshold)}>
+          Start Single Mode Game
+        </Button>
+
+        <Button style={{ display: 'inline-block', margin: '0 10px' }}
+          disabled={!isMultiplayer}
+          onClick={() => startNewGame(gameRounds,30,setSelectedCategory,populationThreshold)}>
+          Start Multiplayer Mode Game
+>>>>>>> master
         </Button>
       </div>
       <div>

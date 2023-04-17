@@ -23,6 +23,12 @@ const AppRouter = () => {
         <Route exact path="/">
           <Redirect to="/login" />
         </Route>
+<<<<<<< HEAD
+=======
+        <Route exact path="/GamePage">
+          <Redirect to="/GamePage" />
+        </Route>
+>>>>>>> master
         <Route exact path="/login">
           <LoginGuard>
             <Login />
@@ -35,7 +41,21 @@ const AppRouter = () => {
           <HomeGuard>
             <HomeRouter base="/home" />
           </HomeGuard>
+<<<<<<< HEAD
         </Route>
+=======
+          
+        </Route>
+
+        <Route path="/GamePage">
+          <HomeGuard>
+            <HomeRouter base="/GamePage" />
+          </HomeGuard>
+          
+        </Route>
+
+
+>>>>>>> master
         <Route path="/lobby">
           <LobbyGuard>
             <Lobby />
