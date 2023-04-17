@@ -6,6 +6,9 @@ import { api, handleError } from "helpers/api";
 import InformationContainer from "components/ui/BaseContainer";
 import Switch from 'react-switch';
 import PropTypes from "prop-types";
+import Modal from "@mui/material/Modal";
+import Typography from "@mui/material/Typography";
+import Box from "@mui/material/Box";
 
 import "styles/views/home/Lobby.scss";
 
@@ -29,7 +32,23 @@ const Lobby = () => {
 
   const [players, setPlayers] = useState(null);
   const [populationThreshold, setPopulationThreshold] = useState(2000000);
+  const [open, setOpen] = React.useState(false);
 
+  const handleOpen = () => {
+    setOpen(true);
+  };
+  const handleClose = () => setOpen(false);
+  const style = {
+  position: "absolute",
+  top: "50%",
+  left: "50%",
+  transform: "translate(-50%, -50%)",
+  width: 400,
+  bgcolor: '#2196f3',
+  border: "2px solid #000",
+  boxShadow: 24,
+  p: 4,
+};
   const getRandomCities = async () => {
     const response = await api.get('/random-cities', {
       params: {
@@ -210,9 +229,21 @@ const startSingleModeGame = async (player,rounds, countdownTime, category, popul
 
         <Button style={{ display: 'inline-block', margin: '0 10px'}}
           disabled={!isMultiplayer}
-          onClick={() => history.push("/home")}>
+          onClick={() => handleOpen()}>
           Invite to Game
         </Button>
+        <Modal
+              open={open}
+              onClose={handleClose}
+              aria-labelledby="modal-modal-title"
+              aria-describedby="modal-modal-description"
+            >
+              <Box color="primary" sx={style}>
+                <Typography id="modal-modal-description" sx={{ mt: 2 }}>
+                  Copy this link....:
+                </Typography>
+              </Box>
+            </Modal>
 
         
 
