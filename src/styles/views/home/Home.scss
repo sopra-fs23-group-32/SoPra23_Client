@@ -1,0 +1,37 @@
+@import 'styles/theme';
+
+/* The '&' is a shorthand for the containing element
+  for more information visit https://sass-lang.com/guide
+ */
+
+.home {
+  &.container {
+    background: transparentize(rgb(65, 64, 64), 0.9);
+    padding: 5em;
+    border-radius: $borderRadius;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    box-shadow: $dropShadow;
+  }
+  &.user-list {
+    padding-left: 0;
+  }
+  &.user-item {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+  }
+  &.button-container {
+    display: flex;
+    align-items: center;
+    margin-top: 50px;
+    flex-direction: column;
+    justify-content: center;
+    row-gap: 2em;
+  }
+  & p,h2 {
+    margin: 0.5em 0;
+  }
+}
