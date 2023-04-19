@@ -28,12 +28,6 @@ const Lobby = () => {
   const [gameRounds, setGameRounds] = useState(null);
 
   const [players, setPlayers] = useState(null);
-<<<<<<< HEAD
-
-
-
-  useEffect(() => {
-=======
   const [populationThreshold, setPopulationThreshold] = useState(2000000);
 
   const getRandomCities = async () => {
@@ -119,7 +113,6 @@ const startSingleModeGame = async (player,rounds, countdownTime, category, popul
 
   useEffect(() => {    
 
->>>>>>> master
     // effect callbacks are synchronous to prevent race conditions. So we put the async function inside:
     async function fetchData() {
       try {
@@ -212,22 +205,14 @@ const startSingleModeGame = async (player,rounds, countdownTime, category, popul
 
 
       <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', marginBottom: '10px' }}>
-<<<<<<< HEAD
-=======
         
 
 
->>>>>>> master
         <Button style={{ display: 'inline-block', margin: '0 10px'}}
           disabled={!isMultiplayer}
           onClick={() => history.push("/home")}>
           Invite to Game
         </Button>
-<<<<<<< HEAD
-        <Button style={{ display: 'inline-block', margin: '0 10px' }}
-          onClick={() => history.push("/home")}>
-          Start Game
-=======
 
         
 
@@ -241,7 +226,6 @@ const startSingleModeGame = async (player,rounds, countdownTime, category, popul
           disabled={!isMultiplayer}
           onClick={() => startNewGame(gameRounds,30,setSelectedCategory,populationThreshold)}>
           Start Multiplayer Mode Game
->>>>>>> master
         </Button>
       </div>
       <div>
