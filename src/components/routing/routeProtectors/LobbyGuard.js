@@ -15,10 +15,6 @@ export const LobbyGuard = (props) => {
     return props.children;
   }
   return <Redirect to="/lobby" />;
-<<<<<<< HEAD
-=======
-
->>>>>>> master
 };
 
 LobbyGuard.propTypes = {

@@ -2,11 +2,8 @@ import {Redirect, Route} from "react-router-dom";
 import PropTypes from 'prop-types';
 import Home from "components/views/home/Home";
 import Profile from "components/views/home/Profile"
-<<<<<<< HEAD
-=======
 import GamePage from "components/views/home/GamePage"
 
->>>>>>> master
 import ScoreBoard from "components/views/home/ScoreBoard"
 import HistoryPage from '../../views/history/History';
 
@@ -28,12 +25,9 @@ const HomeRouter = props => {
       <Route exact path={`${props.base}/profile`}>
         <Profile />
       </Route>
-<<<<<<< HEAD
-=======
       <Route exact path={`${props.base}/GamePage`}>
         <GamePage />
       </Route>
->>>>>>> master
       <Route exact path={`${props.base}/history`}>
         <HistoryPage/>
       </Route>
