@@ -48,6 +48,12 @@ const AppRouter = () => {
           
         </Route>
 
+        <Route path="/RoundCountdown">
+          <HomeGuard>
+            <HomeRouter base="/RoundCountdown" />
+          </HomeGuard>
+        </Route>
+
 
         <Route path="/lobby">
           <LobbyGuard>
