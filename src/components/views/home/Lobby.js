@@ -6,7 +6,7 @@ import { api, handleError } from "helpers/api";
 import InformationContainer from "components/ui/BaseContainer";
 import Switch from 'react-switch';
 import PropTypes from "prop-types";
-
+import CityCategory from "models/CityCategory"
 import "styles/views/home/Lobby.scss";
 
 const Players = ({ player }) => (
@@ -25,36 +25,18 @@ const Lobby = () => {
   const [isMultiplayer, setIsMultiplayer] = useState(true);
   const handleToggle = () => {setIsMultiplayer(!isMultiplayer);};
   const [gameRounds, setGameRounds] = useState(null);
-
+  const [gameDuration, setGameDuration] = useState(100);
   const [players, setPlayers] = useState(null);
 
-  const startGame=async(category, gameRounds, gameDuration) =>{
-    try {
-      let category_uppercase;
-      category_uppercase=category.toUpperCase()
-      if(category_uppercase=="NORTH AMERICA"){
-        category_uppercase="NORTH_AMERICA"
-      }
-      else if(category_uppercase=="SOUTH AMERICA"){
-        category_uppercase="SOUTH_AMERICA"
-      } 
-      
-      // create a new game
-      const requestBody = {
-        category: category_uppercase,
-        totalRounds: gameRounds,
-        countdownTime: gameDuration,
-      };
-      console.log("REQUEST BODY: ", requestBody);
-      const response = await api.post('/games', requestBody);
-  
-      const gameId = response.data.gameId;
-      console.log("GAME RETURN: ", response)
-      history.push(`/gamePage/${gameId}`);
-    } catch (error) {
-      alert(`Something went wrong during game start: \n${handleError(error)}`);
-    }
-  }
+  const [option1, setOption1]=useState("");
+  const [option2, setOption2]=useState("");
+  const [option3, setOption3]=useState("");
+  const [option4, setOption4]=useState("");
+  const [pictureUrl, setPictureUrl]=useState("");
+  const [correctOption, setCorrectOption]=useState("");
+  const [score, setScore]=useState("");
+  const [roundNumber, setRoundNumber]=useState(0);
+
   useEffect(() => {    
 
     // effect callbacks are synchronous to prevent race conditions. So we put the async function inside:
@@ -83,8 +65,52 @@ const Lobby = () => {
       </ul>
     );
   }
-  const [selectedCategory, setSelectedCategory] = useState("Europe");
 
+
+  const getGameDetails = async (gameId) => {
+    try {
+      console.log("before call");
+      const response = await api.put(`/games/${gameId}`);
+      const question = response.data;
+      console.log("question otpion1", question.option1);
+      console.log("Option1: ",option1, "Option2: ",option2,"Option3: ",option3, "Option4: ",option4)
+
+      const cityNamesString = JSON.stringify([question.option1, question.option2, question.option3, question.option4]);
+      console.log("CityNameString: ", cityNamesString);
+      localStorage.setItem("citynames2", cityNamesString);
+      localStorage.setItem("PictureUrl",question.pictureUrl);
+      return question;
+    } catch (error) {
+      throw error;
+    }
+  };
+  
+  const startGame = async (category, gameRounds, gameDuration) => {
+    try {
+      let category_uppercase;
+      category_uppercase = category.toUpperCase();
+  
+      // create a new game
+      const requestBody = {
+        category: category_uppercase,
+        totalRounds: gameRounds,
+        countdownTime: gameDuration,
+      };
+      console.log("REQUEST BODY: ", requestBody);
+      const response = await api.post("/games", requestBody);
+  
+      const gameId = response.data.gameId;
+      console.log("GAME RETURN: ", response);
+      await getGameDetails(gameId);
+      history.push(`/gamePage/${gameId}`);
+    } catch (error) {
+      alert(`Something went wrong during game start: \n${handleError(error)}`);
+    }
+  };
+  
+
+  
+  const [selectedCategory, setSelectedCategory] = useState("Europe");
   return (
     <div className="lobby container">
       <p style={{fontSize: '48px', marginBottom: '5px'}}>
@@ -111,7 +137,7 @@ const Lobby = () => {
           <div>
           <label className="lobby label">
               Pick a city category:
-              <select name="selectedFruit"
+              <select name="selectedCategory2"
               style={{marginLeft:"10px", textAlign:"center"}}
               value={selectedCategory}
               onChange={e => setSelectedCategory(e.target.value)}>
