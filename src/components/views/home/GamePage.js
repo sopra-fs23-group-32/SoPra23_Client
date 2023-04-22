@@ -11,40 +11,24 @@ import "styles/views/home/GamePage.scss";
 
 
 const GamePage = () => {
-  const [roundNumber, setRoundNumber] = useState(localStorage.getItem('totalRounds'));
-  const [score, setScore] = useState(0);
   const history = useHistory();
-  const [rightCityName, setRightCityName] = useState(localStorage.getItem('rightCity'));
-  const [cityNames, setCityNames] = useState(localStorage.getItem('randomcities'));
-  const [imageUrl, setImageUrl] = useState(localStorage.getItem('imageUrl'));
+  const [option1, setOption1]=useState("");
+  const [option2, setOption2]=useState("");
+  const [option3, setOption3]=useState("");
+  const [option4, setOption4]=useState("");
+  const [pictureUrl, setPictureUrl]=useState("");
+  const [correctOption, setCorrectOption]=useState("");
+  const [score, setScore]=useState("");
+  const [roundNumber, setRoundNumber]=useState(0);
 
-
-  const getGameDetails = async () => {
-    const response = await api.get(`/singlemode/${localStorage.getItem('gameId')}/`);
-    
-    var gameTime = response.data.gameTime;
-    var totalRounds = response.data.totalRounds;
-    var countdownTime = response.data.countdownTime;
-    var cityOptions = response.data.cityOptions;
-    var gameEnded = response.data.gameEnded;
-    var playerScore = response.data.playerScore;
-    var currentRound = response.data.currentRound;
-    var imageUrl = response.data.imageUrl;
+  var gameId=localStorage.getItem("gameId")
+  var category=localStorage.getItem("category")
+  var totalRounds=localStorage.getItem("totalRounds")
+  var countdownTime=localStorage.getItem("countdownTime")
   
-    localStorage.setItem("gameTime", gameTime);
-    localStorage.setItem("totalRounds", totalRounds);
-    localStorage.setItem("gameEnded", gameEnded);
-    localStorage.setItem("playerScore", playerScore);
-    localStorage.setItem("gameTime", gameTime);
-  };
-  
-  useEffect(() => {
-    getGameDetails();
-  }, []);
-
 
   const handleCityNameButtonClick = async (selectedCityName) => {
-    if (selectedCityName === rightCityName) {
+    if (selectedCityName === correctOption) {
       setScore(score + 1);
     }
 
@@ -54,29 +38,32 @@ const GamePage = () => {
     history.push("/Home");
   };
 
-  const cityNamesString = localStorage.getItem('randomcities');
+  const cityNamesString = localStorage.getItem("citynames2");
   const cityNames2 = JSON.parse(cityNamesString);
-  
+  console.log("Citynames2: ",cityNames2);
   const cityNameButtons = cityNames2.map((cityName) => (
     <button
       key={cityName}
       className={`city-name-button ${
-        cityName === rightCityName ? "correct" : ""
+        cityName === correctOption ? "correct" : ""
       }`}
       onClick={() => handleCityNameButtonClick(cityName)}
     >
       {cityName}
     </button>
   ));
-  
-  return (
+    return (
+
+    
     <div className="guess-the-city">
       <div className="header">
         <button className="exit-button" onClick={handleExitButtonClick}> Exit </button>
         <div>
-          <img className="cityImage" src={imageUrl} alt="City Image" />
+          <img className="cityImage" src={localStorage.getItem("PictureUrl")} alt="City Image" />
         </div>
       </div>
+
+
       <div className="main">
         <div className="image-container">
         </div>

@@ -6,7 +6,7 @@ import { api, handleError } from "helpers/api";
 import InformationContainer from "components/ui/BaseContainer";
 import Switch from 'react-switch';
 import PropTypes from "prop-types";
-
+import CityCategory from "models/CityCategory"
 import "styles/views/home/Lobby.scss";
 
 const Players = ({ player }) => (
@@ -24,92 +24,18 @@ const Lobby = () => {
 
   const [isMultiplayer, setIsMultiplayer] = useState(true);
   const handleToggle = () => {setIsMultiplayer(!isMultiplayer);};
-  const [setSelectedCategory] = useState('Europe');
   const [gameRounds, setGameRounds] = useState(null);
-
+  const [gameDuration, setGameDuration] = useState(100);
   const [players, setPlayers] = useState(null);
-  const [populationThreshold, setPopulationThreshold] = useState(2000000);
 
-  const getRandomCities = async () => {
-    const response = await api.get('/random-cities', {
-      params: {
-        category: setSelectedCategory,
-        populationThreshold: populationThreshold,
-      },
-    });
-    localStorage.setItem('randomcities', JSON.stringify(response.data));
-    const rightCity=response.data[0];
-    localStorage.setItem("rightCity",rightCity);
-    console.log("Right City: ", localStorage.getItem('rightCity'));
-    console.log("RANDOM CITIES: ", localStorage.getItem('randomcities'));
-
-
-  };
-  function show_image(src, width, height, alt) {
-    var img = document.createElement("img");
-    img.src = src;
-    img.width = width;
-    img.height = height;
-    img.alt = alt;
-
-    // This next line will just add it to the <body> tag
-    document.body.appendChild(img);
-}
-
-  const displayCityImage = async (cityName) => {
-    try {
-        const response = await api.post('/city-image', { cityName: cityName });
-        const imageUrl = response.data;
-        localStorage.setItem("imageUrl",imageUrl);
-        show_image(imageUrl,100,100,cityName);
-        console.log('imageUrl:', imageUrl);
-        return imageUrl;
-    } catch (error) {
-        console.log('Error saving city image:', error);
-        return '';
-    }
-};
-
-const startNewGame = async (rounds, countdownTime, category, populationThreshold) => {
-  try {
-    const response = await api.post('/start/singlemode', {
-      rounds: 4,
-      countdownTime: 4,
-      category: 'Europe',
-      populationThreshold: 2000000
-    });
-    const game = response.data;
-    console.log('game:', game);
-    return game;
-  } catch (error) {
-    console.log('Error starting new game:', error);
-    return null;
-  }
-};
-
-
-const startSingleModeGame = async (player,rounds, countdownTime, category, populationThreshold) => {
-  try {
-    console.log("Player: ",player,"Rounds: ",rounds, "countdownTime: ",countdownTime, "category: ",category,"populationsmin: ",populationThreshold)
-    const response = await api.post('/singlemode/start', {
-      player:player,
-      rounds: rounds,
-      countdownTime: 30,
-      category: category,
-      populationThreshold: 200000,
-    });
-    const game = response.data;
-    console.log('New single mode game started:', game);
-    localStorage.setItem("SingleModeGame_id",game.getId)
-  } catch (error) {
-    console.log('Error starting single mode game:', error);
-  }
-  history.push("/GamePage")
-}
-
-
-
-
+  const [option1, setOption1]=useState("");
+  const [option2, setOption2]=useState("");
+  const [option3, setOption3]=useState("");
+  const [option4, setOption4]=useState("");
+  const [pictureUrl, setPictureUrl]=useState("");
+  const [correctOption, setCorrectOption]=useState("");
+  const [score, setScore]=useState("");
+  const [roundNumber, setRoundNumber]=useState(0);
 
   useEffect(() => {    
 
@@ -140,6 +66,51 @@ const startSingleModeGame = async (player,rounds, countdownTime, category, popul
     );
   }
 
+
+  const getGameDetails = async (gameId) => {
+    try {
+      console.log("before call");
+      const response = await api.put(`/games/${gameId}`);
+      const question = response.data;
+      console.log("question otpion1", question.option1);
+      console.log("Option1: ",option1, "Option2: ",option2,"Option3: ",option3, "Option4: ",option4)
+
+      const cityNamesString = JSON.stringify([question.option1, question.option2, question.option3, question.option4]);
+      console.log("CityNameString: ", cityNamesString);
+      localStorage.setItem("citynames2", cityNamesString);
+      localStorage.setItem("PictureUrl",question.pictureUrl);
+      return question;
+    } catch (error) {
+      throw error;
+    }
+  };
+  
+  const startGame = async (category, gameRounds, gameDuration) => {
+    try {
+      let category_uppercase;
+      category_uppercase = category.toUpperCase();
+  
+      // create a new game
+      const requestBody = {
+        category: category_uppercase,
+        totalRounds: gameRounds,
+        countdownTime: gameDuration,
+      };
+      console.log("REQUEST BODY: ", requestBody);
+      const response = await api.post("/games", requestBody);
+  
+      const gameId = response.data.gameId;
+      console.log("GAME RETURN: ", response);
+      await getGameDetails(gameId);
+      history.push(`/gamePage/${gameId}`);
+    } catch (error) {
+      alert(`Something went wrong during game start: \n${handleError(error)}`);
+    }
+  };
+  
+
+  
+  const [selectedCategory, setSelectedCategory] = useState("Europe");
   return (
     <div className="lobby container">
       <p style={{fontSize: '48px', marginBottom: '5px'}}>
@@ -166,8 +137,9 @@ const startSingleModeGame = async (player,rounds, countdownTime, category, popul
           <div>
           <label className="lobby label">
               Pick a city category:
-              <select name="selectedFruit"
+              <select name="selectedCategory2"
               style={{marginLeft:"10px", textAlign:"center"}}
+              value={selectedCategory}
               onChange={e => setSelectedCategory(e.target.value)}>
                 <option value="Europe">Europe</option>
                 <option value="Asia">Asia</option>
@@ -218,13 +190,13 @@ const startSingleModeGame = async (player,rounds, countdownTime, category, popul
 
         <Button style={{ display: 'inline-block', margin: '0 10px' }}
           disabled={isMultiplayer}
-          onClick={() => startSingleModeGame(localStorage.getItem('userId'),gameRounds,30,setSelectedCategory,populationThreshold)}>
+          onClick={() => startGame(selectedCategory,gameRounds,30)}>
           Start Single Mode Game
         </Button>
 
         <Button style={{ display: 'inline-block', margin: '0 10px' }}
           disabled={!isMultiplayer}
-          onClick={() => startNewGame(gameRounds,30,setSelectedCategory,populationThreshold)}>
+          onClick={() => startGame(selectedCategory,gameRounds,30)}>
           Start Multiplayer Mode Game
         </Button>
       </div>

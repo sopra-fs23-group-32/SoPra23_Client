@@ -5,6 +5,8 @@ import { LobbyGuard } from "components/routing/routeProtectors/LobbyGuard";
 import { LoginGuard } from "components/routing/routeProtectors/LoginGuard";
 import Login from "components/views/Login";
 import Register from "components/views/Register";
+import GamePage from "components/views/home/GamePage";
+
 import Lobby from "components/views/home/Lobby";
 
 /**
@@ -23,9 +25,6 @@ const AppRouter = () => {
         <Route exact path="/">
           <Redirect to="/login" />
         </Route>
-        <Route exact path="/GamePage">
-          <Redirect to="/GamePage" />
-        </Route>
         <Route exact path="/login">
           <LoginGuard>
             <Login />
@@ -34,6 +33,16 @@ const AppRouter = () => {
         <Route exact path="/register">
           <Register />
         </Route>
+
+        <Route exact path="/gamePage">
+          <GamePage />
+        </Route>
+
+        <Route exact path={`/gamePage/:gameId`}>
+        <GamePage />
+      </Route>
+
+
         <Route path="/home">
           <HomeGuard>
             <HomeRouter base="/home" />
@@ -41,12 +50,7 @@ const AppRouter = () => {
           
         </Route>
 
-        <Route path="/GamePage">
-          <HomeGuard>
-            <HomeRouter base="/GamePage" />
-          </HomeGuard>
-          
-        </Route>
+       
 
 
         <Route path="/lobby">
