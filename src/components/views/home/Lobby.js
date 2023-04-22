@@ -79,6 +79,8 @@ const Lobby = () => {
       console.log("CityNameString: ", cityNamesString);
       localStorage.setItem("citynames2", cityNamesString);
       localStorage.setItem("PictureUrl",question.pictureUrl);
+      localStorage.setItem("CorrectOption",question.correctOption);
+
       return question;
     } catch (error) {
       throw error;
@@ -100,6 +102,7 @@ const Lobby = () => {
       const response = await api.post("/games", requestBody);
   
       const gameId = response.data.gameId;
+      localStorage.setItem("gameId",gameId);
       console.log("GAME RETURN: ", response);
       await getGameDetails(gameId);
       history.push(`/gamePage/${gameId}`);
