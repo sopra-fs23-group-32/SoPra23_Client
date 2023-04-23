@@ -6,6 +6,7 @@ import { LoginGuard } from "components/routing/routeProtectors/LoginGuard";
 import Login from "components/views/Login";
 import Register from "components/views/Register";
 import Lobby from "components/views/home/Lobby";
+import RoundCountdown from "components/views/home/RoundCountdown";
 
 /**
  * Main router of your application.
@@ -54,6 +55,11 @@ const AppRouter = () => {
           </HomeGuard>
         </Route>
 
+        <Route path="/GameFinish">
+          <HomeGuard>
+            <HomeRouter base="/GameFinish" />
+          </HomeGuard>
+        </Route>
 
         <Route path="/lobby">
           <LobbyGuard>
