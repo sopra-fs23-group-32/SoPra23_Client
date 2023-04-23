@@ -8,6 +8,7 @@ import Register from "components/views/Register";
 import GamePage from "components/views/home/GamePage";
 
 import Lobby from "components/views/home/Lobby";
+import RoundCountdown from "components/views/home/RoundCountdown";
 
 /**
  * Main router of your application.
@@ -52,6 +53,17 @@ const AppRouter = () => {
 
        
 
+        <Route path="/RoundCountdown">
+          <HomeGuard>
+            <HomeRouter base="/RoundCountdown" />
+          </HomeGuard>
+        </Route>
+
+        <Route path="/GameFinish">
+          <HomeGuard>
+            <HomeRouter base="/GameFinish" />
+          </HomeGuard>
+        </Route>
 
         <Route path="/lobby">
           <LobbyGuard>
