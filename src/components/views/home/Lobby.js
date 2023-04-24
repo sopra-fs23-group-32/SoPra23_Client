@@ -100,7 +100,8 @@ console.log("playerid: ",playerId)
   
   const startGameSingleplayer = async (category, gameRounds, gameDuration) => {
     try {
-      handleAddPlayer(playerId)
+      
+      
       let category_uppercase = category.toUpperCase();
   
       const requestBody = {
@@ -113,9 +114,11 @@ console.log("playerid: ",playerId)
       localStorage.removeItem("CorrectOption");
       
       const response = await api.post("/games", requestBody);
+      
       const gameId = response.data.gameId;
       await localStorage.setItem("gameId", gameId);
       await fetchQuestion(gameId);
+      handleAddPlayer(playerId);
       setTimeout(() => {
         history.push(`/gamePage/${gameId}`);
       }, 1000);
@@ -159,6 +162,8 @@ const startGameMultiplayer = async (category, gameRounds, gameDuration) => {
     const response = await api.post("/games", requestBody);
     const gameId = response.data.gameId;
     localStorage.setItem("gameId", gameId);
+    console.log(localStorage.getItem("playerId"))
+    //handleAddPlayer(localStorage.getItem("po"))
     
     history.push(`/gamePage/${gameId}`);
   } catch (error) {

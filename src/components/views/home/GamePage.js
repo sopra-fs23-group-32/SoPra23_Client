@@ -100,8 +100,8 @@ const GamePage = () => {
     console.log("playerid: ",localStorage.getItem("players_local").split(",")[1]);
 
     try {
-      console.log("ANSWER SUBMITTED: ", { answer: selectedCityName, countdownTime });
-      const response = await api.post(`/games/${gameId}/players/${playerId}/answers`, { answer: selectedCityName, countdownTime });
+      console.log("ANSWER SUBMITTED: ", { answer: selectedCityName, countdownTime: localStorage.getItem("countdownTime") });
+      const response = await api.post(`/games/${gameId}/players/${playerId}/answers`, { answer: selectedCityName, countdownTime: localStorage.getItem("countdownTime") });
 
 
       
