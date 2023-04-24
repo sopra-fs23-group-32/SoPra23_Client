@@ -6,9 +6,10 @@ import { LoginGuard } from "components/routing/routeProtectors/LoginGuard";
 import Login from "components/views/Login";
 import Register from "components/views/Register";
 import GamePage from "components/views/home/GamePage";
+import RoundCountdown from "components/views/home/RoundCountdown";
+
 
 import Lobby from "components/views/home/Lobby";
-import RoundCountdown from "components/views/home/RoundCountdown";
 
 /**
  * Main router of your application.
@@ -43,6 +44,10 @@ const AppRouter = () => {
         <GamePage />
       </Route>
 
+
+      <Route exact path={`/gamePage/:gameId/RounddownCountdown`}>
+        <RoundCountdown />
+      </Route>
 
         <Route path="/home">
           <HomeGuard>

@@ -10,103 +10,134 @@ import Switch from 'react-switch';
 import PropTypes from "prop-types";
 import CityCategory from "models/CityCategory"
 import "styles/views/home/Lobby.scss";
-
 const GamePage = () => {
   const history = useHistory();
   const [correctOption, setCorrectOption] = useState(localStorage.getItem("CorrectOption"));
 
-  const [score, setScore]=useState(0);
-  const [roundNumber, setRoundNumber]=useState(1);
+  const [score, setScore] = useState(0);
+  const [roundNumber, setRoundNumber] = useState(1);
   const [selectedCityName, setSelectedCityName] = useState(null);
-  
-  const [option1, setOption1]=useState("");
-  const [option2, setOption2]=useState("");
-  const [option3, setOption3]=useState("");
-  const [option4, setOption4]=useState("");
 
+  const [option1, setOption1] = useState("");
+  const [option2, setOption2] = useState("");
+  const [option3, setOption3] = useState("");
+  const [option4, setOption4] = useState("");
+  const gameId = localStorage.getItem("gameId");
 
+  const handleCityNameButtonClick = (cityName) => {
+    setSelectedCityName(cityName);
+  };
 
-
-
+  const [timeLeft, setTimeLeft] = useState(null);
   const getGameDetails = async (gameId) => {
-    console.log("erreicht");
     try {
-      console.log("before call");
       const response = await api.put(`/games/${gameId}`);
       const question = response.data;
-      console.log("question otpion1", question.option1);
-      console.log("Option1: ",option1, "Option2: ",option2,"Option3: ",option3, "Option4: ",option4)
-
       const cityNamesString = JSON.stringify([question.option1, question.option2, question.option3, question.option4]);
-      console.log("CityNameString: ", cityNamesString);
       localStorage.setItem("citynames2", cityNamesString);
-      localStorage.setItem("PictureUrl",question.pictureUrl);
-      localStorage.setItem("CorrectOption",question.correctOption);
-      
+      localStorage.setItem("PictureUrl", question.pictureUrl);
+      localStorage.setItem("CorrectOption", question.correctOption);
+      setCorrectOption(question.correctOption);
       return question;
     } catch (error) {
       throw error;
     }
   };
-
-
-  const handleExitButtonClick = () => {
-    history.push("/Home");
-  };
-
-    
-  const handleCityNameButtonClick = async (selectedCityName) => {
-    setSelectedCityName(selectedCityName);
-    const gameId=localStorage.getItem("gameId")
-    
-    console.log("gameid: ",gameId)
-    const correctOption=localStorage.getItem("CorrectOption")
-    if (selectedCityName === correctOption) {
-      console.log("richtig");
-      
-      setTimeout(5);
-      getGameDetails(gameId);
-      setScore(score + 1);
-
-    }
-
-  };
-
-  
-
   const cityNamesString = localStorage.getItem("citynames2");
   const cityNames2 = JSON.parse(cityNamesString);
-  
 
   const cityNameButtons = cityNames2.map((cityName) => (
     <button
       key={cityName}
-      className={`city-name-button ${selectedCityName &&cityName === correctOption ? "correct" : ""} 
-      ${selectedCityName && cityName === selectedCityName && cityName !== correctOption ? "wrong" : ""}
-      `}
+      className={`city-name-button ${selectedCityName && cityName === correctOption ? "correct" : ""} 
+      ${selectedCityName && cityName === selectedCityName && cityName !== correctOption ? "wrong" : ""}`}
+      disabled={selectedCityName !== null}
       onClick={() => handleCityNameButtonClick(cityName)}
-
     >
       {cityName}
-      </button>
+    </button>
   ));
-    return (
+
+  const handleExitButtonClick = () => {
+    history.push("/Home");
+  };
+  
+  const countdownTime = localStorage.getItem("sameCoundownTime");
+  
+  useEffect(() => {
+
+
+    const currentUrl = window.location.href;
+    console.log(currentUrl);  
+
+
+    setTimeLeft(countdownTime);
+    const intervalId = setInterval(() => {
+      setTimeLeft((prevTimeLeft) => {
+        const newTimeLeft = prevTimeLeft - 1;
+        if (newTimeLeft <= 0) {
+          clearInterval(intervalId);
+          setRoundNumber((prevRoundNumber) => {
+            const newRoundNumber = prevRoundNumber + 1;
+            localStorage.setItem("roundNumber", newRoundNumber);
+            return newRoundNumber;
+          });
+          history.push(`/gamePage/${gameId}/RounddownCountdown`);
+        } else {
+          localStorage.setItem("countdownTime", newTimeLeft);
+        }
+        return newTimeLeft;
+      });
+    }, 1000);
+    return () => clearInterval(intervalId);
+  }, [history]);
+  
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    const playerId = localStorage.getItem("players_local").split(",")[1];
+    console.log("playerId", playerId);
+    console.log("playerid: ",localStorage.getItem("players_local").split(",")[1]);
+
+    try {
+      console.log("ANSWER SUBMITTED: ", { answer: selectedCityName, countdownTime });
+      const response = await api.post(`/games/${gameId}/players/${playerId}/answers`, { answer: selectedCityName, countdownTime });
+
+
+      
+      console.log("Answer submitted successfully, response to request", response);
+      if (response.data === "correct") {
+        setScore(score + 1);
+      }
+    } catch (error) {
+      console.error("Error submitting answer", error);
+    }
+    setSelectedCityName(null);
+  };
+
+
+
 
     
-    <div className="guess-the-city">
-      <div className="header">
-        <button className="exit-button" onClick={handleExitButtonClick}> Exit </button>
-        <div>
-          <img className="cityImage" src={localStorage.getItem("PictureUrl")} alt="City Image" />
+    return (  
+      <div className="guess-the-city">
+        <div className="header">
+          <button className="exit-button" onClick={handleExitButtonClick}> Exit </button>
+          <div>
+            <img className="cityImage" src={localStorage.getItem("PictureUrl")} alt="City Image" />
+          </div>
         </div>
-      </div>
+        <div className="main">
+          <div className="image-container">
+          </div>
+          <div className="button-container">
+            {cityNameButtons}
+            <form onSubmit={handleSubmit}>
+              <button type="submit">Submit Answer</button>
+            </form>  
+          <p>Time Left: {timeLeft}</p>
+      {/* Render the city options and submit button here */}
 
-
-      <div className="main">
-        <div className="image-container">
-        </div>
-        <div className="button-container">
-          {cityNameButtons}
         </div>
         <div className="info-container">
           <span className="round-number">Round {roundNumber}</span>

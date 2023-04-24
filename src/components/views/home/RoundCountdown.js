@@ -27,11 +27,12 @@ const RoundCountdown = () => {
   const [secondsLeft, setSecondsLeft] = useState(10);
   const [intervalId, setIntervalId] = useState(null);
 
-  
+  const gameId = localStorage.getItem("gameId");
 
   
   const getGameInfo = async () => {
     const response = await api.get(`/games/${localStorage.getItem('gameId')}/`);
+    
     
     var currentRound = response.data.currentRound;
     // input User Ranking when implemented
@@ -45,12 +46,31 @@ const RoundCountdown = () => {
   }, []);
 
   useEffect (() => {
-    if (secondsLeft === 0) {
+    if (secondsLeft === -1000) {
         clearInterval(intervalId)
+        getGameDetails(gameId);
+      
     }
   }, [secondsLeft, intervalId]);
 
-  
+  const getGameDetails = async (gameId) => {
+    try {
+      const response = await api.put(`/games/${gameId}`);
+      const question = response.data;
+
+      const cityNamesString = JSON.stringify([question.option1, question.option2, question.option3, question.option4]);
+      localStorage.setItem("citynames2", cityNamesString);
+      localStorage.setItem("PictureUrl", question.pictureUrl);
+      localStorage.setItem("CorrectOption", question.correctOption);
+      setTimeout(() => {
+        history.push(`/gamePage/${gameId}`);
+      }, 1000);
+    } catch (error) {
+      throw error;
+    }
+  };
+
+
   useEffect(() => {    
 
     // effect callbacks are synchronous to prevent race conditions. So we put the async function inside:
@@ -85,6 +105,15 @@ const handleExitButtonClick = () => {
       </ul>
     );
   }
+  const handleSub = async () =>{
+    console.log(localStorage.getItem('gameId'));
+    const response2 = await api.get(`/games/${localStorage.getItem('gameId')}/players`)
+    const gameId=localStorage.getItem("gameId");
+    const response = await api.post(`/games/${gameId}/players/1`);
+    console.log('Player added successfully', response);
+    console.log("this is what i want",response2);
+
+  }
 
   return (
     <div className="round countdown container">
@@ -110,9 +139,10 @@ const handleExitButtonClick = () => {
                 {secondsLeft}
             </div>
             </InformationContainer>   
-      
+            <button className="exit-button" onClick={handleSub}> getApi </button>
       
       </div>
+      
       </div>
     </div>
 
