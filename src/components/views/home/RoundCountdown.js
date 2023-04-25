@@ -9,7 +9,7 @@ import PropTypes from "prop-types";
 
 import "styles/views/home/Lobby.scss";
 
-const Players = ({ player }) => <div className="user user-info">{player.playerName}</div>;
+const Players = ({ player }) => <div className="user user-info">Jano</div>;
 Players.propTypes = {
   player: PropTypes.object,
 }; 
@@ -42,10 +42,16 @@ const RoundCountdown = () => {
   }, []);
 
   useEffect(() => {
+    if(secondsLeft===8){
+      getGameDetails(gameId);
+    }
+    
     if (secondsLeft === 0) {
       clearInterval(secondsLeft);
       clearInterval(intervalId);
-      getGameDetails(gameId);
+      setTimeout(() => {
+        history.push(`/gamePage/${gameId}`);
+      }, 1000);
     }
   }, [secondsLeft, intervalId]);
 
@@ -64,15 +70,6 @@ const RoundCountdown = () => {
       localStorage.setItem("PictureUrl", question.pictureUrl);
       localStorage.setItem("CorrectOption", question.correctOption);
       
-
-      
-      
-      let now = localStorage.getItem("thisRound");
-      now++;
-      localStorage.setItem("thisRound", now);
-      setTimeout(() => {
-        history.push(`/gamePage/${gameId}`);
-      }, 1000);
     } catch (error) {
       throw error;
     }
@@ -117,7 +114,6 @@ const RoundCountdown = () => {
       </ul>
     );
   }
-  
   const handleSub = async () => {
     console.log(localStorage.getItem("gameId"));
     const response2 = await api.get(

@@ -12,14 +12,15 @@ import CityCategory from "models/CityCategory";
 import "styles/views/home/Lobby.scss";
 const GamePage = () => {
   
-
+  const score =0;
+  const roundNumber = localStorage.getItem("thisRound")
   const history = useHistory();
   const [correctOption, setCorrectOption] = useState(
     localStorage.getItem("CorrectOption")
   );
 
-  const [score, setScore] = useState(0);
-  const [roundNumber, setRoundNumber] = useState(1);
+  
+  
   const [selectedCityName, setSelectedCityName] = useState(null);
 
   const [option1, setOption1] = useState("");
@@ -96,11 +97,9 @@ const GamePage = () => {
         const newTimeLeft = prevTimeLeft - 1;
         if (newTimeLeft <= 0) {
           clearInterval(intervalId);
-          setRoundNumber((prevRoundNumber) => {
-            const newRoundNumber = prevRoundNumber + 1;
-            localStorage.setItem("roundNumber", newRoundNumber);
-            return newRoundNumber;
-          });
+          let now = localStorage.getItem("thisRound");
+          now++;
+          localStorage.setItem("thisRound", now);
           history.push(`/gamePage/${gameId}/RounddownCountdown`);
         } else {
           localStorage.setItem("countdownTime", newTimeLeft);
@@ -125,11 +124,12 @@ const GamePage = () => {
         answer: selectedCityName,
         countdownTime: localStorage.getItem("countdownTime"),
       });
+      console.log("countdown;",localStorage.getItem("countdownTime"))
       const response = await api.post(
         `/games/${gameId}/players/${playerId}/answers`,
         {
           answer: selectedCityName,
-          countdownTime: localStorage.getItem("countdownTime"),
+          timeTaken: localStorage.getItem("countdownTime"),
         }
       );
 
@@ -137,9 +137,7 @@ const GamePage = () => {
         "Answer submitted successfully, response to request",
         response
       );
-      if (response.data === "correct") {
-        setScore(score + 1);
-      }
+      
     } catch (error) {
       console.error("Error submitting answer", error);
     }
