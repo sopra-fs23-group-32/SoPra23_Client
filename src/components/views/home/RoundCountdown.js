@@ -12,16 +12,16 @@ import "styles/views/home/Lobby.scss";
 const Players = ({ player }) => <div className="user user-info">Jano</div>;
 Players.propTypes = {
   player: PropTypes.object,
-};
+}; 
 
 const RoundCountdown = () => {
   // use react-router-dom's hook to access the history
   const [roundNumber, setRoundNumber] = useState(
-    localStorage.getItem("totalRounds")
+  localStorage.getItem("totalRounds")
   );
   const [score, setScore] = useState(localStorage.getItem("playerScore"));
   const history = useHistory();
-  const [players, setPlayers] = useState(null);
+  const [players, setPlayers] = useState("");
   const [secondsLeft, setSecondsLeft] = useState(10);
   const [intervalId, setIntervalId] = useState(null);
 
@@ -42,9 +42,16 @@ const RoundCountdown = () => {
   }, []);
 
   useEffect(() => {
-    if (secondsLeft === 0) {
-      clearInterval(intervalId);
+    if(secondsLeft===8){
       getGameDetails(gameId);
+    }
+    
+    if (secondsLeft === 0) {
+      clearInterval(secondsLeft);
+      clearInterval(intervalId);
+      setTimeout(() => {
+        history.push(`/gamePage/${gameId}`);
+      }, 1000);
     }
   }, [secondsLeft, intervalId]);
 
@@ -62,9 +69,7 @@ const RoundCountdown = () => {
       localStorage.setItem("citynames2", cityNamesString);
       localStorage.setItem("PictureUrl", question.pictureUrl);
       localStorage.setItem("CorrectOption", question.correctOption);
-      setTimeout(() => {
-        history.push(`/gamePage/${gameId}`);
-      }, 1000);
+      
     } catch (error) {
       throw error;
     }
@@ -79,9 +84,11 @@ const RoundCountdown = () => {
         );
         await new Promise((resolve) => setTimeout(resolve, 1000));
         // Get the returned users and update the state.
-        console.log("ranking???");
+        console.log("this is what i want",response)
         setPlayers(response.data);
-        console.log(response.data);
+        console.log(players);
+
+        
       } catch (error) {
         console.error(
           `An error occurs while fetching the users: \n${handleError(error)}`
@@ -102,7 +109,7 @@ const RoundCountdown = () => {
     playerlist = (
       <ul>
         {players.map((player) => (
-          <Players player={player.username} key={player.rank} />
+          <Players key={player.rank} player={player.playerName} />
         ))}
       </ul>
     );
@@ -114,6 +121,9 @@ const RoundCountdown = () => {
     );
     console.log("this is what i want", response2);
   };
+
+  const total = localStorage.getItem("totalRounds")
+  const now = localStorage.getItem("thisRound")
 
   return (
     <div className="round countdown container">
@@ -132,7 +142,7 @@ const RoundCountdown = () => {
         >
           <div style={{ fontSize: "40px" }}>
             {/* Replace 2 with {currentRound+1} and 5 with {roundNumber}*/}
-            Round 2 of 5 is starting soon...
+            Round {now} of {total} is starting soon...
           </div>
         </InformationContainer>
         <div className="lobby layout" style={{ flexDirection: "row" }}>

@@ -100,6 +100,7 @@ console.log("playerid: ",playerId)
   
   const startGameSingleplayer = async (category, gameRounds, gameDuration) => {
     try {
+      localStorage.setItem("gameRounds",gameRounds)
       
       
       let category_uppercase = category.toUpperCase();
@@ -117,10 +118,10 @@ console.log("playerid: ",playerId)
       
       const gameId = response.data.gameId;
       await localStorage.setItem("gameId", gameId);
-      await fetchQuestion(gameId);
+      
       handleAddPlayer(playerId);
       setTimeout(() => {
-        history.push(`/gamePage/${gameId}`);
+        history.push(`/gamePage/${gameId}/RounddownCountdown`);
       }, 1000);
   
   
@@ -128,6 +129,11 @@ console.log("playerid: ",playerId)
     } catch (error) {
       alert(`Something went wrong during game start: \n${handleError(error)}`);
     }
+    localStorage.setItem("countdownTime", countdownTime);  
+    localStorage.setItem("sameCoundownTime",countdownTime);
+    localStorage.setItem("sameCoundownTime",countdownTime);
+    localStorage.setItem("thisRound",1);
+    localStorage.setItem("totalRounds",gameRounds);
   };
   
   
@@ -173,6 +179,7 @@ const startGameMultiplayer = async (category, gameRounds, gameDuration) => {
 
 localStorage.setItem("countdownTime", countdownTime);  
 localStorage.setItem("sameCoundownTime",countdownTime);
+
   const [selectedCategory, setSelectedCategory] = useState("Europe");
   return (
     <div className="lobby container">
