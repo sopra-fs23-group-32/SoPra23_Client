@@ -13,7 +13,6 @@ const style = {
   width: 400,
   bgcolor: '#2196f3',
   border: "2px solid #000",
-  boxShadow: 24,
   p: 4,
 };
 

@@ -116,9 +116,9 @@ const Lobby = () => {
   const [selectedCategory, setSelectedCategory] = useState("Europe");
   return (
     <div className="lobby container">
-      <p style={{fontSize: '48px', marginBottom: '5px'}}>
+      <InformationContainer className="lobby container" style={{fontSize: '48px', marginBottom: '5px', width:"fit-content"}}>
         <div>Game Lobby</div>
-      </p>
+      </InformationContainer>
       <div className="lobby layout">
         <InformationContainer className="lobby container_left" id="information-container">
           <div style={{fontSize:'40px'}}>
@@ -141,7 +141,7 @@ const Lobby = () => {
           <label className="lobby label">
               Pick a city category:
               <select name="selectedCategory2"
-              style={{marginLeft:"10px", textAlign:"center"}}
+              style={{marginLeft:"10px", textAlign:"center", color:"#FFFFFF", backgroundColor:"#1979b8"}}
               value={selectedCategory}
               onChange={e => setSelectedCategory(e.target.value)}>
                 <option value="Europe">Europe</option>
@@ -159,7 +159,7 @@ const Lobby = () => {
                 Enter Number of Rounds:
                 <input className="lobby input" 
                   style={{marginLeft:"10px", textAlign:"center"}}
-                  placeholder="enter number of rounds..."
+                  placeholder="enter number here..."
                   value={gameRounds}
                   onChange={e => setGameRounds(e.target.value)}
                 />

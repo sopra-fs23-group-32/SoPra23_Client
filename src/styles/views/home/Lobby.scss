@@ -17,25 +17,26 @@
         display: flex;
         flex-direction: column;
         align-items: center;
+        padding: 1em;
+
+
     }
     &.container_left {
-      background: transparentize(rgb(65, 64, 64), 0.7);
+      background: #001F3F;
       padding: 2em;
       border-radius: $borderRadius;
       display: flex;
       flex-direction: column;
       align-items: left;
-      box-shadow: $dropShadow;
       row-gap: 2em;
     }
     &.container_right {
-        background: transparentize(rgb(65, 64, 64), 0.7);
+        background: #001F3F;
         padding: 2em;
         border-radius: $borderRadius;
         display: flex;
         flex-direction: column;
         align-items: left;
-        box-shadow: $dropShadow;
       }
     &.user-list {
       padding-left: 0;
@@ -49,10 +50,9 @@
     &.label {
       font-size: 20px;
       font-weight: 400;
-      color: $textColor;
+      color: #FFFFFF;
     }
     &.input {
-        background: transparentize(rgb(253, 253, 253), 0.9);
         height: 30px;
         font-size: 18px;
         font-weight: 400;
@@ -60,9 +60,16 @@
         margin-left: -4px;
         border: none;
         border-radius: 0.5em;
-        margin-bottom: 5px;
-        color: $textColor;
+        margin-bottom: 5px; 
+        color: "#FFFFFF";
+        background-color: #1979b8;
     }
+
+    input::placeholder {
+      color: #FFFFFF;
+    }
+
+
     &.button-container {
       display: flex;
       flex-direction: row;
