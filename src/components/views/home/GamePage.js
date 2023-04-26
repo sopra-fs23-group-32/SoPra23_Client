@@ -125,8 +125,7 @@ const GamePage = () => {
         countdownTime: localStorage.getItem("countdownTime"),
       });
       console.log("countdown;",localStorage.getItem("countdownTime"))
-      const response = await api.post(
-        `/games/${gameId}/players/${playerId}/answers`,
+      const response = await api.post(`/games/${gameId}/players/${playerId}/answers`,
         {
           answer: selectedCityName,
           timeTaken: localStorage.getItem("countdownTime"),
