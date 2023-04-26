@@ -7,8 +7,8 @@ import InformationContainer from "components/ui/BaseContainer";
 import Switch from 'react-switch';
 import PropTypes from "prop-types";
 import CityCategory from "models/CityCategory"
+import WebSocketType from "models/WebSocketType";
 import "styles/views/home/Lobby.scss";
-import WebSocketType from "models/constant/WebSocketType";
 import SockJS from "sockjs-client";
 import { Client } from "@stomp/stompjs";
 
