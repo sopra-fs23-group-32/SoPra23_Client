@@ -134,7 +134,7 @@ const GamePage = () => {
       );
 
       console.log(
-        "Answer submitted successfully, response to request",
+        "Answer submitted successfully, response to request is....",
         response
       );
       
