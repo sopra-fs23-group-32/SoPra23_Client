@@ -9,7 +9,7 @@ import PropTypes from "prop-types";
 
 import "styles/views/home/Lobby.scss";
 
-const Players = ({ player }) => <div className="user user-info">Jano</div>;
+const Players = ({ player }) => <div className="user user-info">Playername:{player.playerName} & PlayerRank{player.rank}</div>;
 Players.propTypes = {
   player: PropTypes.object,
 }; 
@@ -82,11 +82,10 @@ const RoundCountdown = () => {
         const response = await api.get(
           `/games/${localStorage.getItem("gameId")}/ranking`
         );
-        await new Promise((resolve) => setTimeout(resolve, 1000));
         // Get the returned users and update the state.
         console.log("this is what i want",response)
         setPlayers(response.data);
-        console.log(players);
+        console.log(response.data);
 
         
       } catch (error) {
@@ -109,7 +108,7 @@ const RoundCountdown = () => {
     playerlist = (
       <ul>
         {players.map((player) => (
-          <Players key={player.rank} player={player.playerName} />
+          <Players key={player.rank} player={player} />
         ))}
       </ul>
     );
