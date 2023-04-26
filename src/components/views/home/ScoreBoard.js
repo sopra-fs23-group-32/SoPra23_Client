@@ -44,15 +44,17 @@ const ScoreBoard = () => {
       }
     }
     fetchData();
-  }, [selectedCategory]);
+  }, []);
 
-  // //  sort the users array in descending order of their scores
-  // const sortedUsers = users.sort((a, b) => b.totalScore - a.totalScore);
-  // // assign each user a ranking ID based on their position in the array
-  // const rankedUsers = sortedUsers.map((user, index) => ({
-  //   ...user,
-  //   rank: index + 1,
-  // }));
+
+// remove this part if the backend returns already ranked users
+  //  sort the users array in descending order of their scores
+  const sortedUsers = users.sort((a, b) => b.totalScore - a.totalScore);
+  // assign each user a ranking ID based on their position in the array
+  const rankedUsers = sortedUsers.map((user, index) => ({
+    ...user,
+    rank: index + 1,
+  }));
 
   const UserRanking = ({ userRanking }) => (
     <table className="table">
@@ -82,11 +84,11 @@ const ScoreBoard = () => {
     user: PropTypes.object,
   };
 
-  let sortedUserList = <Spinner />;
+  let userlist = <Spinner />;
 
-  if (userRanking) {
-    sortedUserList = (
-      <UserRanking userRanking={userRanking} />
+  if (users) {
+    userlist = (
+      <Users users={rankedUsers} />
     );
   }
 
