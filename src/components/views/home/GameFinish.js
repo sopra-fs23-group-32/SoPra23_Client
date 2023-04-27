@@ -50,7 +50,6 @@ const RoundCountdown = () => {
 
 
 const handleExitButtonClick = () => {
-    api.delete(`/games/${localStorage.getItem('gameId')}`);
     history.push("/Home");
   };
 

@@ -85,7 +85,7 @@ const GamePage = () => {
     history.push("/Home");
   };
 
-  const countdownTime = localStorage.getItem("countdownTime");
+  const countdownTime = localStorage.getItem("sameCoundownTime");
 
   useEffect(() => {
     const currentUrl = window.location.href;
