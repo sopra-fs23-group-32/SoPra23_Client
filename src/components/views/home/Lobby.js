@@ -8,10 +8,6 @@ import Switch from 'react-switch';
 import PropTypes from "prop-types";
 import CityCategory from "models/CityCategory"
 import "styles/views/home/Lobby.scss";
-import WebSocketType from "models/constant/WebSocketType";
-import SockJS from "sockjs-client";
-import { Client } from "@stomp/stompjs";
-
 
 const Players = ({ player }) => (
   <div className="user user-info">
@@ -23,6 +19,9 @@ Players.propTypes = {
 };
 
 const Lobby = () => {
+  localStorage.removeItem("roundNumber");
+  localStorage.setItem("roundNumber", 1);
+
   // use react-router-dom's hook to access the history
   const history = useHistory();
 
@@ -36,111 +35,6 @@ const Lobby = () => {
 
   useEffect(() => {    
     // effect callbacks are synchronous to prevent race conditions. So we put the async function inside:
-    const webSocketUrl= `${getDomain()}/socket`;
-    const socket= new SockJS(webSocketUrl);
-
-    const stompClient=new clientInformation({
-      webSocketFactory:()=> socket,
-      debug: (str)=> console.log(str),
-      reconnectDelay:500,
-    });
-    stompClient.onConnect = (frame) => {
-      setUsePolling(false);
-      stompClient.subscribe(`/instance/games/${gameId}`, (message) => {
-        handleGameUpdate(message);
-      });
-    };
-
-    stompClient.onStompError = (frame) => {
-      console.error(`Stomp error: ${frame}`);
-      setUsePolling(true);
-    };
-
-    stompClient.onWebSocketClose = (event) => {
-      console.error("WebSocket connection closed:", event);
-      setUsePolling(true);
-    };
-
-    stompClient.activate();
-
-    return () => {
-      stompClient.deactivate();
-    };
-
-  function handleGameUpdate(message) {
-    const messageObject = JSON.parse(message.body);
-    const websocketPacket = new WebsocketPacket(
-      messageObject.type,
-      messageObject.payload
-    );
-
-    setGameGetDTO((prevGameGetDTO) => {
-      const newGameGetDTO = updateGameGetDTO(prevGameGetDTO, websocketPacket);
-      return newGameGetDTO;
-    });
-  }
-
-  let content = <Typography variant="h2">Loading...</Typography>;
-
-  if (gameGetDTO?.currentState == null) {
-    return content;
-  }
-
-  switch (gameGetDTO.currentState) {
-    case GameState.SETUP:
-      content = (
-        <SetupComponent
-          {...{
-            gameGetDTO: gameGetDTO,
-          }}
-        />
-      );
-      break;
-    case GameState.GUESSING:
-      content = (
-        <GuessingComponent
-          {...{
-            gameGetDTO: gameGetDTO,
-            allCountries: allCountries,
-            currentUserId: currentUserId,
-          }}
-        />
-      );
-      break;
-    case GameState.SCOREBOARD:
-      content = (
-        <ScoreboardComponent
-          {...{
-            currentUser: currentUser,
-            gameId: gameId,
-            gameGetDTO: gameGetDTO,
-            isGameEnded: false,
-          }}
-        />
-      );
-      break;
-    case GameState.ENDED:
-      content = (
-        <EndedComponent
-          {...{
-            currentUser: currentUser,
-            gameId: gameId,
-            gameGetDTO: gameGetDTO,
-          }}
-        />
-      );
-      break;
-    case null:
-      content = <NotJoinedComponent gameId={gameId}></NotJoinedComponent>;
-      break;
-    default:
-      console.log("Unexpected game state:", gameGetDTO?.currentState);
-      content = <div>Unexpected game state</div>;
-      break;
-  }
-
-
-
     async function fetchData() {
       try {
         const response = await api.get("/users");
@@ -179,9 +73,7 @@ const Lobby = () => {
     });
   }
 localStorage.setItem("players_local",players_local);
-console.log("Players: ",localStorage.getItem("players_local"))
 const playerId=localStorage.getItem("players_local").split(',')[1]
-console.log("playerid: ",playerId)
 
 
   const setLocalStorageItems = (question) => {
@@ -209,7 +101,6 @@ console.log("playerid: ",playerId)
   
   const startGameSingleplayer = async (category, gameRounds, gameDuration) => {
     try {
-      localStorage.setItem("gameRounds",gameRounds)
       
       
       let category_uppercase = category.toUpperCase();
@@ -219,6 +110,7 @@ console.log("playerid: ",playerId)
         totalRounds: gameRounds,
         countdownTime: gameDuration,
       };
+      localStorage.setItem("totalRounds",gameRounds);
       localStorage.removeItem("citynames2");
       localStorage.removeItem("PictureUrl");
       localStorage.removeItem("CorrectOption");
@@ -227,10 +119,13 @@ console.log("playerid: ",playerId)
       
       const gameId = response.data.gameId;
       await localStorage.setItem("gameId", gameId);
-      
-      handleAddPlayer(playerId);
+      await fetchQuestion(gameId);
+      const playerId2=localStorage.getItem("userId");
+      localStorage.setItem("score",0);
+      console.log("Id from logged in payer: ",playerId2);
+      handleAddPlayer(playerId2);
       setTimeout(() => {
-        history.push(`/gamePage/${gameId}/RounddownCountdown`);
+        history.push(`/gamePage/${gameId}`);
       }, 1000);
   
   
@@ -238,11 +133,6 @@ console.log("playerid: ",playerId)
     } catch (error) {
       alert(`Something went wrong during game start: \n${handleError(error)}`);
     }
-    localStorage.setItem("countdownTime", countdownTime);  
-    localStorage.setItem("sameCoundownTime",countdownTime);
-    localStorage.setItem("sameCoundownTime",countdownTime);
-    localStorage.setItem("thisRound",1);
-    localStorage.setItem("totalRounds",gameRounds);
   };
   
   
@@ -288,7 +178,6 @@ const startGameMultiplayer = async (category, gameRounds, gameDuration) => {
 
 localStorage.setItem("countdownTime", countdownTime);  
 localStorage.setItem("sameCoundownTime",countdownTime);
-
   const [selectedCategory, setSelectedCategory] = useState("Europe");
   return (
     <div className="lobby container">

@@ -46,7 +46,16 @@ const ScoreBoard = () => {
     fetchData();
   }, []);
 
-
+  const Users = ({ user }) => (
+    <div className="user user-info">
+      {user.userId} - {user.username}
+    </div>
+  );
+  Users.propTypes = {
+    users: PropTypes.object,
+  };
+  
+const users=["max","maria"]
 // remove this part if the backend returns already ranked users
   //  sort the users array in descending order of their scores
   const sortedUsers = users.sort((a, b) => b.totalScore - a.totalScore);
@@ -107,7 +116,7 @@ const ScoreBoard = () => {
             <option value="SOUTH_AMERICA">South America</option>
           </select>
       </label></div>
-      <div>{sortedUserList}</div>
+      <div>{rankedUsers}</div>
       <div className="scoreboard button-container">
         <Button width="300%" onClick={() => history.push("/home")}>
           Return to Home
