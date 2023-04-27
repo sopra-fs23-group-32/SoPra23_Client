@@ -11,9 +11,9 @@ import PropTypes from "prop-types";
 import CityCategory from "models/CityCategory";
 import "styles/views/home/Lobby.scss";
 const GamePage = () => {
-  
-  const score =0;
-  const roundNumber = localStorage.getItem("thisRound")
+  const [isAnswerSubmitted, setIsAnswerSubmitted] = useState(false); // new state variable
+  const [score, setScore] = useState(localStorage.getItem("score"));
+  const roundNumber = localStorage.getItem("roundNumber");
   const history = useHistory();
   const [correctOption, setCorrectOption] = useState(
     localStorage.getItem("CorrectOption")
@@ -31,6 +31,8 @@ const GamePage = () => {
 
   const handleCityNameButtonClick = (cityName) => {
     setSelectedCityName(cityName);
+    setIsAnswerSubmitted(true);
+    const timeLeft=localStorage.getItem("newTimeLeft");
   };
 
   const [timeLeft, setTimeLeft] = useState(null);
@@ -49,9 +51,7 @@ const GamePage = () => {
       localStorage.setItem("CorrectOption", question.correctOption);
       setCorrectOption(question.correctOption);
 
-      let now = localStorage.getItem("thisRound");
-
-      console.log("number current round=" + now);
+      console.log("number current round=" + roundNumber);
       return question;
     } catch (error) {
       throw error;
@@ -97,13 +97,14 @@ const GamePage = () => {
         const newTimeLeft = prevTimeLeft - 1;
         if (newTimeLeft <= 0) {
           clearInterval(intervalId);
-          let now = localStorage.getItem("thisRound");
+          let now = localStorage.getItem("roundNumber");
           now++;
-          localStorage.setItem("thisRound", now);
+          localStorage.setItem("roundNumber", now);
           history.push(`/gamePage/${gameId}/RounddownCountdown`);
         } else {
           localStorage.setItem("countdownTime", newTimeLeft);
         }
+        localStorage.setItem("newTimeLeft",newTimeLeft);
         return newTimeLeft;
       });
     }, 1000);
@@ -112,13 +113,11 @@ const GamePage = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    const playerId = localStorage.getItem("players_local").split(",")[1];
+    let now = localStorage.getItem("thisRound");
+    now++;
+    const playerId = localStorage.getItem("userId");
     console.log("playerId", playerId);
-    console.log(
-      "playerid: ",
-      localStorage.getItem("players_local").split(",")[1]
-    );
-
+  
     try {
       console.log("ANSWER SUBMITTED: ", {
         answer: selectedCityName,
@@ -130,18 +129,36 @@ const GamePage = () => {
           answer: selectedCityName,
           timeTaken: localStorage.getItem("countdownTime"),
         }
+  
       );
+      const score2=parseInt(localStorage.getItem("score"))+response.data;
+      console.log(score2);
 
+      setScore(score2);
+      localStorage.setItem("score",score2);
+  
+  
       console.log(
         "Answer submitted successfully, response to request is....",
         response
       );
-      
+        
     } catch (error) {
       console.error("Error submitting answer", error);
     }
+  
     setSelectedCityName(null);
+    setTimeout(() => {
+      let now = localStorage.getItem("roundNumber");
+      now++;
+      localStorage.setItem("roundNumber",now);
+
+      history.push(`/gamePage/${gameId}/RounddownCountdown`);
+    }, 5000);
   };
+  
+
+  
 
   return (
     <div className="guess-the-city">
@@ -165,7 +182,7 @@ const GamePage = () => {
           <form onSubmit={handleSubmit}>
             <button type="submit">Submit Answer</button>
           </form>
-          <p>Time Left: {timeLeft}</p>
+          <p>Time Left: {isAnswerSubmitted ? countdownTime  : timeLeft}</p> {/* conditional rendering */}
           {/* Render the city options and submit button here */}
         </div>
         <div className="info-container">
