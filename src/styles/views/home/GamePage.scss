@@ -36,7 +36,7 @@ html, body {
 
     .cityImage {
       max-width: 50%;
-      max-height: 50%;
+      max-height: 100%;
     }
 
     .exit-button {
@@ -108,14 +108,16 @@ html, body {
       }
     }
 
+  
     .button-container {
       display: flex;
+      font-size: 2em;
       flex-direction: column;
       align-items: center;
       position: absolute;
       right: 0;
       transform: translateY(-120%);
-      margin-right: 4em;
+      margin-right: 8em;
     }
 
     .city-names {
@@ -126,7 +128,7 @@ html, body {
     }
 
     .city-name-button {
-      font-size: 1.5em;
+      font-size: 3em;
       background-color: #eee;
       border: none;
       cursor: pointer;
@@ -157,7 +159,7 @@ html, body {
       color: #fff;
       border: none;
       cursor: pointer;
-      font-size: 1.5rem;
+      font-size: 3em;
       font-weight: bold;
       padding: 1rem;
       border-radius: 0.5rem;
@@ -173,7 +175,7 @@ html, body {
         color: #fff;
         border: none;
         cursor: pointer;
-        font-size: 1.5rem;
+        font-size: 3rem;
         font-weight: bold;
       
         padding: 1rem; /* Updated padding */
