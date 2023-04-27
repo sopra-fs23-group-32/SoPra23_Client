@@ -8,6 +8,7 @@ import Switch from 'react-switch';
 import PropTypes from "prop-types";
 import CityCategory from "models/CityCategory"
 import "styles/views/home/Lobby.scss";
+import { FaCopy } from 'react-icons/fa';
 
 const Players = ({ player }) => (
   <div className="user user-info">
@@ -19,8 +20,15 @@ Players.propTypes = {
 };
 
 const Lobby = () => {
+  const [url, setUrl] = useState('');
+
   localStorage.removeItem("roundNumber");
   localStorage.setItem("roundNumber", 1);
+  const [userName, setUsername] = useState('');
+  const [gameId, setGameId] = useState(0);
+  const [inviteLink, setInviteLink] = useState('');
+  const [isCopied, setIsCopied] = useState(false);
+
 
   // use react-router-dom's hook to access the history
   const history = useHistory();
@@ -32,8 +40,19 @@ const Lobby = () => {
 
   const [players, setPlayers] = useState(null);
 
-
-  useEffect(() => {    
+  function checkLobbyUrl(url) {
+    if (url.endsWith('/lobby')) {
+      console.log('No invite link');
+      return false;
+    } else if (url.includes('/lobby/')) {
+      console.log('Invite link reached');
+      return true;
+    } else {
+      console.log('Not a lobby page');
+      return false;
+    }
+  }
+    useEffect(() => {    
     // effect callbacks are synchronous to prevent race conditions. So we put the async function inside:
     async function fetchData() {
       try {
@@ -51,6 +70,9 @@ const Lobby = () => {
   }, []);
 
 
+  
+
+  
 
   let playerlist = <Spinner />;
   if (players) {
@@ -84,7 +106,20 @@ const playerId=localStorage.getItem("players_local").split(',')[1]
   };
 
 
+  const getGameState = async (gameId) => {
+    try {
+      const response = await api.get(`/gamestatus/${gameId}`);
+      const gameStatus = response.data;
+      return gameStatus;
+    } catch (error) {
+      throw error;
+    }
+  };
   
+
+  const generateLink = () => {
+    setLobbyLink(`http://localhost:3002/lobby/${localStorage.getItem('gameId')}`);
+  };
     const fetchQuestion = async (gameId) => {
       try {
         const response = await api.put(`games/${gameId}`);
@@ -96,12 +131,49 @@ const playerId=localStorage.getItem("players_local").split(',')[1]
       }
     };
   
+    const redirectToGamePage = (gameId) => {
+        setTimeout(() => {
+        history.push(`/gamePage/${gameId}`);
+      }, 1000);
+    };
+    
    
+    const createGame=async (category, gameRounds, gameDuration) => {
+      try {
+        let category_uppercase = category.toUpperCase();
+  
+      const requestBody = {
+        category: category_uppercase,
+        totalRounds: gameRounds,
+        countdownTime: gameDuration,
+      };
+      localStorage.setItem("totalRounds",gameRounds);
+      localStorage.removeItem("citynames2");
+      localStorage.removeItem("PictureUrl");
+      localStorage.removeItem("CorrectOption");
+      
+      const response = await api.post("/games", requestBody);
+      
+      const gameId = response.data.gameId;
+      await localStorage.setItem("gameId", gameId);
+      const playerId2=localStorage.getItem("userId");
+      console.log("PlayerId: ",playerId)
+      localStorage.setItem("score",0);
+      console.log("Id from logged in payer: ",playerId2);
+      handleAddPlayer(playerId2);
+      console.log("create game: ", response);
+
+    } catch (error) {
+      alert(`Something went wrong during game start: \n${handleError(error)}`);
+    }
+  };
   
   
+
+
   const startGameSingleplayer = async (category, gameRounds, gameDuration) => {
     try {
-      
+      fetchQuestion(localStorage.getItem('gameId'));
       
       let category_uppercase = category.toUpperCase();
   
@@ -138,11 +210,25 @@ const playerId=localStorage.getItem("players_local").split(',')[1]
   
 
 
-const [username, setUsername] = useState('');
 
 const handleUsernameChange = (event) => {
   setUsername(event.target.value);
 };
+
+const handleAddPlayerToGame= async () => {
+  try {
+    console.log("Username is: ",userName);
+    const gameId=localStorage.getItem("gameId");
+    const response = await api.get(`/user/${userName}`);
+    console.log('Player userId is: ', response.data);
+    handleAddPlayer(response.data);
+
+  } catch (error) {
+    console.error('Error trying to get userid', error);
+  }
+};
+
+
 
 const handleAddPlayer = async (playerId) => {
   try {
@@ -154,27 +240,43 @@ const handleAddPlayer = async (playerId) => {
   }
 };
 
-const startGameMultiplayer = async (category, gameRounds, gameDuration) => {
-  try {
-    let category_uppercase = category.toUpperCase();
+const createInviteLink = () => {
+  const inviteLink = `lobby/${gameId}`;
+  // You can use the inviteLink here to invite players to the game.
+  console.log(inviteLink);
+}
 
-    const requestBody = {
-      category: category_uppercase,
-      totalRounds: gameRounds,
-      countdownTime: gameDuration,
-    };
-    
-    const response = await api.post("/games", requestBody);
-    const gameId = response.data.gameId;
-    localStorage.setItem("gameId", gameId);
-    console.log(localStorage.getItem("playerId"))
-    //handleAddPlayer(localStorage.getItem("po"))
-    
-    history.push(`/gamePage/${gameId}`);
-  } catch (error) {
-    alert(`Something went wrong during game start: \n${handleError(error)}`);
+
+
+const startGameMultiplayer = async (gameId) => {
+  let gameState = '';
+  const url = window.location.href;
+  const isLobbyPage = checkLobbyUrl(url);
+
+  if (isLobbyPage) {
+    gameState = await getGameState(gameId);
+    console.log('GAME STATE IS:', gameState);
+    if (gameState === 'ANSWERING') {
+      redirectToGamePage(gameId);
+    } else {
+      console.log('Game is not yet started');
+    }
+  } else {
+    console.log('Not a lobby page');
   }
 };
+
+
+  const handleCopyLink = () => {
+    navigator.clipboard.writeText(lobbyLink);
+    setIsCopied(true);
+    setTimeout(() => setIsCopied(false), 2000); // Reset copied status after 2 seconds
+  };
+
+  const [lobbyLink, setLobbyLink] = useState('');
+
+
+
 
 localStorage.setItem("countdownTime", countdownTime);  
 localStorage.setItem("sameCoundownTime",countdownTime);
@@ -236,14 +338,30 @@ localStorage.setItem("sameCoundownTime",countdownTime);
                 />
           </label></div>
 
-          <div><label className="lobby label">
-      Enter username to add to game:
-      <input className="lobby input" 
-        style={{marginLeft:"10px", textAlign:"center"}}
-        placeholder="enter username..."
-        value={username} onChange={handleUsernameChange} />
-      <button onClick={handleAddPlayer}>Add player</button>
-          </label></div>
+          <div className="lobby label">
+      <button className="lobby button" onClick={generateLink}>
+        Generate Lobby Link
+      </button>
+      {lobbyLink && (
+        <div className="lobby label">
+          Lobby Link:
+          <input
+            type="text"
+            className="lobby input"
+            style={{ marginLeft: '10px', textAlign: 'center' }}
+            value={lobbyLink}
+            readOnly
+          />
+          <FaCopy
+            className="lobby icon"
+            onClick={handleCopyLink}
+            style={{ marginLeft: '10px', cursor: 'pointer' }}
+          />
+          {isCopied && <span className="lobby label">Copied!</span>}
+        </div>
+      )}
+    </div>
+  
         </InformationContainer>
 
         <InformationContainer className="lobby container_right" 
@@ -253,11 +371,13 @@ localStorage.setItem("sameCoundownTime",countdownTime);
           <div>
           {playerlist}
           </div>
+
         </InformationContainer>
       </div>
     <div className="lobby buttons">
-    <Button style={{ display: 'inline-block', margin: '0 10px' }}onClick={() => isMultiplayer ? startGameMultiplayer(selectedCategory,gameRounds,30) : startGameSingleplayer(selectedCategory,gameRounds,countdownTime)}>Start Game</Button>
-    <Button style={{ display: 'inline-block', margin: '0 10px'}}onClick={() => history.push("/home")}>Invite to Game</Button>
+    <Button style={{ display: 'inline-block', margin: '0 10px' }} onClick={()=>createGame(selectedCategory,gameRounds,30)}>Create Game</Button>
+
+    <Button style={{ display: 'inline-block', margin: '0 10px' }}onClick={() => isMultiplayer ? startGameMultiplayer(localStorage.getItem('gameId')) : startGameSingleplayer(selectedCategory,gameRounds,countdownTime)}>Start Game</Button>
     <Button style={{display: 'inline-block', margin: '0 10px'}}onClick={() => history.push("/home")}>Back to Home Page </Button>
     <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', marginBottom: '10px' }}>
     </div><div></div></div></div>);};
