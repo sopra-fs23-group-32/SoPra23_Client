@@ -7,7 +7,9 @@ import InformationContainer from "components/ui/BaseContainer";
 import Switch from 'react-switch';
 import PropTypes from "prop-types";
 import CityCategory from "models/CityCategory"
+import WebSocketType from "models/WebSocketType";
 import "styles/views/home/Lobby.scss";
+
 
 const Players = ({ player }) => (
   <div className="user user-info">
