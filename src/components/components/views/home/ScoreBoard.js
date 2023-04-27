@@ -29,7 +29,6 @@ const ScoreBoard = () => {
           urlCategory = "/users/ranking?category=" + selectedCategory;
         }
         const response = await api.get(urlCategory);
-        // delays continuous execution of an async operation for 1 second.
         // This is just a fake async call, so that the spinner can be displayed
         await new Promise((resolve) => setTimeout(resolve, 1000));
         // Get the returned users and update the state.
@@ -44,26 +43,7 @@ const ScoreBoard = () => {
       }
     }
     fetchData();
-  }, []);
-
-  const Users = ({ user }) => (
-    <div className="user user-info">
-      {user.userId} - {user.username}
-    </div>
-  );
-  Users.propTypes = {
-    users: PropTypes.object,
-  };
-  
-const users=["max","maria"]
-// remove this part if the backend returns already ranked users
-  //  sort the users array in descending order of their scores
-  const sortedUsers = users.sort((a, b) => b.totalScore - a.totalScore);
-  // assign each user a ranking ID based on their position in the array
-  const rankedUsers = sortedUsers.map((user, index) => ({
-    ...user,
-    rank: index + 1,
-  }));
+  }, [selectedCategory]);
 
   const UserRanking = ({ userRanking }) => (
     <table className="table">
@@ -93,11 +73,11 @@ const users=["max","maria"]
     user: PropTypes.object,
   };
 
-  let userlist = <Spinner />;
+  let sortedUserList = <Spinner />;
 
-  if (users) {
-    userlist = (
-      <Users users={rankedUsers} />
+  if (userRanking) {
+    sortedUserList = (
+      <UserRanking userRanking={userRanking} />
     );
   }
 
@@ -116,7 +96,7 @@ const users=["max","maria"]
             <option value="SOUTH_AMERICA">South America</option>
           </select>
       </label></div>
-      <div>{rankedUsers}</div>
+      <div>{sortedUserList}</div>
       <div className="scoreboard button-container">
         <Button width="300%" onClick={() => history.push("/home")}>
           Return to Home
