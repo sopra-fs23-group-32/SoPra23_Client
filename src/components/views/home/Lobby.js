@@ -283,31 +283,31 @@ localStorage.setItem("sameCoundownTime",countdownTime);
   const [selectedCategory, setSelectedCategory] = useState("Europe");
   return (
     <div className="lobby container">
-      <p style={{fontSize: '48px', marginBottom: '5px'}}>
+      <InformationContainer className="lobby container" style={{fontSize: '48px', width:"fit-content", marginTop: "15px"}}>
         <div>Game Lobby</div>
-      </p>
+      </InformationContainer>
       <div className="lobby layout">
         <InformationContainer className="lobby container_left" id="information-container">
           <div style={{fontSize:'40px'}}>
             Game Settings
           </div>
-          <div style={{ display: 'grid', gridTemplateColumns: '1fr auto 1fr', gap: '10px' }}>
+          <div className="lobby layout" style={{ display: 'grid', gridTemplateColumns: '1fr auto 1fr', gap: '10px' }}>
             
          <div style={{ textAlign: 'right' }}><span style={{ fontSize: '20px' }}>Singleplayer</span></div>
-            <div>
+            <label>
               <Switch checked={isMultiplayer}
               onChange={handleToggle}
               offColor="#1979b8"
               onColor="#1979b8"
               checkedIcon={false}
               uncheckedIcon={false} />
-            </div>
+            </label>
             <div><span style={{ fontSize: '20px'}}>Multiplayer</span></div>
           </div>
           
-          <div><label className="lobby label">
+          <div className="lobby label">
             <label>Pick a city category:</label>
-              <select value={selectedCategory} onChange={e => setSelectedCategory(e.target.value)}>
+              <select value={selectedCategory} onChange={e => setSelectedCategory(e.target.value)} style={{marginLeft:"10px", textAlign:"center", color:"#FFFFFF", backgroundColor:"#1979b8"}}>
                 <option value="Europe">Europe</option>
                 <option value="Asia">Asia</option>
                 <option value="North America">North America</option>
@@ -316,19 +316,19 @@ localStorage.setItem("sameCoundownTime",countdownTime);
                 <option value="Oceania">Oceania</option>
                 <option value="World">World</option>
               </select>
-          </label></div>
+          </div>
           
-          <div><label className="lobby label">
+          <div className="lobby label">
             Enter Number of Rounds:
                 <input className="lobby input" 
                   style={{marginLeft:"10px", textAlign:"center"}}
-                  placeholder="enter number of rounds..."
+                  placeholder="enter number here..."
                   value={gameRounds}
                   onChange={e => setGameRounds(e.target.value)}
                 />
-          </label></div>
+          </div>
 
-          <div><label className="lobby label">
+          <div className="lobby label">
             Enter Round Duration:
                 <input className="lobby input" 
                   style={{marginLeft:"10px", textAlign:"center"}}
@@ -336,28 +336,31 @@ localStorage.setItem("sameCoundownTime",countdownTime);
                   value={countdownTime}
                   onChange={e => setCountdownTime(e.target.value)}
                 />
-          </label></div>
+          </div>
 
           <div className="lobby label">
-      <button className="lobby button" onClick={generateLink}>
+      <Button style={{marginBottom:'5px'}} onClick={generateLink}>
         Generate Lobby Link
-      </button>
+      </Button>
+      
       {lobbyLink && (
         <div className="lobby label">
           Lobby Link:
           <input
             type="text"
             className="lobby input"
-            style={{ marginLeft: '10px', textAlign: 'center' }}
+            style={{ marginLeft: '10px', textAlign: 'center', color: '#FFFFFF', marginRight: "5px"}}
             value={lobbyLink}
             readOnly
           />
+          <Button style={{justifyContent: "center"}}>
           <FaCopy
             className="lobby icon"
             onClick={handleCopyLink}
-            style={{ marginLeft: '10px', cursor: 'pointer' }}
+            style={{cursor: 'pointer' }}
           />
-          {isCopied && <span className="lobby label">Copied!</span>}
+          {isCopied && <span className="lobby copied-text">Copied!</span>}
+          </Button>
         </div>
       )}
     </div>

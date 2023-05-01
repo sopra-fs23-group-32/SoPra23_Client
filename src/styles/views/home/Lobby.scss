@@ -11,15 +11,17 @@
       align-items: center;
       border-radius: $borderRadius;
       column-gap: 1em;
+      
     }
     &.container{
         border-radius: $borderRadius;
         display: flex;
         flex-direction: column;
         align-items: center;
+        padding: 30px;
     }
     &.container_left {
-      background: transparentize(rgb(65, 64, 64), 0.7);
+      background: #001F3F;
       padding: 2em;
       border-radius: $borderRadius;
       display: flex;
@@ -49,8 +51,9 @@
     &.label {
       font-size: 20px;
       font-weight: 400;
-      color: $textColor;
+      color: #FFFFFF;
     }
+    
     &.input {
         background: transparentize(rgb(253, 253, 253), 0.9);
         height: 30px;
@@ -60,9 +63,15 @@
         margin-left: -4px;
         border: none;
         border-radius: 0.5em;
-        margin-bottom: 5px;
-        color: $textColor;
+        margin-bottom: 5px; 
+        color: "#FFFFFF";
+        background-color: #1979b8;
     }
+
+    input::placeholder {
+      color: #D4D4D4;
+    }
+
     &.button-container {
       display: flex;
       flex-direction: row;
@@ -76,6 +85,9 @@
         font-weight: 400;
         color: $textColor;
       margin: 0.5em 0;
+    }
+    .copied-text{
+      font-size: 14px;
     }
   }
   

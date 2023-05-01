@@ -4,6 +4,7 @@ import { api, handleError } from "helpers/api";
 import { Spinner } from "components/ui/Spinner";
 import { Button } from "components/ui/Button";
 import PropTypes from "prop-types";
+import InformationContainer from "components/ui/BaseContainer";
 
 import "styles/views/home/Profile.scss";
 
@@ -21,21 +22,21 @@ const ProfileInfo = ({ user, setUsername, setBirthDay, setOldPwd, setPassword })
       </div>
       <div className="user-profile-field">
         <label>Status</label>
-        <div>{user.status}</div>
+        <value>{user.status}</value>
       </div>
       <div className="user-profile-field">
         <label>Created on</label>
-        <div>{new Date(user.createDay).toISOString().slice(0, 10)}</div>
+        <value>{new Date(user.createDay).toISOString().slice(0, 10)}</value>
       </div>
       <div className="user-profile-field">
         <label>Birthday</label>
         {localStorage.getItem("profileId") === localStorage.getItem("userId")? (
             <>
-             <div>{user.birthDay? new Date(user.birthDay).toISOString().slice(0, 10) : "N/A"}</div>
+             <value>{user.birthDay? new Date(user.birthDay).toISOString().slice(0, 10) : "No Birthday set yet"}</value>
              <input type="date" defaultValue={user.birthDay} onChange={e => setBirthDay(e.target.value)} />
             </>
         ) : (
-            <div>{user.birthDay? new Date(user.birthDay).toISOString().slice(0, 10) : "N/A"}</div>
+            <value>{user.birthDay? new Date(user.birthDay).toISOString().slice(0, 10) : "No Birthday set yet"}</value>
         )}
       </div>
       {localStorage.getItem("profileId") === localStorage.getItem("userId") ? (
@@ -145,11 +146,11 @@ const Profile = () => {
 
 
   return (
-    <div className="profile container">
-      <div className="headerrow" >
-          <div><h2>User Profile</h2></div>
-      </div>
-      <br></br>
+    <div className="Profile container" style={{flexDirection: "column"}}>
+      <InformationContainer className="profile container" style={{fontSize: '48px', width: "fit-content"}}>
+        Profile
+      </InformationContainer>
+    <InformationContainer className="profile container" style={{width: "fit-content"}}>
       {content}
       <div className="profile button-container">
         <Button width="100%"
@@ -161,6 +162,7 @@ const Profile = () => {
           Return to Home
         </Button>
       </div>
+      </InformationContainer>
     </div>
   );
 };
