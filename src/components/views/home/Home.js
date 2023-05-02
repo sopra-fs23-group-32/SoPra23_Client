@@ -46,7 +46,7 @@ const Home = () => {
         style={{ fontSize: "45px", width: "25%", height: "100px" }}
         onClick={() => history.push("/home/history")}
       >
-        Game Statistics
+        Game History
       </Button>
       <Button
         style={{ fontSize: "45px", width: "25%", height: "100px" }}

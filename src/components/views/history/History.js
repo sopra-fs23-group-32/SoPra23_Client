@@ -10,6 +10,7 @@ import ArrowDropDownCircleIcon from "@mui/icons-material/ArrowDropDownCircle";
 import Typography from "@mui/material/Typography";
 import Modal from "@mui/material/Modal";
 import Box from "@mui/material/Box";
+import InformationContainer from "components/ui/BaseContainer";
 
 import "styles/views/History.scss";
 
@@ -91,55 +92,47 @@ const HistoryPage = () => {
 
   
   const UserGameInfo = ({ userGameInfo }) => (
-    <table className="table">
-      <thead>
-        <tr>
-          <th>Game Id</th>
-          <th>Category</th>
-          <th>Date</th>
-          <th>Rounds</th>
-          <th>Player Number</th>
-          <th>More</th>
-        </tr>
-      </thead>
-      <tbody>
-          {userGameInfo.map((gameInfo, index) => (
-          <tr className={index % 2 !== 0 ? "odd" : "even"} key={gameInfo.gameId}>
-            <td style={{ width: "12%", textAlign: "center" }}>{gameInfo.gameId}</td>
-            <td style={{ width: "20%", textAlign: "center" }}>{gameInfo.category}</td>
-            <td style={{ width: "20%", textAlign: "center" }}>{new Date(gameInfo.gameDate).toISOString().slice(0,10)}</td>
-            <td style={{ width: "20%", textAlign: "center" }}>{gameInfo.gameRounds}</td>
-            <td style={{ width: "20%", textAlign: "center" }}>{gameInfo.playerNum}</td>
-            <td>
-              {" "}
-              <IconButton title="Detials" color="primary"
-                onClick={() => {handleOpen(gameInfo.gameId); fetchGameHistoryData(gameInfo.gameId);}}
-              >
-                <ArrowDropDownCircleIcon />
-              </IconButton>
-            </td>
-            <Modal open={open} onClose={handleClose}
-              aria-labelledby="modal-modal-title"
-              aria-describedby="modal-modal-description"
-            >
-              <Box color="primary" sx={style}>
-                <Typography id="modal-modal-title" variant="h6" component="h2">
-                  Game ID - {gameId}
-                </Typography>
-                <Typography id="modal-modal-description" sx={{ mt: 2 }}>
-                  Score: {userGameHistoryScore}
-                </Typography>
-                <Typography id="modal-modal-description" sx={{ mt: 2 }}>
-                  <div>{userGameHistoryAnswer.map((answer) => (
-                      <Answers answer={answer}/>
-                    ))}</div>
-                </Typography>
-              </Box>
-            </Modal>
-          </tr>
-          ))}
-      </tbody>
-    </table>
+    <>
+      {userGameInfo.length > 0 ? (
+        <table className="table">
+          <thead>
+            <tr>
+              <th>Game Id</th>
+              <th>Category</th>
+              <th>Date</th>
+              <th>Rounds</th>
+              <th>Player Number</th>
+              <th>More</th>
+            </tr>
+          </thead>
+          <tbody>
+            {userGameInfo.map((gameInfo, index) => (
+              <tr className={index % 2 !== 0 ? "odd" : "even"} key={gameInfo.gameId}>
+                <td style={{ width: "12%", textAlign: "center" }}>{gameInfo.gameId}</td>
+                <td style={{ width: "20%", textAlign: "center" }}>{gameInfo.category}</td>
+                <td style={{ width: "20%", textAlign: "center" }}>{new Date(gameInfo.gameDate).toISOString().slice(0,10)}</td>
+                <td style={{ width: "20%", textAlign: "center" }}>{gameInfo.gameRounds}</td>
+                <td style={{ width: "20%", textAlign: "center" }}>{gameInfo.playerNum}</td>
+                <td>
+                  <IconButton
+                    title="Detials"
+                    color="primary"
+                    onClick={() => {
+                      handleOpen(gameInfo.gameId);
+                      fetchGameHistoryData(gameInfo.gameId);
+                    }}
+                  >
+                    <ArrowDropDownCircleIcon />
+                  </IconButton>
+                </td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      ) : (
+        <div className="no-games-message">No games have been played yet.</div>
+      )}
+    </>
   );
   UserGameInfo.propTypes = {
     gameInfo: PropTypes.object,
@@ -155,13 +148,15 @@ const HistoryPage = () => {
     
   return (
     <div className="history container">
-      <h2>History - User: {localStorage.getItem("username")}</h2>
+      <InformationContainer className="history container" style={{fontSize: '48px', width: "fit-content"}}>Your Game History: {localStorage.getItem("username")}</InformationContainer>
+      <InformationContainer className="history container">
       <div>{userGameInfoList}</div>
       <div className="history button-container">
         <Button width="300%" onClick={() => history.push("/home")}>
           Return to Home
         </Button>
-      </div>    
+      </div>
+      </InformationContainer>    
     </div>
   );
 };
