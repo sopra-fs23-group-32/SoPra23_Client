@@ -4,46 +4,41 @@ import User from 'models/User';
 import {useHistory} from 'react-router-dom';
 import {Button} from 'components/ui/Button';
 import 'styles/views/Register.scss';
+import { TextField } from "@mui/material";
 import BaseContainer from "components/ui/BaseContainer";
 import PropTypes from "prop-types";
 
 
 
 
-const FormField = props => {
+const FormField = (props) => {
   return (
     <div className="register field">
-      <label className="register label">
-        {props.label}
-      </label>
-      <input
+      <TextField
+                label={props.label}
 
         className="register input"
         placeholder="Enter Username here..."
         value={props.value}
-        onChange={e => props.onChange(e.target.value)}
-        onKeyDown={(event) => {
-          props.onKeyDown(event);
-        }}
+        onChange={(e) => props.onChange(e.target.value)}
+        onKeyDown={(event) => props.onKeyDown(event)}
       />
     </div>
   );
 };
 
-const FormField2 = props => {
+const FormField2 = (props) => {
   return (
     <div className="register field">
-      <label className="register label">
-        {props.label}
-      </label>
-      <input
+       <TextField
+                label={props.label}
         type="password"
         className="register input"
         placeholder="Enter Password here..."
         value={props.value}
         onChange={e => props.onChange(e.target.value)}
-        onKeyDown={(event) => {
-          props.onKeyDown(event);
+        onKeyDown={(e) => {
+          props.onKeyDown(e);
         }}
       />
     </div>
@@ -53,31 +48,31 @@ const FormField2 = props => {
 FormField.propTypes = {
   label: PropTypes.string,
   value: PropTypes.string,
-  onChange: PropTypes.func
+  onChange: PropTypes.func,
 };
 
 FormField2.propTypes = {
   label: PropTypes.string,
   value: PropTypes.string,
-  onChange: PropTypes.func
+  onChange: PropTypes.func,
 };
 
 const Register = () => {
   const history = useHistory();
-  const [username, setUsername] = useState(null);
-  const [password, setPassword] = useState(null);
+  const [username, setUsername] = useState("");
+  const [password, setPassword] = useState("");
   
   
   const doRegister = async () => {
     try {
       const requestBody = JSON.stringify({username, password});
-      const response = await api.post('/users', requestBody);
+      const response = await api.post("/users", requestBody);
       // Get the returned user and update a new object.
       const user = new User(response.data);
       // Store the token into the local storage.
-      localStorage.setItem('token', user.token);
-      localStorage.setItem('userId', user.userId);
-      localStorage.setItem('username', user.username);
+      localStorage.setItem("token", user.token);
+      localStorage.setItem("userId", user.userId);
+      localStorage.setItem("username", user.username);
 
       // Login successfully worked --> navigate to the route /game in the GameRouter
       history.push(`/home`);
@@ -125,12 +120,12 @@ const Register = () => {
       
 
           <div className="register-button-container" >
-          <Button disabled={!username || !password}  width="100%" onClick={() => doRegister()}>Registration</Button>
+          <Button disabled={!username || !password}  width="40%" onClick={() => doRegister()}>Registration</Button>
 
           <td>&nbsp;&nbsp;&nbsp;</td>
           <div className="login-button-container">
 
-          <Button   width="100%" onClick={() => history.push('/login')}>Login here</Button>
+          <Button   width="40%" onClick={() => history.push('/login')}>Login here</Button>
 
           </div>
           </div>

@@ -1,8 +1,7 @@
 const GameStatus={
     SETUP: 'SETUP',
     ANSWERING: 'ANSWERING',
-    WAITINGINGAME: 'WAITINGINGAME',
+    WAITING: 'WAITING',
     ENDED: 'ENDED',
   }
-  };
 export default GameStatus;

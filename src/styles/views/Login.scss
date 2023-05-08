@@ -1,7 +1,7 @@
 @import url('https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&display=swap');
 
 .headerp1{
-  color:black
+  color:black;
 }
 
 .container {
@@ -12,7 +12,6 @@
   align-items: center;
   position: relative;
   opacity: 1;
-  background-image: url("https://example.com/skyline-background.jpg");
   background-repeat: no-repeat;
   background-size: cover;
 }
@@ -24,6 +23,7 @@
   border-radius: 10px;
   max-width: 500px;
   width: 100%;
+  background-color: transparent;
 }
 
 .title-container {
@@ -45,26 +45,37 @@
   margin-bottom: 5px;
 }
 
+.login .form {
+  width: 100%;
+}
+
 .input {
+ padding: 0px 10;
+  .MuiInputBase-input  {
   font-family: "Roboto", sans-serif;
   font-weight: 300;
   font-size: 16px;
   padding: 10px;
   border: none;
-  border-radius: 4px;
-  background-color:0e5eaf;
-  color:black;
+   border-radius: 10px;
+    background-color: #1979b8;
+    color: white;
+}
+.MuiFormControl-root {
+    width: 100%;
+  }
 }
 
-
-
-.login-button-container {
+.register-button-container {
   display: flex;
-  flex-direction: row;
-  justify-content: center;
+  justify-content: space-around;
   align-items: center;
   margin-top: 20px;
+  &button {
+    width: 40%;
+  }
 }
+
 
 
 
