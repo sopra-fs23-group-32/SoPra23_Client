@@ -36,11 +36,11 @@ button {
   font-family: inherit;
   line-height: inherit;
   font-size: inherit;
-  outline: none;
+  outline: none !important;
 }
 
 *:focus {
-  outline: none;
+  outline: none !important;
 }
 
 * {
@@ -92,7 +92,7 @@ button {
 }
 
 .input {
-  height: 40px;
+
   padding: 0 10px;
   border: 2px solid #cccccc;
   border-radius: 5px;
