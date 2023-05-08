@@ -4,46 +4,40 @@ import {api, handleError} from 'helpers/api';
 import 'styles/views/Login.scss';
 import BaseContainer from "components/ui/BaseContainer";
 import { Button } from "components/ui/Button";
+import { TextField } from "@mui/material";
 
 import PropTypes from "prop-types";
 import User from 'models/User';
-//comment
-/*
-It is possible to add multiple components inside a single file,
-however be sure not to clutter your files with an endless amount!
-As a rule of thumb, use one file per component and only add small,
-specific components that belong to the main one in the same file.
- */
-const FormField = props => {
+
+const FormField = (props) => {
     return (
       <div className="login field">
-        <label className="login label">
-          {props.label}</label>
-        <input
+      <TextField
+          label={props.label}
           className="login input"
           placeholder="Enter Username here..."
           value={props.value}
           onChange={(e) => props.onChange(e.target.value)}
-        />
+          onKeyDown={(e) => props.onKeyDown(e)}        
+          />
       </div>
     );
 };
 
-const FormField2 = props => {
+const FormField2 = (props) => {
   return (
     <div className="login field">
-      <label className="login label">
-        {props.label}</label>
-      <input
+      <TextField
+        label={props.label}
         type="password"
         className="login input"
         placeholder="Enter Password here..."
         value={props.value}
         onChange={(e) => props.onChange(e.target.value)}
-        onKeyDown={(event)=>{
-          props.onKeyDown(event);
-        }}
-      />
+        onKeyDown={(e) => props.onKeyDown(e)}
+        id="fullWidth"
+        
+        />
     </div>
   );
 };
@@ -51,33 +45,33 @@ const FormField2 = props => {
 FormField.propTypes = {
     label: PropTypes.string,
     value: PropTypes.string,
-    onChange: PropTypes.func
+    onChange: PropTypes.func,
 };
 FormField2.propTypes = {
   label: PropTypes.string,
   value: PropTypes.string,
-  onChange: PropTypes.func
+  onChange: PropTypes.func,
 };
 
 
 
 const Login = props => {
     const history = useHistory();
-    const [username, setUsername] = useState(null);
-    const [password, setPassword] = useState(null);
+    const [username, setUsername] = useState("");
+    const [password, setPassword] = useState("");
 
     const doLogin = async () => {
         try {
             const requestBody = JSON.stringify({ username, password });
-            const response = await api.put('/login', requestBody);
+            const response = await api.put("/login", requestBody);
             // Get the returned user and update a new object.
             const user = new User(response.data);
             // Store the token into the local storage.
-            localStorage.setItem('userId', user.userId);
+            localStorage.setItem("userId", user.userId);
             localStorage.setItem("username", user.username);
 
             // Login successfully worked --> navigate to the route /home in the HomeRouter
-            history.push('/home');
+            history.push("/home");
         }
         catch (error) {
             alert(`An error occurs during the login: \n${handleError(error)}`);
@@ -123,12 +117,12 @@ const Login = props => {
       
 
           <div className="register-button-container" >
-          <Button disabled={!username || !password}  width="100%" onClick={() => doLogin()}>Login</Button>
+          <Button disabled={!username || !password}  width="40%" onClick={() => doLogin()}>Login</Button>
 
           <td>&nbsp;&nbsp;&nbsp;</td>
           <div className="login-button-container">
 
-          <Button   width="100%" onClick={() => history.push('/register')}>Register here</Button>
+          <Button   width="40%" onClick={() => history.push('/register')}>Register here</Button>
 
           </div>
           </div>

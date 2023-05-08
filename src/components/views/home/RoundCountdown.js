@@ -45,7 +45,7 @@ const RoundCountdown = () => {
       console.error('Error getting game result:', error);
     }
 
-    history.push(`/GameFinish/`);
+    history.push(`/GameFinishPage/`);
 
   }
 
