@@ -29,10 +29,10 @@ const GamePage = () => {
   const [option4, setOption4] = useState("");
   const gameId = localStorage.getItem("gameId");
 
-  const handleCityNameButtonClick = (cityName) => {
+  const handleCityNameButtonClick = async (cityName) => {
+    await handleSubmit(cityName);
     setSelectedCityName(cityName);
     setIsAnswerSubmitted(true);
-    const timeLeft=localStorage.getItem("newTimeLeft");
   };
 
   const [timeLeft, setTimeLeft] = useState(null);
@@ -65,7 +65,7 @@ const GamePage = () => {
       key={cityName}
       className={`city-name-button ${
         selectedCityName && cityName === correctOption ? "correct" : ""
-      } 
+      }
       ${
         selectedCityName &&
         cityName === selectedCityName &&
@@ -111,8 +111,7 @@ const GamePage = () => {
     return () => clearInterval(intervalId);
   }, [history]);
 
-  const handleSubmit = async (e) => {
-    e.preventDefault();
+  const handleSubmit = async (cityName) => {
     let now = localStorage.getItem("thisRound");
     now++;
     const playerId = localStorage.getItem("userId");
@@ -120,17 +119,18 @@ const GamePage = () => {
   
     try {
       console.log("ANSWER SUBMITTED: ", {
-        answer: selectedCityName,
+        answer: cityName,
         countdownTime: localStorage.getItem("countdownTime"),
       });
       console.log("countdown;",localStorage.getItem("countdownTime"))
       const response = await api.post(`/games/${gameId}/players/${playerId}/answers`,
         {
-          answer: selectedCityName,
+          answer: cityName,
           timeTaken: localStorage.getItem("countdownTime"),
         }
   
       );
+      console.log("RESPONSE:", response);
       const score2=parseInt(localStorage.getItem("score"))+response.data;
       console.log(score2);
 
@@ -179,10 +179,7 @@ const GamePage = () => {
         <div className="image-container"></div>
         <div className="button-container">
           {cityNameButtons}
-          <form onSubmit={handleSubmit}>
-            <button type="submit">Submit Answer</button>
-          </form>
-          <p>Time Left: {isAnswerSubmitted ? countdownTime  : timeLeft}</p> {/* conditional rendering */}
+          <p>Time Left: {timeLeft}</p> {/* conditional rendering */}
           {/* Render the city options and submit button here */}
         </div>
         <div className="info-container">
