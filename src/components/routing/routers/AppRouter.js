@@ -10,22 +10,13 @@ import RoundCountdown from "components/views/home/RoundCountdown";
 import Lobby from "components/views/Lobby";
 import GameFinishPage from "components/views/GameFinishPage";
 
-import SingleGamePage from "components/views/game/SinglePlayerGame/SingleGamePage";
-import SingleGamePreparePage from "components/views/game/SinglePlayerGame/SingleGamePreparePage";
-
+// import CreatedGamePage from "components/views/game/MultiPlayerGame/CreatedGamePage";
+// import JoinGame from "components/views/game/JoinGame";
+// import SingleGamePage from "components/views/game/SinglePlayerGame/SingleGamePage";
+// import SingleGamePreparePage from "components/views/game/SinglePlayerGame/SingleGamePreparePage";
 
 import MultiPlayerGamePage from "components/views/game/MultiPlayerGame/MultiPlayerGamePage";
 import MutliPlayerGamePreparePage from "components/views/game/MultiPlayerGame/MultiPlayerGamePreparePage";
-
-import CreatedGamePage from "components/views/game/MultiPlayerGame/CreatedGamePage";
-
-
-
-
-import JoinGame from "components/views/game/JoinGame";
-
-
-
 
 /**
  * Main router of your application.
@@ -52,40 +43,31 @@ const AppRouter = () => {
           <Register />
         </Route>
 
-        <Route exact path={`/gamePage/:gameId`}>
-          <SingleGamePage />
-        </Route>
-
-        <Route exact path={`/gamePage/:gameId/RounddownCountdown`}>
-        <SingleGamePreparePage />
-      </Route>
-
-
-      <Route path="/JoinGame">
-      <JoinGame base="/JoinGame" />
-        </Route>
-
-      <Route exact path={`/gamePage/:gameId/RounddownCountdown`}>
-        <RoundCountdown />
-      </Route>
-
         <Route path="/home">
           <HomeGuard>
             <HomeRouter base="/home" />
           </HomeGuard>
-          
         </Route>
 
-       <Route path="/lobby">
+        <Route path="/lobby">
           <LobbyGuard>
             <Lobby />
           </LobbyGuard>
         </Route>
 
-        <Route path="/StartGamePage">
+        {/* <Route path="/StartGamePage">
           <CreatedGamePage />
+        </Route> */}
+        {/* <Route exact path={`/gamePage/:gameId`}>
+          <SingleGamePage />
+        </Route> */}
+        {/* <Route path="/JoinGame">
+          <JoinGame base="/JoinGame" />
+        </Route> */}
+        <Route exact path={`/gamePage/:gameId/RounddownCountdown`}>
+          <RoundCountdown />
         </Route>
-        
+
         <Route exact path={`/MultiGamePage/:gameId`}>
           <MultiPlayerGamePage />        
         </Route>
@@ -94,8 +76,6 @@ const AppRouter = () => {
           <MutliPlayerGamePreparePage />
         </Route>
 
-
-
         <Route path="/RoundCountdown">
           <HomeGuard>
             <HomeRouter base="/RoundCountdown" />
@@ -103,16 +83,11 @@ const AppRouter = () => {
         </Route>
 
         <Route path="/GameFinish">
-        <GameFinishPage>
-            <HomeRouter base="/home" />
-        </GameFinishPage>
+          <GameFinishPage>
+              <HomeRouter base="/home" />
+          </GameFinishPage>
         </Route>
 
-        <Route path="/lobby">
-          <LobbyGuard>
-            <Lobby />
-          </LobbyGuard>
-        </Route>
       </Switch>
     </BrowserRouter>
   );
