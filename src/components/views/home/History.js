@@ -11,7 +11,7 @@ import Typography from "@mui/material/Typography";
 import Modal from "@mui/material/Modal";
 import Box from "@mui/material/Box";
 
-import "styles/views/History.scss";
+import "styles/views/home/History.scss";
 
 const Answers = ({ answer }) => (
   <div className="history label">
@@ -37,8 +37,9 @@ const style = {
 const HistoryPage = () => {
   const history = useHistory();
   const [userGameInfo, setUserGameInfo] = useState([]);
-  const [userGameHistoryScore, setUserGameHistoryScore] = useState(0);
+  const [userGameHistoryStats, setUserGameHistoryStats] = useState();
   const [userGameHistoryAnswer, setUserGameHistoryAnswer] = useState([]);
+
   const [open, setOpen] = useState(false);
   const [gameId, setGameId] = useState(1);
   const handleOpen = (gameId) => {setGameId(gameId); setOpen(true);};
@@ -47,8 +48,7 @@ const HistoryPage = () => {
   useEffect(() => {
     async function fetchGameInfoData() {
       try {
-        const url = "/users/" + localStorage.getItem("userId") + "/gameInfo";
-        const response = await api.get(url);
+        const response = await api.get(`/users/${localStorage.getItem("userId")}/gameInfo`);
         // delays continuous execution of an async operation for 1 second.
         // This is just a fake async call, so that the spinner can be displayed
         await new Promise((resolve) => setTimeout(resolve, 1000));
@@ -69,14 +69,14 @@ const HistoryPage = () => {
   async function fetchGameHistoryData(gameId) {
     try {
       const url = "/users/"+localStorage.getItem("userId") + "/gameHistories/"+gameId;
-      const responseScore = await api.get(url + "/score");
+      const responseStats = await api.get(url + "/stats");
       const responseAnswer = await api.get(url + "/answer");
       // delays continuous execution of an async operation for 1 second.
       // This is just a fake async call, so that the spinner can be displayed
       await new Promise((resolve) => setTimeout(resolve, 1000));
       // Get the returned users and update the state.
-      setUserGameHistoryScore(responseScore.data);
-      console.log(responseScore);
+      setUserGameHistoryStats(responseStats.data);
+      console.log(responseStats);
       setUserGameHistoryAnswer(responseAnswer.data);
       console.log(responseAnswer);
       
@@ -127,7 +127,10 @@ const HistoryPage = () => {
                 Game ID - {gameId}
               </Typography>
               <Typography id="modal-modal-description" sx={{ mt: 2 }}>
-                Score: {userGameHistoryScore}
+                Score: {userGameHistoryStats.gameScore}
+              </Typography>
+              <Typography id="modal-modal-description" sx={{ mt: 2 }}>
+                Correct Rate: {userGameHistoryStats.correctRate}
               </Typography>
               <Typography id="modal-modal-description" sx={{ mt: 2 }}>
                 <div>{userGameHistoryAnswer.map((answer) => (

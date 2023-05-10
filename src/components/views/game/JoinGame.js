@@ -16,7 +16,7 @@ import {
     Container,
 } from "@mui/material";
 
-import "styles/views/home/Join.scss";
+import "styles/views/game/JoinGame.scss";
 
 const JoinGame = () => {
     const history = useHistory();

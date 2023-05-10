@@ -1,11 +1,9 @@
 import { useHistory } from "react-router-dom";
 import React, { useState, useEffect } from "react";
 import { api } from "helpers/api";
-
-import "styles/views/home/GamePage.scss";
-import "styles/views/home/Lobby.scss";
-
 import { Grid, Container } from "@mui/material";
+
+import "styles/views/game/GamePage.scss";
 
 const SingleGamePage = () => {
     const [isAnswerSubmitted, setIsAnswerSubmitted] = useState(false); // new state variable

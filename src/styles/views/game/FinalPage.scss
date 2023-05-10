@@ -1,0 +1,41 @@
+@import 'styles/theme';
+
+.finalpage {
+  &.container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    border-radius: 40px !important;
+  }
+  
+  &.podium {
+    display: flex;
+    justify-content: space-between;
+    width: 400px;
+  }
+  
+  &.first-place,
+  &.second-place,
+  &.third-place {
+    width: 120px;
+    height: 200px;
+    background-color: gold;
+    border: 2px solid black;
+    border-radius: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: bold;
+  }
+  
+  &.remaining-players {
+    margin-top: 20px;
+  }
+  
+  &.remaining-players ol {
+    list-style-type: decimal;
+    padding-left: 20px;
+  }
+}
