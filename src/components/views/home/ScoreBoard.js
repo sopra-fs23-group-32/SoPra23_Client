@@ -29,7 +29,6 @@ const ScoreBoard = () => {
           urlCategory = "/users/ranking?category=" + selectedCategory;
         }
         const response = await api.get(urlCategory);
-        // delays continuous execution of an async operation for 1 second.
         // This is just a fake async call, so that the spinner can be displayed
         await new Promise((resolve) => setTimeout(resolve, 1000));
         // Get the returned users and update the state.
@@ -44,17 +43,7 @@ const ScoreBoard = () => {
       }
     }
     fetchData();
-  }, []);
-
-
-// remove this part if the backend returns already ranked users
-  //  sort the users array in descending order of their scores
-  const sortedUsers = users.sort((a, b) => b.totalScore - a.totalScore);
-  // assign each user a ranking ID based on their position in the array
-  const rankedUsers = sortedUsers.map((user, index) => ({
-    ...user,
-    rank: index + 1,
-  }));
+  }, [selectedCategory]);
 
   const UserRanking = ({ userRanking }) => (
     <table className="table">
@@ -70,11 +59,11 @@ const ScoreBoard = () => {
       <tbody>
           {userRanking.map((user, index) => (
           <tr className={index % 2 !== 0 ? "odd" : "even"} key={user.userId} onClick={() => goProfile(user.userId)}>
-            <td style={{ width: "8%", textAlign: "center" }}>{user.rank}</td>
-            <td style={{ width: "22%", textAlign: "center" }}>{user.username}</td>
-            <td style={{ width: "20%", textAlign: "center" }}>{user.score}</td>
-            <td style={{ width: "20%", textAlign: "center" }}>{user.gameNum}</td>
-            <td style={{ width: "20%", textAlign: "center" }}>{new Date(user.createDay).toISOString().slice(0,10)}</td>
+            <td style={{width: "8%"}}>{user.rank}</td>
+            <td style={{width: "22%"}}>{user.username}</td>
+            <td style={{width: "20%"}}>{user.score}</td>
+            <td style={{width: "20%"}}>{user.gameNum}</td>
+            <td style={{width: "20%"}}>{new Date(user.createDay).toISOString().slice(0,10)}</td>
           </tr>
           ))}
       </tbody>
@@ -84,11 +73,11 @@ const ScoreBoard = () => {
     user: PropTypes.object,
   };
 
-  let userlist = <Spinner />;
+  let sortedUserList = <Spinner />;
 
-  if (users) {
-    userlist = (
-      <Users users={rankedUsers} />
+  if (userRanking) {
+    sortedUserList = (
+      <UserRanking userRanking={userRanking} />
     );
   }
 

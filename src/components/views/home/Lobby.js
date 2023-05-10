@@ -1,376 +1,279 @@
 import { useHistory } from "react-router-dom";
-import React, {useState, useEffect} from 'react';
-import { Spinner } from "components/ui/Spinner";
+import React, { useState } from "react";
 import { Button } from "components/ui/Button";
 import { api, handleError } from "helpers/api";
 import InformationContainer from "components/ui/BaseContainer";
-import Switch from 'react-switch';
-import PropTypes from "prop-types";
-import CityCategory from "models/CityCategory"
+import {
+    InputLabel,
+    Select,
+    MenuItem,
+    TextField,
+} from "@mui/material";
+import Switch from "react-switch";
 import "styles/views/home/Lobby.scss";
-import WebSocketType from "models/constant/WebSocketType";
-import SockJS from "sockjs-client";
-import { Client } from "@stomp/stompjs";
-
-
-const Players = ({ player }) => (
-  <div className="user user-info">
-    {player.userId} - {player.username}
-  </div>
-);
-Players.propTypes = {
-  player: PropTypes.object,
-};
-
 const Lobby = () => {
-  // use react-router-dom's hook to access the history
-  const history = useHistory();
 
-  const [isMultiplayer, setIsMultiplayer] = useState(true);
-  const handleToggle = () => {setIsMultiplayer(!isMultiplayer);};
-  const [gameRounds, setGameRounds] = useState(null);
-  const [countdownTime, setCountdownTime] = useState(null);
+    const [targetPlayerNumber, setTargetPlayerNumber] = useState(1);
+    const [selectedCategory, setSelectedCategory] = useState("EUROPE");
+    const [isMultiplayer, setIsMultiplayer] = useState(true);
+    const [gameRounds, setGameRounds] = useState(1);
+    const [countdownTime, setCountdownTime] = useState(10);
 
-  const [players, setPlayers] = useState(null);
+    // use react-router-dom's hook to access the history
+    const history = useHistory();
 
-
-  useEffect(() => {    
-    // effect callbacks are synchronous to prevent race conditions. So we put the async function inside:
-    const webSocketUrl= `${getDomain()}/socket`;
-    const socket= new SockJS(webSocketUrl);
-
-    const stompClient=new clientInformation({
-      webSocketFactory:()=> socket,
-      debug: (str)=> console.log(str),
-      reconnectDelay:500,
-    });
-    stompClient.onConnect = (frame) => {
-      setUsePolling(false);
-      stompClient.subscribe(`/instance/games/${gameId}`, (message) => {
-        handleGameUpdate(message);
-      });
+    const handleToggle = () => {
+        setIsMultiplayer(!isMultiplayer);
     };
 
-    stompClient.onStompError = (frame) => {
-      console.error(`Stomp error: ${frame}`);
-      setUsePolling(true);
+    const setLocalStorageItems = (question) => {
+        const cityNamesString = JSON.stringify([
+            question.option1,
+            question.option2,
+            question.option3,
+            question.option4,
+        ]);
+        localStorage.setItem("citynames", cityNamesString);
+        localStorage.setItem("PictureUrl", question.pictureUrl);
+        localStorage.setItem("CorrectOption", question.correctOption);
     };
 
-    stompClient.onWebSocketClose = (event) => {
-      console.error("WebSocket connection closed:", event);
-      setUsePolling(true);
-    };
-
-    stompClient.activate();
-
-    return () => {
-      stompClient.deactivate();
-    };
-
-  function handleGameUpdate(message) {
-    const messageObject = JSON.parse(message.body);
-    const websocketPacket = new WebsocketPacket(
-      messageObject.type,
-      messageObject.payload
-    );
-
-    setGameGetDTO((prevGameGetDTO) => {
-      const newGameGetDTO = updateGameGetDTO(prevGameGetDTO, websocketPacket);
-      return newGameGetDTO;
-    });
-  }
-
-  let content = <Typography variant="h2">Loading...</Typography>;
-
-  if (gameGetDTO?.currentState == null) {
-    return content;
-  }
-
-  switch (gameGetDTO.currentState) {
-    case GameState.SETUP:
-      content = (
-        <SetupComponent
-          {...{
-            gameGetDTO: gameGetDTO,
-          }}
-        />
-      );
-      break;
-    case GameState.GUESSING:
-      content = (
-        <GuessingComponent
-          {...{
-            gameGetDTO: gameGetDTO,
-            allCountries: allCountries,
-            currentUserId: currentUserId,
-          }}
-        />
-      );
-      break;
-    case GameState.SCOREBOARD:
-      content = (
-        <ScoreboardComponent
-          {...{
-            currentUser: currentUser,
-            gameId: gameId,
-            gameGetDTO: gameGetDTO,
-            isGameEnded: false,
-          }}
-        />
-      );
-      break;
-    case GameState.ENDED:
-      content = (
-        <EndedComponent
-          {...{
-            currentUser: currentUser,
-            gameId: gameId,
-            gameGetDTO: gameGetDTO,
-          }}
-        />
-      );
-      break;
-    case null:
-      content = <NotJoinedComponent gameId={gameId}></NotJoinedComponent>;
-      break;
-    default:
-      console.log("Unexpected game state:", gameGetDTO?.currentState);
-      content = <div>Unexpected game state</div>;
-      break;
-  }
-
-
-
-    async function fetchData() {
-      try {
-        const response = await api.get("/users");
-        await new Promise((resolve) => setTimeout(resolve, 1000));
-        // Get the returned users and update the state.
-        setPlayers(response.data);
-      } catch (error) {
-        console.error(`An error occurs while fetching the users: \n${handleError(error)}`);
-        console.error("Details:", error);
-        alert("Something went wrong while fetching the users!");
-      }
-    }
-    fetchData();
-  }, []);
-
-
-
-  let playerlist = <Spinner />;
-  if (players) {
-    playerlist = (
-      <ul>{players.map((player) => (
-          <Players player={player} key={player.userId} />
-        ))}
-      </ul>
-    );
-    localStorage.setItem("players", JSON.stringify(players));
-
-  }
-
-  let playerlist2 = JSON.parse(localStorage.getItem("players"));
-  let players_local = [];
-  
-  if (playerlist2) {
-    playerlist2.forEach((player) => {
-      players_local.push([player.username, player.userId]);
-    });
-  }
-localStorage.setItem("players_local",players_local);
-console.log("Players: ",localStorage.getItem("players_local"))
-const playerId=localStorage.getItem("players_local").split(',')[1]
-console.log("playerid: ",playerId)
-
-
-  const setLocalStorageItems = (question) => {
-    const cityNamesString = JSON.stringify([question.option1, question.option2, question.option3, question.option4]);
-    localStorage.setItem("citynames2", cityNamesString);
-    localStorage.setItem("PictureUrl", question.pictureUrl);
-    localStorage.setItem("CorrectOption", question.correctOption);
-  };
-
-
-  
     const fetchQuestion = async (gameId) => {
-      try {
-        const response = await api.put(`games/${gameId}`);
-        const question = response.data;
-        setLocalStorageItems(question);
-        return question;
-      } catch (error) {
-        throw error;
-      }
+        try {
+            const response = await api.put(`games/${gameId}`);
+            setLocalStorageItems(response.data);
+            console.log(response.data);
+        } catch (error) {
+            throw error;
+        }
     };
-  
-   
-  
-  
-  const startGameSingleplayer = async (category, gameRounds, gameDuration) => {
-    try {
-      localStorage.setItem("gameRounds",gameRounds)
-      
-      
-      let category_uppercase = category.toUpperCase();
-  
-      const requestBody = {
-        category: category_uppercase,
-        totalRounds: gameRounds,
-        countdownTime: gameDuration,
-      };
-      localStorage.removeItem("citynames2");
-      localStorage.removeItem("PictureUrl");
-      localStorage.removeItem("CorrectOption");
-      
-      const response = await api.post("/games", requestBody);
-      
-      const gameId = response.data.gameId;
-      await localStorage.setItem("gameId", gameId);
-      
-      handleAddPlayer(playerId);
-      setTimeout(() => {
-        history.push(`/gamePage/${gameId}/RounddownCountdown`);
-      }, 1000);
-  
-  
 
-    } catch (error) {
-      alert(`Something went wrong during game start: \n${handleError(error)}`);
-    }
-    localStorage.setItem("countdownTime", countdownTime);  
-    localStorage.setItem("sameCoundownTime",countdownTime);
-    localStorage.setItem("sameCoundownTime",countdownTime);
-    localStorage.setItem("thisRound",1);
-    localStorage.setItem("totalRounds",gameRounds);
-  };
-  
-  
+    const createGame = async (category, gameRounds, gameDuration) => {
+        try {
+            let category_uppercase = category.toUpperCase();
 
+            localStorage.setItem("totalRounds", gameRounds);
+            localStorage.setItem("gamePlayer", targetPlayerNumber);
+            localStorage.setItem("category", selectedCategory);
+            localStorage.setItem("roundNumber", 0);
+            localStorage.removeItem("citynames2");
+            localStorage.removeItem("PictureUrl2");
+            localStorage.removeItem("CorrectOption");
 
-const [username, setUsername] = useState('');
+            // Create Game
+            const requestBody = {
+                category: category_uppercase,
+                totalRounds: gameRounds,
+                countdownTime: gameDuration,
+            };
+            const response = (await api.post("/games", requestBody)).data;
+            localStorage.setItem("gameId", response.gameId);
 
-const handleUsernameChange = (event) => {
-  setUsername(event.target.value);
-};
+            const playerID = localStorage.getItem("userId");
+            localStorage.setItem("targetPlayerNumber", targetPlayerNumber);
 
-const handleAddPlayer = async (playerId) => {
-  try {
-    const gameId=localStorage.getItem("gameId");
-    const response = await api.post(`/games/${gameId}/players/${playerId}`);
-    console.log('Player added successfully', response);
-  } catch (error) {
-    console.error('Error adding player', error);
-  }
-};
-
-const startGameMultiplayer = async (category, gameRounds, gameDuration) => {
-  try {
-    let category_uppercase = category.toUpperCase();
-
-    const requestBody = {
-      category: category_uppercase,
-      totalRounds: gameRounds,
-      countdownTime: gameDuration,
+            localStorage.setItem("score", 0);
+            handleAddPlayer(playerID);
+            localStorage.setItem("isServer", 1);
+            history.push("/StartGamePage");
+        } catch (error) {
+            alert(
+                `Something went wrong during game start: \n${handleError(
+                    error
+                )}`
+            );
+        }
     };
-    
-    const response = await api.post("/games", requestBody);
-    const gameId = response.data.gameId;
-    localStorage.setItem("gameId", gameId);
-    console.log(localStorage.getItem("playerId"))
-    //handleAddPlayer(localStorage.getItem("po"))
-    
-    history.push(`/gamePage/${gameId}`);
-  } catch (error) {
-    alert(`Something went wrong during game start: \n${handleError(error)}`);
-  }
-};
 
-localStorage.setItem("countdownTime", countdownTime);  
-localStorage.setItem("sameCoundownTime",countdownTime);
+    const startGameSingleplayer = async (
+        category,
+        gameRounds,
+        gameDuration
+    ) => {
+        try {
+            //create gameID
+            localStorage.setItem("score", 0);
+            localStorage.setItem("category", category);
+            localStorage.setItem("totalRounds", gameRounds);
+            localStorage.setItem("roundNumber", 1);
 
-  const [selectedCategory, setSelectedCategory] = useState("Europe");
-  return (
-    <div className="lobby container">
-      <p style={{fontSize: '48px', marginBottom: '5px'}}>
-        <div>Game Lobby</div>
-      </p>
-      <div className="lobby layout">
-        <InformationContainer className="lobby container_left" id="information-container">
-          <div style={{fontSize:'40px'}}>
-            Game Settings
-          </div>
-          <div style={{ display: 'grid', gridTemplateColumns: '1fr auto 1fr', gap: '10px' }}>
-            
-         <div style={{ textAlign: 'right' }}><span style={{ fontSize: '20px' }}>Singleplayer</span></div>
-            <div>
-              <Switch checked={isMultiplayer}
-              onChange={handleToggle}
-              offColor="#1979b8"
-              onColor="#1979b8"
-              checkedIcon={false}
-              uncheckedIcon={false} />
+            const requestBody = {
+                category: category,
+                totalRounds: gameRounds,
+                countdownTime: gameDuration,
+            };
+            const response = (await api.post("/games", requestBody)).data;
+            const gameId = response.gameId;
+
+            localStorage.setItem("gameId", gameId);
+            await fetchQuestion(gameId);
+            await handleAddPlayer(localStorage.getItem("userId"));
+            setTimeout(() => {
+                history.push(`/gamePage/${gameId}/RounddownCountdown`);
+            }, 1000);
+        } catch (error) {
+            alert(
+                `Something went wrong during game start: \n${handleError(
+                    error
+                )}`
+            );
+        }
+    };
+
+    const handleAddPlayer = async (playerID) => {
+        try {
+            const gameID = localStorage.getItem("gameId");
+            const response = await api.post(
+                `/games/${gameID}/players/${playerID}`
+            );
+        } catch (error) {
+            console.error("Error adding player", error);
+        }
+    };
+
+    localStorage.setItem("countdownTime", countdownTime);
+    localStorage.setItem("sameCoundownTime", countdownTime);
+
+    return (
+        <div className="lobby container">
+            <div className="lobby layout">
+                <InformationContainer
+                    className="lobby container_left"
+                    id="information-container"
+                >
+                    <div style={{ fontSize: "40px" }}>Game Settings</div>
+                    <div
+                        style={{
+                            display: "grid",
+                            gridTemplateColumns: "1fr auto 1fr",
+                            gap: "10px",
+                        }}
+                    >
+                        <div style={{ textAlign: "right" }}>
+                            <span style={{ fontSize: "20px" }}>
+                                Singleplayer
+                            </span>
+                        </div>
+                        <div>
+                            <Switch
+                                checked={isMultiplayer}
+                                onChange={handleToggle}
+                                offColor="#1979b8"
+                                onColor="#1979b8"
+                                checkedIcon={false}
+                                uncheckedIcon={false}
+                            />
+                        </div>
+                        <div>
+                            <span style={{ fontSize: "20px" }}>
+                                Multiplayer
+                            </span>
+                        </div>
+                    </div>
+                    <div className="lobby category-select">
+                        <InputLabel className="lobby label">
+                            Category
+                        </InputLabel>
+                        <Select
+                            labelId="demo-simple-select-label"
+                            id="demo-simple-select"
+                            value={selectedCategory}
+                            label="category"
+                            onChange={(e) =>
+                                setSelectedCategory(e.target.value)
+                            }
+                            inputProps={{
+                                MenuProps: {
+                                    sx: {
+                                        borderRadius: "10px",
+                                    },
+                                    MenuListProps: {
+                                        sx: {
+                                            backgroundColor: "#1979b8",
+                                            color: "white",
+                                        },
+                                    },
+                                },
+                            }}
+                            className="lobby category"
+                        >
+                            <MenuItem value={"EUROPE"}>Europe</MenuItem>
+                            <MenuItem value={"ASIA"}>Asia</MenuItem>
+                            <MenuItem value={"NORTH_AMERICA"}>
+                                North America
+                            </MenuItem>
+                            <MenuItem value={"SOUTH_AMERICA"}>
+                                South America
+                            </MenuItem>
+                            <MenuItem value={"AFRICA"}>Africa</MenuItem>
+                            <MenuItem value={"OCEANIA"}>Oceania</MenuItem>
+                            <MenuItem value={"WORLD"}>World</MenuItem>
+                        </Select>
+                    </div>
+                    <div className="lobby category-select">
+                        <InputLabel className="lobby label">Rounds:</InputLabel>
+                        <TextField
+                            className="lobby round"
+                            inputProps={{
+                                style: { textAlign: "center" },
+                            }}
+                            placeholder="enter number of rounds..."
+                            value={gameRounds}
+                            onChange={(e) => setGameRounds(e.target.value)}
+                        />
+                    </div>
+                </InformationContainer>
             </div>
-            <div><span style={{ fontSize: '20px'}}>Multiplayer</span></div>
-          </div>
-          
-          <div><label className="lobby label">
-            <label>Pick a city category:</label>
-              <select value={selectedCategory} onChange={e => setSelectedCategory(e.target.value)}>
-                <option value="Europe">Europe</option>
-                <option value="Asia">Asia</option>
-                <option value="North America">North America</option>
-                <option value="South America">South America</option>
-                <option value="Africa">Africa</option>
-                <option value="Oceania">Oceania</option>
-                <option value="World">World</option>
-              </select>
-          </label></div>
-          
-          <div><label className="lobby label">
-            Enter Number of Rounds:
-                <input className="lobby input" 
-                  style={{marginLeft:"10px", textAlign:"center"}}
-                  placeholder="enter number of rounds..."
-                  value={gameRounds}
-                  onChange={e => setGameRounds(e.target.value)}
-                />
-          </label></div>
+            <div className="lobby buttons">
+                {isMultiplayer ? (
+                    <Button
+                        style={{ display: "inline-block", margin: "0 10px" }}
+                        onClick={() =>
+                            createGame(selectedCategory, gameRounds, 30)
+                        }
+                    >
+                        Create Game
+                    </Button>
+                ) : (
+                    <Button
+                        style={{ display: "inline-block", margin: "0 10px" }}
+                        onClick={() =>
+                            startGameSingleplayer(
+                                selectedCategory,
+                                gameRounds,
+                                countdownTime
+                            )
+                        }
+                    >
+                        Start Game
+                    </Button>
+                )}
+                <Button
+                    style={{ display: "inline-block", margin: "0 10px" }}
+                    // onClick={() => joinMultiPlayerGame()}
+                    onClick={() => history.push("/JoinGame")}
+                >
+                    Join Multiplayer Game
+                </Button>
 
-          <div><label className="lobby label">
-            Enter Round Duration:
-                <input className="lobby input" 
-                  style={{marginLeft:"10px", textAlign:"center"}}
-                  placeholder="enter round duration..."
-                  value={countdownTime}
-                  onChange={e => setCountdownTime(e.target.value)}
-                />
-          </label></div>
-
-          <div><label className="lobby label">
-      Enter username to add to game:
-      <input className="lobby input" 
-        style={{marginLeft:"10px", textAlign:"center"}}
-        placeholder="enter username..."
-        value={username} onChange={handleUsernameChange} />
-      <button onClick={handleAddPlayer}>Add player</button>
-          </label></div>
-        </InformationContainer>
-
-        <InformationContainer className="lobby container_right" 
-        style={{ display: 'flex', flexDirection: 'column' }}>
-          <p style={{ fontSize: '20px', marginBottom: '20px'}}>
-            <div>Users in the lobby:</div></p>
-          <div>
-          {playerlist}
-          </div>
-        </InformationContainer>
-      </div>
-    <div className="lobby buttons">
-    <Button style={{ display: 'inline-block', margin: '0 10px' }}onClick={() => isMultiplayer ? startGameMultiplayer(selectedCategory,gameRounds,30) : startGameSingleplayer(selectedCategory,gameRounds,countdownTime)}>Start Game</Button>
-    <Button style={{ display: 'inline-block', margin: '0 10px'}}onClick={() => history.push("/home")}>Invite to Game</Button>
-    <Button style={{display: 'inline-block', margin: '0 10px'}}onClick={() => history.push("/home")}>Back to Home Page </Button>
-    <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', marginBottom: '10px' }}>
-    </div><div></div></div></div>);};
+                <Button
+                    style={{ display: "inline-block", margin: "0 10px" }}
+                    onClick={() => history.push("/home")}
+                >
+                    Back to Home Page{" "}
+                </Button>
+                <div
+                    style={{
+                        display: "flex",
+                        justifyContent: "center",
+                        alignItems: "center",
+                        marginBottom: "10px",
+                    }}
+                ></div>
+                <div></div>
+            </div>
+        </div>
+    );
+};
 
 export default Lobby;

@@ -9,7 +9,7 @@ import PropTypes from "prop-types";
 
 import "styles/views/home/Lobby.scss";
 
-const Players = ({ player }) => <div className="user user-info">Jano</div>;
+const Players = ({ player }) => <div className="user user-info">Playername:{player.playerName} & PlayerRank{player.rank}</div>;
 Players.propTypes = {
   player: PropTypes.object,
 }; 
@@ -17,7 +17,7 @@ Players.propTypes = {
 const RoundCountdown = () => {
   // use react-router-dom's hook to access the history
   const [roundNumber, setRoundNumber] = useState(
-  localStorage.getItem("totalRounds")
+  localStorage.getItem("roundNumber")
   );
   const [score, setScore] = useState(localStorage.getItem("playerScore"));
   const history = useHistory();
@@ -33,6 +33,23 @@ const RoundCountdown = () => {
     var currentRound = response.data.currentRound;
     // input User Ranking when implemented
   };
+
+
+
+  const endGame = async (gameId) => {
+    try {
+      const response = await api.get(`/games/${gameId}/results`);
+      console.log('Game result:', response.data);
+      // Do something with the response, e.g. update state or redirect to a new page
+    } catch (error) {
+      console.error('Error getting game result:', error);
+    }
+
+    history.push(`/GameFinishPage/`);
+
+  }
+
+  
 
   useEffect(() => {
     const intervalId = setInterval(() => {
@@ -51,7 +68,7 @@ const RoundCountdown = () => {
       clearInterval(intervalId);
       setTimeout(() => {
         history.push(`/gamePage/${gameId}`);
-      }, 1000);
+      }, 500);
     }
   }, [secondsLeft, intervalId]);
 
@@ -59,6 +76,7 @@ const RoundCountdown = () => {
     try {
       const response = await api.put(`/games/${gameId}`);
       const question = response.data;
+  
 
       const cityNamesString = JSON.stringify([
         question.option1,
@@ -82,11 +100,10 @@ const RoundCountdown = () => {
         const response = await api.get(
           `/games/${localStorage.getItem("gameId")}/ranking`
         );
-        await new Promise((resolve) => setTimeout(resolve, 1000));
         // Get the returned users and update the state.
         console.log("this is what i want",response)
         setPlayers(response.data);
-        console.log(players);
+        console.log(response.data);
 
         
       } catch (error) {
@@ -109,7 +126,7 @@ const RoundCountdown = () => {
     playerlist = (
       <ul>
         {players.map((player) => (
-          <Players key={player.rank} player={player.playerName} />
+          <Players key={player.rank} player={player} />
         ))}
       </ul>
     );
@@ -122,10 +139,14 @@ const RoundCountdown = () => {
     console.log("this is what i want", response2);
   };
 
-  const total = localStorage.getItem("totalRounds")
-  const now = localStorage.getItem("thisRound")
+  const totalRounds = localStorage.getItem("totalRounds")
+
+  console.log("total: ",totalRounds, "roundNumber:",roundNumber);
+  if (roundNumber > totalRounds) {
+    endGame(gameId);}
 
   return (
+    
     <div className="round countdown container">
       <div style={{ position: "fixed", top: 75, left: 75 }}>
         <Button
@@ -142,7 +163,7 @@ const RoundCountdown = () => {
         >
           <div style={{ fontSize: "40px" }}>
             {/* Replace 2 with {currentRound+1} and 5 with {roundNumber}*/}
-            Round {now} of {total} is starting soon...
+            Round {roundNumber} of {totalRounds} is starting soon...
           </div>
         </InformationContainer>
         <div className="lobby layout" style={{ flexDirection: "row" }}>

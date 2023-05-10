@@ -11,7 +11,7 @@ import Typography from "@mui/material/Typography";
 import Modal from "@mui/material/Modal";
 import Box from "@mui/material/Box";
 
-import "styles/views/History.scss";
+import "styles/views/home/History.scss";
 
 const Answers = ({ answer }) => (
   <div className="history label">
@@ -37,8 +37,9 @@ const style = {
 const HistoryPage = () => {
   const history = useHistory();
   const [userGameInfo, setUserGameInfo] = useState([]);
-  const [userGameHistoryScore, setUserGameHistoryScore] = useState(0);
+  const [userGameHistoryStats, setUserGameHistoryStats] = useState();
   const [userGameHistoryAnswer, setUserGameHistoryAnswer] = useState([]);
+
   const [open, setOpen] = useState(false);
   const [gameId, setGameId] = useState(1);
   const handleOpen = (gameId) => {setGameId(gameId); setOpen(true);};
@@ -47,8 +48,7 @@ const HistoryPage = () => {
   useEffect(() => {
     async function fetchGameInfoData() {
       try {
-        const url = "/users/" + localStorage.getItem("userId") + "/gameInfo";
-        const response = await api.get(url);
+        const response = await api.get(`/users/${localStorage.getItem("userId")}/gameInfo`);
         // delays continuous execution of an async operation for 1 second.
         // This is just a fake async call, so that the spinner can be displayed
         await new Promise((resolve) => setTimeout(resolve, 1000));
@@ -69,14 +69,14 @@ const HistoryPage = () => {
   async function fetchGameHistoryData(gameId) {
     try {
       const url = "/users/"+localStorage.getItem("userId") + "/gameHistories/"+gameId;
-      const responseScore = await api.get(url + "/score");
+      const responseStats = await api.get(url + "/stats");
       const responseAnswer = await api.get(url + "/answer");
       // delays continuous execution of an async operation for 1 second.
       // This is just a fake async call, so that the spinner can be displayed
       await new Promise((resolve) => setTimeout(resolve, 1000));
       // Get the returned users and update the state.
-      setUserGameHistoryScore(responseScore.data);
-      console.log(responseScore);
+      setUserGameHistoryStats(responseStats.data);
+      console.log(responseStats);
       setUserGameHistoryAnswer(responseAnswer.data);
       console.log(responseAnswer);
       
@@ -103,41 +103,44 @@ const HistoryPage = () => {
         </tr>
       </thead>
       <tbody>
-          {userGameInfo.map((gameInfo, index) => (
-          <tr className={index % 2 !== 0 ? "odd" : "even"} key={gameInfo.gameId}>
-            <td style={{ width: "12%", textAlign: "center" }}>{gameInfo.gameId}</td>
-            <td style={{ width: "20%", textAlign: "center" }}>{gameInfo.category}</td>
-            <td style={{ width: "20%", textAlign: "center" }}>{new Date(gameInfo.gameDate).toISOString().slice(0,10)}</td>
-            <td style={{ width: "20%", textAlign: "center" }}>{gameInfo.gameRounds}</td>
-            <td style={{ width: "20%", textAlign: "center" }}>{gameInfo.playerNum}</td>
-            <td>
-              {" "}
-              <IconButton title="Detials" color="primary"
-                onClick={() => {handleOpen(gameInfo.gameId); fetchGameHistoryData(gameInfo.gameId);}}
-              >
-                <ArrowDropDownCircleIcon />
-              </IconButton>
-            </td>
-            <Modal open={open} onClose={handleClose}
-              aria-labelledby="modal-modal-title"
-              aria-describedby="modal-modal-description"
+        {userGameInfo.map((gameInfo, index) => (
+        <tr className={index % 2 !== 0 ? "odd" : "even"} key={gameInfo.gameId}>
+          <td style={{ width: "12%", textAlign: "center" }}>{gameInfo.gameId}</td>
+          <td style={{ width: "20%", textAlign: "center" }}>{gameInfo.category}</td>
+          <td style={{ width: "20%", textAlign: "center" }}>{new Date(gameInfo.gameDate).toISOString().slice(0,10)}</td>
+          <td style={{ width: "20%", textAlign: "center" }}>{gameInfo.gameRounds}</td>
+          <td style={{ width: "20%", textAlign: "center" }}>{gameInfo.playerNum}</td>
+          <td>
+            {" "}
+            <IconButton title="Detials" color="primary"
+              onClick={() => {handleOpen(gameInfo.gameId); fetchGameHistoryData(gameInfo.gameId);}}
             >
-              <Box color="primary" sx={style}>
-                <Typography id="modal-modal-title" variant="h6" component="h2">
-                  Game ID - {gameId}
-                </Typography>
-                <Typography id="modal-modal-description" sx={{ mt: 2 }}>
-                  Score: {userGameHistoryScore}
-                </Typography>
-                <Typography id="modal-modal-description" sx={{ mt: 2 }}>
-                  <div>{userGameHistoryAnswer.map((answer) => (
-                      <Answers answer={answer}/>
-                    ))}</div>
-                </Typography>
-              </Box>
-            </Modal>
-          </tr>
-          ))}
+              <ArrowDropDownCircleIcon />
+            </IconButton>
+          </td>
+          <Modal open={open} onClose={handleClose}
+            aria-labelledby="modal-modal-title"
+            aria-describedby="modal-modal-description"
+          >
+            <Box color="primary" sx={style}>
+              <Typography id="modal-modal-title" variant="h6" component="h2">
+                Game ID - {gameId}
+              </Typography>
+              <Typography id="modal-modal-description" sx={{ mt: 2 }}>
+                Score: {userGameHistoryStats.gameScore}
+              </Typography>
+              <Typography id="modal-modal-description" sx={{ mt: 2 }}>
+                Correct Rate: {userGameHistoryStats.correctRate}
+              </Typography>
+              <Typography id="modal-modal-description" sx={{ mt: 2 }}>
+                <div>{userGameHistoryAnswer.map((answer) => (
+                    <Answers answer={answer}/>
+                  ))}</div>
+              </Typography>
+            </Box>
+          </Modal>
+        </tr>
+        ))}
       </tbody>
     </table>
   );
