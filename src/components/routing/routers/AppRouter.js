@@ -6,9 +6,9 @@ import { LobbyGuard } from "components/routing/routeProtectors/LobbyGuard";
 
 import Login from "components/views/Login";
 import Register from "components/views/Register";
-import Lobby from "components/views/Lobby";
+import Lobby from "components/views/home/Lobby";
 import JoinGame from "components/views/game/JoinGame";
-import RoundCountdown from "components/views/home/RoundCountdown";
+import RoundCountdown from "components/views/game/RoundCountdown";
 
 import SingleGamePreparePage from "components/views/game/SinglePlayerGame/SingleGamePreparePage";
 import SingleGamePage from "components/views/game/SinglePlayerGame/SingleGamePage";
@@ -16,7 +16,7 @@ import SingleGamePage from "components/views/game/SinglePlayerGame/SingleGamePag
 import CreatedGamePage from "components/views/game/MultiPlayerGame/CreatedGamePage";
 import MutliPlayerGamePreparePage from "components/views/game/MultiPlayerGame/MultiPlayerGamePreparePage";
 import MultiPlayerGamePage from "components/views/game/MultiPlayerGame/MultiPlayerGamePage";
-import GameFinishPage from "components/views/game/MultiPlayerGame/GameFinishPage";
+import MultiPlayerGameFinishPage from "components/views/game/MultiPlayerGame/GameFinishPage";
 
 /**
  * Main router of your application.
@@ -31,9 +31,9 @@ const AppRouter = () => {
     <BrowserRouter>
       <Switch>
         {/* default path */}
-        <Route exact path="">
+        {/* <Route exact path="">
           <Redirect to="/login" />
-        </Route>
+        </Route> */}
         <Route exact path="/">
           <Redirect to="/login" />
         </Route>
@@ -76,12 +76,6 @@ const AppRouter = () => {
           <HomeGuard>
             <HomeRouter base="/RoundCountdown" />
           </HomeGuard>
-        </Route>
-
-        <Route path="/GameFinish">
-          <GameFinishPage>
-              <HomeRouter base="/home" />
-          </GameFinishPage>
         </Route>
 
       </Switch>
