@@ -103,41 +103,41 @@ const HistoryPage = () => {
         </tr>
       </thead>
       <tbody>
-          {userGameInfo.map((gameInfo, index) => (
-          <tr className={index % 2 !== 0 ? "odd" : "even"} key={gameInfo.gameId}>
-            <td style={{ width: "12%", textAlign: "center" }}>{gameInfo.gameId}</td>
-            <td style={{ width: "20%", textAlign: "center" }}>{gameInfo.category}</td>
-            <td style={{ width: "20%", textAlign: "center" }}>{new Date(gameInfo.gameDate).toISOString().slice(0,10)}</td>
-            <td style={{ width: "20%", textAlign: "center" }}>{gameInfo.gameRounds}</td>
-            <td style={{ width: "20%", textAlign: "center" }}>{gameInfo.playerNum}</td>
-            <td>
-              {" "}
-              <IconButton title="Detials" color="primary"
-                onClick={() => {handleOpen(gameInfo.gameId); fetchGameHistoryData(gameInfo.gameId);}}
-              >
-                <ArrowDropDownCircleIcon />
-              </IconButton>
-            </td>
-            <Modal open={open} onClose={handleClose}
-              aria-labelledby="modal-modal-title"
-              aria-describedby="modal-modal-description"
+        {userGameInfo.map((gameInfo, index) => (
+        <tr className={index % 2 !== 0 ? "odd" : "even"} key={gameInfo.gameId}>
+          <td style={{ width: "12%", textAlign: "center" }}>{gameInfo.gameId}</td>
+          <td style={{ width: "20%", textAlign: "center" }}>{gameInfo.category}</td>
+          <td style={{ width: "20%", textAlign: "center" }}>{new Date(gameInfo.gameDate).toISOString().slice(0,10)}</td>
+          <td style={{ width: "20%", textAlign: "center" }}>{gameInfo.gameRounds}</td>
+          <td style={{ width: "20%", textAlign: "center" }}>{gameInfo.playerNum}</td>
+          <td>
+            {" "}
+            <IconButton title="Detials" color="primary"
+              onClick={() => {handleOpen(gameInfo.gameId); fetchGameHistoryData(gameInfo.gameId);}}
             >
-              <Box color="primary" sx={style}>
-                <Typography id="modal-modal-title" variant="h6" component="h2">
-                  Game ID - {gameId}
-                </Typography>
-                <Typography id="modal-modal-description" sx={{ mt: 2 }}>
-                  Score: {userGameHistoryScore}
-                </Typography>
-                <Typography id="modal-modal-description" sx={{ mt: 2 }}>
-                  <div>{userGameHistoryAnswer.map((answer) => (
-                      <Answers answer={answer}/>
-                    ))}</div>
-                </Typography>
-              </Box>
-            </Modal>
-          </tr>
-          ))}
+              <ArrowDropDownCircleIcon />
+            </IconButton>
+          </td>
+          <Modal open={open} onClose={handleClose}
+            aria-labelledby="modal-modal-title"
+            aria-describedby="modal-modal-description"
+          >
+            <Box color="primary" sx={style}>
+              <Typography id="modal-modal-title" variant="h6" component="h2">
+                Game ID - {gameId}
+              </Typography>
+              <Typography id="modal-modal-description" sx={{ mt: 2 }}>
+                Score: {userGameHistoryScore}
+              </Typography>
+              <Typography id="modal-modal-description" sx={{ mt: 2 }}>
+                <div>{userGameHistoryAnswer.map((answer) => (
+                    <Answers answer={answer}/>
+                  ))}</div>
+              </Typography>
+            </Box>
+          </Modal>
+        </tr>
+        ))}
       </tbody>
     </table>
   );
