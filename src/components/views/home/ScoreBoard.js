@@ -59,11 +59,11 @@ const ScoreBoard = () => {
       <tbody>
           {userRanking.map((user, index) => (
           <tr className={index % 2 !== 0 ? "odd" : "even"} key={user.userId} onClick={() => goProfile(user.userId)}>
-            <td style={{ width: "8%", textAlign: "center" }}>{user.rank}</td>
-            <td style={{ width: "22%", textAlign: "center" }}>{user.username}</td>
-            <td style={{ width: "20%", textAlign: "center" }}>{user.score}</td>
-            <td style={{ width: "20%", textAlign: "center" }}>{user.gameNum}</td>
-            <td style={{ width: "20%", textAlign: "center" }}>{new Date(user.createDay).toISOString().slice(0,10)}</td>
+            <td style={{width: "8%"}}>{user.rank}</td>
+            <td style={{width: "22%"}}>{user.username}</td>
+            <td style={{width: "20%"}}>{user.score}</td>
+            <td style={{width: "20%"}}>{user.gameNum}</td>
+            <td style={{width: "20%"}}>{new Date(user.createDay).toISOString().slice(0,10)}</td>
           </tr>
           ))}
       </tbody>
