@@ -1,0 +1,184 @@
+@import "styles/theme";
+
+/* The '&' is a shorthand for the containing element
+  for more information visit https://sass-lang.com/guide
+ */
+.roundcountdown {
+    &.layout {
+        padding: 1em;
+        display: flex;
+        flex-direction: row;
+        align-items: center;
+        border-radius: $borderRadius;
+        column-gap: 1em;
+    }
+    &.container {
+        border-radius: $borderRadius;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+    }
+    &.container_left {
+        background: rgba(25, 121, 184, 0.5);
+        padding: 2em;
+        border-radius: $borderRadius;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        box-shadow: $dropShadow;
+        row-gap: 2em;
+        font-weight: bold;
+    }
+    &.container_right {
+        padding: 2em;
+        border-radius: $borderRadius;
+        display: flex;
+        flex-direction: column;
+        align-items: left;
+    }
+    &.leaderboard-container {
+        padding: 2em;
+        border-radius: $borderRadius;
+        display: flex;
+        flex-direction: column;
+        align-items: left;
+        row-gap: 2em;
+        font-weight: bold;
+        flex: 1;
+        margin-right: 200px;
+    }
+    &.countdown-container {
+        padding: 2em;
+        border-radius: $borderRadius;
+        display: flex;
+        flex-direction: column;
+        align-items: left;
+        row-gap: 2em;
+        font-weight: bold;
+        flex: 1;
+    }
+    &.user-list {
+        padding-left: 0;
+    }
+    &.user-item {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+    }
+    &.category-select {
+        display: flex;
+    }
+    &.label {
+        font-size: 20px;
+        font-weight: 400;
+        color: $textColor;
+        display: inline;
+        padding: 10px;
+    }
+    &.category {
+        margin-left: 20px;
+        width: 60%;
+        border-radius: 10px;
+        background-color: #1979b8;
+		color: $textColor;
+        &.Mui-disabled {
+            color: $textColor;
+        }
+    }
+    &.player {
+        margin-left: 30px;
+        width: 60%;
+        border-radius: 10px;
+        background-color: #1979b8;
+		color: $textColor;
+    }
+    &.round {
+        margin-left: 30px;
+        width: 60%;
+        border-radius: 10px;
+        background-color: #1979b8;
+		color: $textColor;
+        .MuiInputBase-input {
+			background-color: #1979b8;
+            color: $textColor;
+            height: 30px;
+            font-size: 18px;
+            font-weight: 400;
+            border: none;
+            border-radius: 0.5em;
+        }
+    }
+    &.button-container {
+        display: flex;
+        flex-direction: row;
+        justify-content: center;
+        margin-top: 2em;
+        row-gap: 2em;
+        column-gap: 1em;
+    }
+    & p,
+    h2 {
+        font-size: 20px;
+        font-weight: 400;
+        color: $textColor;
+        margin: 0.5em 0;
+    }
+}
+
+
+
+.countdown-text {
+  font-size: 50px;
+}
+
+.exit-button {
+    position: absolute;
+    background-color: #1979b8 !important;
+    top: 30px;
+    left: 30px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background-color: transparent;
+    border: none;
+    cursor: pointer;
+    font-size: 2rem;
+    color: white;
+    text-transform: uppercase;
+    font-weight: bold;
+    padding: 1rem;
+    transition: all 0.3s;
+
+    &:hover {
+        background-color: #ccc;
+    }
+}
+.leaderboard {
+  table {
+    width: 200%;
+    border-collapse: collapse;
+    font-weight: bold;
+    font-size: 20px;
+
+    th, td {
+      padding: 10px;
+      text-align: left;
+      border-bottom: 1px solid #ccc;
+      text-align: center;
+    }
+
+    th {
+      background-color: rgba(25, 121, 184, 0.9);
+      font-weight: bold;
+    }
+
+    tbody tr {
+      transition: transform 1s ease;
+    }
+  }
+}
+
+
+
+
