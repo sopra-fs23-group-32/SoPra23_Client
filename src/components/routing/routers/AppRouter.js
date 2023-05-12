@@ -51,12 +51,11 @@ const AppRouter = () => {
           <LobbyGuard><Lobby /></LobbyGuard>
         </Route>
 
-        <Route exact path={`/gamePage/:gameId`}>
-          <SingleGamePage />
+        <Route exact path={`/SingleGamePage/:gameId/RoundCountPage`}>
+          <SingleGamePreparePage />
         </Route>
-        
-        <Route exact path={`/gamePage/:gameId/RounddownCountdown`}>
-          <RoundCountdown />
+        <Route exact path={`/SingleGamePage/:gameId`}>
+          <SingleGamePage />
         </Route>
 
         <Route path="/StartGamePage">
@@ -69,9 +68,9 @@ const AppRouter = () => {
           <MutliPlayerGamePreparePage />
         </Route>
         <Route exact path={`/MultiGamePage/:gameId`}>
-          <MultiPlayerGamePage />        
+          <MultiPlayerGamePage />
         </Route>
-                
+
         <Route path="/RoundCountdown">
           <HomeGuard>
             <HomeRouter base="/RoundCountdown" />
