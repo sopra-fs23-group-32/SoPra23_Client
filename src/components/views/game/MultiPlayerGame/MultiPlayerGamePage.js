@@ -7,6 +7,8 @@ import Stomp from "stompjs";
 import { getDomain } from "helpers/getDomain";
 import WebSocketType from "models/WebSocketType";
 import GameStatus from "models/GameStatus";
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
 import "styles/views/game/GamePage.scss";
 
@@ -72,7 +74,7 @@ const MultiPlayerGamePage = () => {
             } else if (messagBody.type == WebSocketType.ROUND_UPDATE) {
               const currentRound = Number(localStorage.getItem("roundNumber"));
               localStorage.setItem("roundNumber", currentRound + 1);
-              history.push(`/MultiGamePage/${gameId}/RoundCountPage/`);
+              history.push(`/MultiGamePage/${gameId}/RoundCountPage`);
             }
           }
         );
@@ -121,7 +123,9 @@ const MultiPlayerGamePage = () => {
       setScore(score2);
       localStorage.setItem("score", score2);
     } catch (error) {
-      console.error("Error submitting answer", error);
+//      console.error("Error submitting answer", error);
+        toast.error("Failed in submitting answer!");
+        console.log(handleError(error));
     }
   };
 
@@ -188,6 +192,7 @@ const MultiPlayerGamePage = () => {
           </Grid>
         </Container>
       </div>
+      <ToastContainer />
     </div>
   );
 };

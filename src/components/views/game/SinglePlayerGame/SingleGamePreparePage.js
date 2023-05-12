@@ -7,6 +7,8 @@ import InformationContainer from "components/ui/BaseContainer";
 import Switch from "react-switch";
 import PropTypes from "prop-types";
 import { CountdownCircleTimer } from 'react-countdown-circle-timer';
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
 import "styles/views/game/GamePrepare.scss";
 
@@ -44,7 +46,9 @@ const RoundCountdown = () => {
       console.log('Game result:', response.data);
       // Do something with the response, e.g. update state or redirect to a new page
     } catch (error) {
-      console.error('Error getting game result:', error);
+//      console.error('Error getting game result:', error);
+        toast.error("Cannot get game result!");
+        console.log(handleError(error));
     }
     history.push(`/GameFinishPage/`);
   }
@@ -129,6 +133,7 @@ const RoundCountdown = () => {
           </InformationContainer>
         </div>
       </div>
+      <ToastContainer />
     </div>
   );
 };

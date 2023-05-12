@@ -5,6 +5,8 @@ import { api, handleError } from "helpers/api";
 import InformationContainer from "components/ui/BaseContainer";
 import {Table, TableBody, TableCell, TableContainer,
   TableHead, TableRow, Paper,} from "@mui/material";
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
 import "styles/views/game/FinalPage.scss";
 
@@ -35,13 +37,15 @@ const GameFinishPage = () => {
                 setPlayers(response.data);
                 await api.delete(`games/${localStorage.getItem("gameId")}`);
             } catch (error) {
-                console.error(
-                    `An error occurs while fetching the users: \n${handleError(
-                        error
-                    )}`
-                );
-                console.error("Details:", error);
-                alert("Something went wrong while fetching the users!");
+//                console.error(
+//                    `An error occurs while fetching the users: \n${handleError(
+//                        error
+//                    )}`
+//                );
+//                console.error("Details:", error);
+//                alert("Something went wrong while fetching the users!");
+                toast.error("Something went wrong while fetching the users!");
+                console.log(handleError(error));
             }
         }
         fetchData();
@@ -118,6 +122,7 @@ const GameFinishPage = () => {
                     </Button>
                 </div>
             </div>
+            <ToastContainer />
         </div>
     );
 };

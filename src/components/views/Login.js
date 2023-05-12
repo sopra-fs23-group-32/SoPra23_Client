@@ -8,6 +8,8 @@ import { TextField } from "@mui/material";
 
 import PropTypes from "prop-types";
 import User from 'models/User';
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
 const FormField = (props) => {
     return (
@@ -74,7 +76,9 @@ const Login = props => {
             history.push("/home");
         }
         catch (error) {
-            alert(`An error occurs during the login: \n${handleError(error)}`);
+//          alert(`An error occurs during the login: \n${handleError(error)}`);
+            toast.error(`${error.response.data.message}`);
+            console.log(handleError(error));
         }
     };
 
@@ -131,6 +135,7 @@ const Login = props => {
       </div>
       </section>
 </div>
+<ToastContainer />
     </BaseContainer>
   );
 };

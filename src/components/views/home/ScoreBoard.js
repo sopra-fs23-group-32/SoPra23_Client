@@ -4,6 +4,8 @@ import { api, handleError } from "helpers/api";
 import { Spinner } from "components/ui/Spinner";
 import { Button } from "components/ui/Button";
 import PropTypes from "prop-types";
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
 import "styles/views/home/ScoreBoard.scss";
 
@@ -35,11 +37,8 @@ const ScoreBoard = () => {
         setUserRanking(response.data);
         console.log(response);
       } catch (error) {
-        console.error(
-          `An error occurs while fetching the userRanking: \n${handleError(error)}`
-        );
-        console.error("Details:", error);
-        alert("Something went wrong while fetching the userRanking.");
+        toast.error(`${error.response.data.message}`);
+        console.log(handleError(error));
       }
     }
     fetchData();
@@ -102,6 +101,7 @@ const ScoreBoard = () => {
           Return to Home
         </Button>
       </div>
+      <ToastContainer />
     </div>
   );
 };

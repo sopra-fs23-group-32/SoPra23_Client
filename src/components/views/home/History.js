@@ -12,6 +12,8 @@ import Modal from "@mui/material/Modal";
 import Box from "@mui/material/Box";
 
 import "styles/views/home/History.scss";
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
 const Answers = ({ answer }) => (
   <div className="history label">
@@ -56,11 +58,8 @@ const HistoryPage = () => {
         setUserGameInfo(response.data);
         console.log(response);
       } catch (error) {
-        console.error(
-          `An error occurs while fetching the userGameInfo: \n${handleError(error)}`
-        );
-        console.error("Details:", error);
-        alert("Something went wrong while fetching the userGameInfo.");
+        toast.error(`${error.response.data.message}`);
+        console.log(handleError(error));
       }
     }
     fetchGameInfoData();
@@ -164,7 +163,8 @@ const HistoryPage = () => {
         <Button width="300%" onClick={() => history.push("/home")}>
           Return to Home
         </Button>
-      </div>    
+      </div>
+      <ToastContainer />
     </div>
   );
 };

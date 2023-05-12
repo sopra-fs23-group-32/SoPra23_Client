@@ -4,6 +4,8 @@ import { api, handleError } from "helpers/api";
 import { Spinner } from "components/ui/Spinner";
 import { Button } from "components/ui/Button";
 import PropTypes from "prop-types";
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
 import "styles/views/home/Profile.scss";
 
@@ -75,7 +77,8 @@ const Profile = () => {
 
   const changeProfile = async () => {
       if(oldPwd !== null && oldPwd !== userProfile.password) {
-        alert(`Your old password is wrong, try again.\n`);
+//        alert(`Your old password is wrong, try again.\n`);
+        toast.error("Your old password is wrong, try again.")
       }
       try {
           let requestBody;
@@ -88,10 +91,14 @@ const Profile = () => {
           }
           const userURL = "/users/" + localStorage.getItem("userId");
           await api.put(userURL, requestBody);
+          if (oldPwd === userProfile.password) {
+            window.location.reload();
+          }
       } catch (error) {
-          alert(`Something went wrong while updating your profile.\n${handleError(error)}`);
+          toast.error(`${error.response.data.message}`);
+//          alert(`Something went wrong while updating your profile.\n${handleError(error)}`);
       }
-      window.location.reload();
+
     };
 
 
@@ -161,6 +168,7 @@ const Profile = () => {
           Return to Home
         </Button>
       </div>
+      <ToastContainer />
     </div>
   );
 };

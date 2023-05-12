@@ -10,6 +10,9 @@ import {
     TextField,
 } from "@mui/material";
 import Switch from "react-switch";
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
+
 import "styles/views/home/Lobby.scss";
 const Lobby = () => {
 
@@ -49,6 +52,9 @@ const Lobby = () => {
     };
 
     const createGame = async (category, gameRounds, gameDuration) => {
+        if (gameRounds === 0) {
+          toast.error("The rounds should not be less than 1!")
+        }
         try {
             let category_uppercase = category.toUpperCase();
 
@@ -77,11 +83,9 @@ const Lobby = () => {
             localStorage.setItem("isServer", 1);
             history.push("/StartGamePage");
         } catch (error) {
-            alert(
-                `Something went wrong during game start: \n${handleError(
-                    error
-                )}`
-            );
+//            alert(`Something went wrong during game start: \n${handleError(error)}`);
+              toast.error(`${error.response.data.message}`);
+              console.log(handleError(error));
         }
     };
 
@@ -90,6 +94,10 @@ const Lobby = () => {
         gameRounds,
         gameDuration
     ) => {
+        if (gameRounds === 0) {
+          toast.error("The rounds should not be less than 1")
+        }
+//        else {}
         try {
             //create gameID
             localStorage.setItem("score", 0);
@@ -109,14 +117,12 @@ const Lobby = () => {
             await fetchQuestion(gameId);
             await handleAddPlayer(localStorage.getItem("userId"));
             setTimeout(() => {
-                history.push(`/gamePage/${gameId}/RounddownCountdown`);
+                history.push(`/SinglegamePage/${gameId}/RoundCountPage`);
             }, 1000);
         } catch (error) {
-            alert(
-                `Something went wrong during game start: \n${handleError(
-                    error
-                )}`
-            );
+//            alert(`Something went wrong during game start: \n${handleError(error)}`);
+              toast.error(`${error.response.data.message}`);
+              console.log(handleError(error));
         }
     };
 
@@ -127,7 +133,9 @@ const Lobby = () => {
                 `/games/${gameID}/players/${playerID}`
             );
         } catch (error) {
-            console.error("Error adding player", error);
+//            console.error("Error adding player", error);
+            toast.error(`${error.response.data.message}`);
+            console.log(handleError(error));
         }
     };
 
@@ -272,6 +280,7 @@ const Lobby = () => {
                 ></div>
                 <div></div>
             </div>
+            <ToastContainer />
         </div>
     );
 };

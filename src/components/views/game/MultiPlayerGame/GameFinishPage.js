@@ -12,6 +12,8 @@ import {
   TableRow,
   Paper,
 } from "@mui/material";
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
 import "styles/views/game/FinalPage.scss";
 
@@ -55,9 +57,11 @@ const GameFinishPage = () => {
         console.log("player", responseRanking.data);
       }
       catch (error) {
-        console.error(`An error occurs while saving the game history:\n${handleError(error)}`);
-        console.error("Details:", error);
-        alert("Something went wrong while saving the game history!");
+//        console.error(`An error occurs while saving the game history:\n${handleError(error)}`);
+//        console.error("Details:", error);
+//        alert("Something went wrong while saving the game history!");
+        toast.error("Something went wrong while saving the game history!");
+        console.log(handleError(error));
       }
     };
     fetchData();
@@ -128,7 +132,7 @@ const GameFinishPage = () => {
           Back to Home Screen
         </Button>
       </div>
-      
+      <ToastContainer />
     </div>
   );
 

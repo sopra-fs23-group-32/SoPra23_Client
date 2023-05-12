@@ -7,7 +7,8 @@ import 'styles/views/Register.scss';
 import { TextField } from "@mui/material";
 import BaseContainer from "components/ui/BaseContainer";
 import PropTypes from "prop-types";
-
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
 
 
@@ -77,7 +78,9 @@ const Register = () => {
       // Login successfully worked --> navigate to the route /game in the GameRouter
       history.push(`/home`);
     } catch (error) {
-      alert(`Something went wrong during the login: \n${handleError(error)}`);
+//      alert(`Something went wrong during the login: \n${handleError(error)}`);
+        toast.error(`${error.response.data.message}`);
+        console.log(handleError(error));
     }
   };
 
@@ -133,7 +136,7 @@ const Register = () => {
       </div>
       </div>
       </section>
-
+      <ToastContainer />
     </BaseContainer>
   );
 };

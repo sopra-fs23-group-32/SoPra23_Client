@@ -1,7 +1,9 @@
 import { useHistory } from "react-router-dom";
 import React, { useState, useEffect } from "react";
-import { api } from "helpers/api";
+import {api, handleError} from 'helpers/api';
 import { Grid, Container } from "@mui/material";
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
 import "styles/views/game/GamePage.scss";
 
@@ -43,7 +45,7 @@ const SingleGamePage = () => {
         }
         localStorage.setItem("roundNumber", Number(roundNumber) + 1);
         await getNextGameDetail(gameId);
-        history.push(`/gamePage/${gameId}/RounddownCountdown`);
+        history.push(`/SingleGamePage/${gameId}/RoundCountPage`);
     }
     
     const handleCityNameButtonClick = (cityName) => {
@@ -96,7 +98,9 @@ const SingleGamePage = () => {
 
                 localStorage.setItem("score", score2);
             } catch (error) {
-                console.error("Error submitting answer", error);
+//                console.error("Error submitting answer", error);
+                toast.error("Failed in submitting answer!");
+                console.log(handleError(error));
             }
         } else {
             nextGame();
@@ -179,6 +183,7 @@ const SingleGamePage = () => {
                     <span className="score">Score: {score}</span>
                 </div>
             </div>
+            <ToastContainer />
         </div>
     );
 };
