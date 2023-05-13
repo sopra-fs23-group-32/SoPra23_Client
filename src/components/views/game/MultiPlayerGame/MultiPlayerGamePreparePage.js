@@ -33,7 +33,7 @@ const RoundCountdown = () => {
   );
   const [score, setScore] = useState(localStorage.getItem("playerScore"));
   const history = useHistory();
-  const [duration, setDuration] = useState(10);
+  const [duration, setDuration] = useState(555555555555);
   const [secondsLeft, setSecondsLeft] = useState(duration);
   const [intervalId, setIntervalId] = useState(null);
   const [leaderboardData, setLeaderboardData] = useState([]);
@@ -77,7 +77,7 @@ const RoundCountdown = () => {
       clearInterval(secondsLeft);
       clearInterval(intervalId);
       setTimeout(() => {
-        history.push(`/gamePage/${gameId}`);
+        history.push(`/MultiGamePage/${gameId}`);
       }, 500);
     }
   }, [secondsLeft, intervalId]);
@@ -213,14 +213,17 @@ const RoundCountdown = () => {
               </table>
             </div>
           </InformationContainer>
-          <InformationContainer
-            className="roundcountdown countdown-container"
-            id="information-container"
-          >
-            <div className="countdown-text">
-              <UrgeWithPleasureComponent duration={duration} />
-            </div>
-          </InformationContainer>
+          <div></div>
+          <div></div>
+          <div></div>
+           <InformationContainer
+             className="roundcountdown container_right"
+             id="information-container"
+           >
+           <div className="countdown-text">
+             <UrgeWithPleasureComponent duration={duration} />
+           </div>
+           </InformationContainer>
         </div>
       </div>
       <ToastContainer />

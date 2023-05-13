@@ -30,6 +30,7 @@
         font-weight: bold;
     }
     &.container_right {
+        background: rgba(25, 121, 184, 0);
         padding: 2em;
         border-radius: $borderRadius;
         display: flex;
@@ -37,6 +38,7 @@
         align-items: left;
     }
     &.leaderboard-container {
+        background: rgba(25, 121, 184, 0);
         padding: 2em;
         border-radius: $borderRadius;
         display: flex;
