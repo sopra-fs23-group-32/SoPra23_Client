@@ -145,9 +145,7 @@ const Lobby = () => {
     return (
         <div className="lobby container">
             <div className="lobby layout">
-                <InformationContainer
-                    className="lobby container_left"
-                    id="information-container"
+                <InformationContainer className="lobby container_left"
                 >
                     <div style={{ fontSize: "40px" }}>Game Settings</div>
                     <div
@@ -219,23 +217,32 @@ const Lobby = () => {
                         </Select>
                     </div>
                     <div className="lobby category-select">
-                        <InputLabel className="lobby label">Rounds:</InputLabel>
+                        <InputLabel className="lobby label">
+                            Rounds:
+                        </InputLabel>
                         <TextField
                             className="lobby round"
                             inputProps={{
-                                style: { textAlign: "center" },
-                            }}
+                                sx:{
+                                    "&input":{
+                                        color:'#FFFFFF'
+                                    }
+                                }
+                                
+                            }}                            
                             placeholder="enter number of rounds..."
                             value={gameRounds}
                             onChange={(e) => setGameRounds(e.target.value)}
+                            
                         />
                     </div>
                 </InformationContainer>
             </div>
-            <div className="lobby buttons">
+            <div className="lobby button-container" style={{flexDirection:"column"}}>
+                <div className="lobby button-container">
                 {isMultiplayer ? (
                     <Button
-                        style={{ display: "inline-block", margin: "0 10px" }}
+                        style={{ display: "inline-block", margin: "0 10px", fontSize: "20px"}}
                         onClick={() =>
                             createGame(selectedCategory, gameRounds, 30)
                         }
@@ -244,7 +251,7 @@ const Lobby = () => {
                     </Button>
                 ) : (
                     <Button
-                        style={{ display: "inline-block", margin: "0 10px" }}
+                        style={{ display: "inline-block", margin: "auto"}}
                         onClick={() =>
                             startGameSingleplayer(
                                 selectedCategory,
@@ -256,9 +263,10 @@ const Lobby = () => {
                         Start Game
                     </Button>
                 )}
+                </div>
+                <div>
                 <Button
                     style={{ display: "inline-block", margin: "0 10px" }}
-                    // onClick={() => joinMultiPlayerGame()}
                     onClick={() => history.push("/JoinGame")}
                 >
                     Join Multiplayer Game
@@ -268,7 +276,7 @@ const Lobby = () => {
                     style={{ display: "inline-block", margin: "0 10px" }}
                     onClick={() => history.push("/home")}
                 >
-                    Back to Home Page{" "}
+                    Back to Home Page
                 </Button>
                 <div
                     style={{
@@ -278,9 +286,8 @@ const Lobby = () => {
                         marginBottom: "10px",
                     }}
                 ></div>
-                <div></div>
+                </div>
             </div>
-            <ToastContainer />
         </div>
     );
 };
