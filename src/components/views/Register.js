@@ -9,41 +9,39 @@ import BaseContainer from "components/ui/BaseContainer";
 import PropTypes from "prop-types";
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
-
+import InformationContainer from "components/ui/BaseContainer";
 
 
 const FormField = (props) => {
   return (
-    <div className="register field">
-      <TextField
-                label={props.label}
-
-        className="register input"
+    <div className="login field">
+    <input className="login input"
+        label={props.label}
         placeholder="Enter Username here..."
         value={props.value}
         onChange={(e) => props.onChange(e.target.value)}
-        onKeyDown={(event) => props.onKeyDown(event)}
-      />
+        onKeyDown={(e) => props.onKeyDown(e)}        
+        >
+    </input>
     </div>
   );
 };
 
 const FormField2 = (props) => {
-  return (
-    <div className="register field">
-       <TextField
-                label={props.label}
-        type="password"
-        className="register input"
-        placeholder="Enter Password here..."
-        value={props.value}
-        onChange={e => props.onChange(e.target.value)}
-        onKeyDown={(e) => {
-          props.onKeyDown(e);
-        }}
-      />
-    </div>
-  );
+return (
+  <div className="login field" style={{marginBottom:"0px"}}>
+    <input 
+      label={props.label}
+      type="password"
+      className="login input"
+      placeholder="Enter Password here..."
+      value={props.value}
+      onChange={(e) => props.onChange(e.target.value)}
+      onKeyDown={(e) => props.onKeyDown(e)}
+      id="fullWidth">
+    </input>
+   </div>
+);
 };
 
 FormField.propTypes = {
@@ -92,53 +90,43 @@ const Register = () => {
 
 
   return (
-    <BaseContainer>
+    <div className="Registration container" style={{flexDirection: "column"}}>
+      <InformationContainer className="registration container" style={{fontSize: '48px', width: "fit-content"}}>
+        Registration
+      </InformationContainer>
+    <InformationContainer className="registration container" style={{flexDirection: "column"}}>
+      <div className="registration form">
+        <FormField
+          value={username}
+          onChange={un => setUsername(un)}
+          onKeyDown = {handleKeyDown}
+        />
+       
+        <FormField2 
+          value={password}
+          onChange={n => setPassword(n)}
+          onKeyDown = {handleKeyDown}
+        />
+        <div style={{fontSize:"14px", marginBottom:"20px"}}>
+          <div>The password has to contain one of the following:</div>
+          <div>An uppercase letter, a lowercase letter and a number</div>
+        </div>
 
-    <section className="container">
-  <div className="bg-image"></div>
-  <div className="content" >
     
-  <div></div>
-  <div className="Logo"></div>
-  <div className="headerrow">
-      <div className="headerp1" ><h1>User Registration</h1></div>
-  </div>
 
-
-      <div className="login container">
-        <div className="login form">
-          <FormField
-            value={username}
-            onChange={un => setUsername(un)}
-            onKeyDown = {handleKeyDown}
-          />
-         
-          <FormField2
-            placeholder="mas"
-            value={password}
-            onChange={n => setPassword(n)}
-            onKeyDown = {handleKeyDown}
-          />
-
-      
-
-          <div className="register-button-container" >
-          <Button disabled={!username || !password}  width="40%" onClick={() => doRegister()}>Registration</Button>
-
-          <td>&nbsp;&nbsp;&nbsp;</td>
-          <div className="login-button-container">
-
-          <Button   width="40%" onClick={() => history.push('/login')}>Login here</Button>
-
-          </div>
-          </div>
+        <div className="registration-button-container" style={{display: "flex",justifyContent: 'space-between'}} >
+        <Button style={{flex:1, marginRight:"40px"}} disabled={!username || !password} onClick={() => doRegister()}>
+          Register
+        </Button>
+        <Button style={{flex:1}} onClick={() => history.push('/login')}>
+          Login here
+        </Button>
         </div>
       </div>
-      </div>
-      </section>
-      <ToastContainer />
-    </BaseContainer>
-  );
+    </InformationContainer>
+  </div>
+
+);
 };
 
 

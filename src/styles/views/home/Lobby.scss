@@ -21,6 +21,7 @@
     &.container_left {
         background: transparentize(rgb(65, 64, 64), 0.7);
         padding: 2em;
+        background: #001F3F;
         border-radius: $borderRadius;
         display: flex;
         flex-direction: column;
@@ -83,17 +84,20 @@
 			background-color: #1979b8;
             color: $textColor;
             height: 30px;
-            font-size: 18px;
+            font-size: 14px;
             font-weight: 400;
             border: none;
             border-radius: 0.5em;
+            &::placeholder {
+                color: #D4D4D4;
+              }
         }
     }
+
     &.button-container {
         display: flex;
         flex-direction: row;
         justify-content: center;
-        margin-top: 2em;
         row-gap: 2em;
         column-gap: 1em;
     }
