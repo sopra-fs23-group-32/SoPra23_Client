@@ -20,7 +20,7 @@ const FormField = (props) => {
           placeholder="Enter Username here..."
           value={props.value}
           onChange={(e) => props.onChange(e.target.value)}
-          onKeyDown={(e) => props.onKeyDown(e)}        
+          onKeyDown={(e) => props.onKeyDown(e)}
           >
       </input>
       </div>
@@ -87,8 +87,8 @@ const Login = props => {
         doLogin();
       }
     };
-    
-    
+
+
     return (
       <div className="Login container" style={{flexDirection: "column"}}>
         <InformationContainer className="login container" style={{fontSize: '48px', width: "fit-content"}}>
@@ -101,7 +101,7 @@ const Login = props => {
             onChange={un => setUsername(un)}
             onKeyDown = {handleKeyDown}
           />
-         
+
           <FormField2
             placeholder="mas"
             value={password}
@@ -109,7 +109,7 @@ const Login = props => {
             onKeyDown = {handleKeyDown}
           />
 
-      
+
 
           <div className="login-button-container" style={{display: "flex",justifyContent: 'space-between'}} >
           <Button style={{flex:1, marginRight:"40px"}} disabled={!username || !password} onClick={() => doLogin()}>
@@ -121,6 +121,7 @@ const Login = props => {
           </div>
         </div>
     </InformationContainer>
+    <ToastContainer />
     </div>
 
   );

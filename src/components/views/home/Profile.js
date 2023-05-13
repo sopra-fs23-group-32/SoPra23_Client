@@ -5,6 +5,8 @@ import { Spinner } from "components/ui/Spinner";
 import { Button } from "components/ui/Button";
 import PropTypes from "prop-types";
 import InformationContainer from "components/ui/BaseContainer";
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
 import "styles/views/home/Profile.scss";
 
@@ -79,24 +81,31 @@ const Profile = () => {
 
   const changeProfile = async () => {
       if(oldPwd !== null && oldPwd !== userProfile.password) {
-        alert(`Your old password is wrong, try again.\n`);
+//        alert(`Your old password is wrong, try again.\n`);
+        toast.error("Your old password is wrong, try again.")
       }
-      try {
-          let requestBody;
-          if(username === null) {
-            let username = localStorage.getItem("username");
-            requestBody = JSON.stringify({ username, password, birthDay });
-          }
-          else{
-            requestBody = JSON.stringify({ username, password, birthDay });
-          }
-          const userURL = "/users/" + localStorage.getItem("userId");
-          await api.put(userURL, requestBody);
-      } catch (error) {
-          alert(`Something went wrong while updating your profile.\n${handleError(error)}`);
+      else {
+        try {
+            let requestBody;
+            if(username === null) {
+              let username = localStorage.getItem("username");
+              requestBody = JSON.stringify({ username, password, birthDay });
+            }
+            else{
+              requestBody = JSON.stringify({ username, password, birthDay });
+            }
+            const userURL = "/users/" + localStorage.getItem("userId");
+            await api.put(userURL, requestBody);
+            window.location.reload();
+        } catch (error) {
+            toast.error(`${error.response.data.message}`);
+  //          alert(`Something went wrong while updating your profile.\n${handleError(error)}`);
+        }
       }
-      window.location.reload();
+
+
     };
+
 
 
   useEffect(() => {
@@ -166,6 +175,7 @@ const Profile = () => {
         </Button>
       </div>
       </InformationContainer>
+    <ToastContainer />
     </div>
   );
 };
