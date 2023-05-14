@@ -143,7 +143,7 @@ const Profile = () => {
         <ProfileInfo user={userProfile} setUsername={setUsername} setBirthDay={setBirthDay} setOldPwd={setOldPwd} setPassword={setPassword} />
         <div className="profile button-container">
           {localStorage.getItem("profileId") === localStorage.getItem("userId") ?
-            <Button width="70%"
+            <Button width="50%"
               onClick={() => changeProfile()}
               disabled={!username && !birthDay && !password}
             >
