@@ -145,8 +145,7 @@ const Lobby = () => {
     return (
         <div className="lobby container">
             <div className="lobby layout">
-                <InformationContainer className="lobby container_left"
-                >
+                <InformationContainer className="lobby container_left">
                     <div style={{ fontSize: "40px" }}>Game Settings</div>
                     <div
                         style={{
@@ -217,23 +216,15 @@ const Lobby = () => {
                         </Select>
                     </div>
                     <div className="lobby category-select">
-                        <InputLabel className="lobby label">
-                            Rounds:
-                        </InputLabel>
+                        <InputLabel className="lobby label">Rounds:</InputLabel>
                         <TextField
                             className="lobby round"
                             inputProps={{
-                                sx:{
-                                    "&input":{
-                                        color:'#FFFFFF'
-                                    }
-                                }
-                                
-                            }}                            
+                                style: { textAlign: "center" },
+                            }}
                             placeholder="enter number of rounds..."
                             value={gameRounds}
                             onChange={(e) => setGameRounds(e.target.value)}
-                            
                         />
                     </div>
                 </InformationContainer>
@@ -242,7 +233,7 @@ const Lobby = () => {
                 <div className="lobby button-container">
                 {isMultiplayer ? (
                     <Button
-                        style={{ display: "inline-block", margin: "0 10px", fontSize: "20px"}}
+                        style={{ display: "inline-block", margin: "0 10px"}}
                         onClick={() =>
                             createGame(selectedCategory, gameRounds, 30)
                         }

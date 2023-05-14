@@ -6,8 +6,9 @@ import { Button } from "components/ui/Button";
 import PropTypes from "prop-types";
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
-
+import InformationContainer from "components/ui/BaseContainer";
 import "styles/views/home/ScoreBoard.scss";
+import { Info } from "@mui/icons-material";
 
 const ScoreBoard = () => {
   // use react-router-dom's hook to access the history
@@ -81,10 +82,13 @@ const ScoreBoard = () => {
   }
 
   return (
-    <div className="scoreboard container">
-      <h2>Score Board</h2>
-      <div><label className="scoreboard label">
-        <label>Pick a city category:</label>
+    <div className="Scoreboard container" style={{flexDirection: "column"}}>
+    <InformationContainer className="scoreboard container" style={{fontSize: '48px', width: "fit-content"}}>
+      Leaderboard
+    </InformationContainer>
+    <InformationContainer className="profile container" style={{marginBottom: "25px", width: "fit-content"}}>
+      <label className="scoreboard label">
+        <label style={{padding: "25px"}}>Pick a city category:</label>
           <select value={selectedCategory} onChange={e => setSelectedCategory(e.target.value)}>
             <option value="WORLD">All</option>
             <option value="AFRICA">Africa</option>
@@ -94,15 +98,16 @@ const ScoreBoard = () => {
             <option value="OCEANIA">Oceania</option>
             <option value="SOUTH_AMERICA">South America</option>
           </select>
-      </label></div>
-      <div>{sortedUserList}</div>
-      <div className="scoreboard button-container">
-        <Button width="300%" onClick={() => history.push("/home")}>
-          Return to Home
-        </Button>
-      </div>
-      <ToastContainer />
+      </label>
+    
+    <div>{sortedUserList}</div>
+    <div className="scoreboard button-container">
+      <Button width="300%" onClick={() => history.push("/home")}>
+        Return to Home
+      </Button>
     </div>
+    </InformationContainer>
+  </div>
   );
 };
 
