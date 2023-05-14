@@ -8,7 +8,6 @@ import Login from "components/views/Login";
 import Register from "components/views/Register";
 import Lobby from "components/views/home/Lobby";
 import JoinGame from "components/views/game/JoinGame";
-import RoundCountdown from "components/views/game/RoundCountdown";
 
 import SingleGamePreparePage from "components/views/game/SinglePlayerGame/SingleGamePreparePage";
 import SingleGamePage from "components/views/game/SinglePlayerGame/SingleGamePage";
@@ -71,11 +70,6 @@ const AppRouter = () => {
           <MultiPlayerGamePage />
         </Route>
 
-        <Route path="/RoundCountdown">
-          <HomeGuard>
-            <HomeRouter base="/RoundCountdown" />
-          </HomeGuard>
-        </Route>
 
       </Switch>
     </BrowserRouter>
