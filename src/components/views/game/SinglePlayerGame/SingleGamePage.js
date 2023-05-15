@@ -122,14 +122,14 @@ const SingleGamePage = () => {
         <Container>
           <Grid container spacing={4}>
             <Grid item md={6}>
-              <div>
-                <img className="city-image" alt="City Image" 
-                  src={localStorage.getItem("PictureUrl")}
-                />
-              </div>
-              <div style={{ textAlign: "center" }}>
-                <p>Your Score: {score}</p>
-              </div>
+              <div style={{ alignItems: 'center', display: "block"}}>
+                  <img className="city-image" alt="City Image" 
+                    src={localStorage.getItem("PictureUrl")}
+                  />
+                </div>
+                <div style={{ textAlign: "center" }}>
+                  <p>Your Score: {score}</p>
+                </div>
             </Grid>
             <Grid item md={6}>
               <Grid container justifyContent={"space-around"}>
@@ -140,7 +140,7 @@ const SingleGamePage = () => {
                 {cityNameButtons}
                 <form onSubmit={handleSubmit} className="submit-form">
                   <button type="submit" className="submit-button">
-                    {isAnswerSubmitted ? "Next" : "Subtmit Answer"}
+                    {isAnswerSubmitted ? "Next" : "Submit Answer"}
                   </button>
                 </form>
               </div>

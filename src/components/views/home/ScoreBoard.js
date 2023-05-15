@@ -75,9 +75,9 @@ const ScoreBoard = () => {
   let sortedUserList = <Spinner />;
 
   if (userRanking) {
-    sortedUserList = (
-      <UserRanking userRanking={userRanking} />
-    );
+    sortedUserList = <UserRanking userRanking={userRanking} />;
+  } else {
+    sortedUserList = <Spinner />;
   }
 
   return (

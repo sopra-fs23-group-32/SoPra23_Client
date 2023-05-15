@@ -18,7 +18,8 @@ const Lobby = () => {
   const [countdownTime, setCountdownTime] = useState(15);
   const [isMultiplayer, setIsMultiplayer] = useState(true);
   const [targetPlayerNumber, setTargetPlayerNumber] = useState(1);
-  const [isLoading, setIsLoading] = useState(false);
+  const [isLoadingGame, setIsLoadingGame] = useState(false);
+  const [isLoadingMultiplayerLobby, setIsLoadingMultiplayerLobby] = useState(false);
 
   // use react-router-dom's hook to access the history
   const history = useHistory();
@@ -157,17 +158,24 @@ const Lobby = () => {
       >
         <div className="lobby button-container">
           {isMultiplayer ? (
+            <div>
+            {isLoadingMultiplayerLobby ? (<Spinner/>) : (
             <Button style={{ display: "inline-block", margin: "0 10px" }}
-              onClick={() => createGame(selectedCategory, gameRounds, countdownTime)}
+              onClick={() => {
+                setIsLoadingMultiplayerLobby(true);
+                createGame(selectedCategory, gameRounds, countdownTime);
+              }}
             >
               Create Game
             </Button>
+            )}
+            </div>
           ) : (
             <div>
-              {isLoading ? (<Spinner />) : (
+              {isLoadingGame ? (<Spinner />) : (
                 <Button style={{ display: "inline-block", margin: "auto" }}
                   onClick={() => {
-                    setIsLoading(true);
+                    setIsLoadingGame(true);
                     startGameSingleplayer(selectedCategory, gameRounds, countdownTime);}
                   }
                 >

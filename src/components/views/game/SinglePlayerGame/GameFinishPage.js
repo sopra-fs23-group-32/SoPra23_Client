@@ -43,20 +43,23 @@ const GameFinishPage = () => {
   }, []);
 
   return (
-    <div className="finalpage container">
-      <h2 style={{ font: "50px" }}>
-        -- Single Player Game Ended --
-      </h2>
-      <h2 style={{ font: "40px" }}>
-        You got {localStorage.getItem("score")} Pts
-      </h2>
-      <h2 style={{ font: "30px" }}>
-        Your Game History has saved,
-        but your score won't be added to the leaderboard.
-      </h2>
-      
-      <div className="final button-container">
-        <Button onClick={() => endGame()}>
+    <div className="Finalpage container" style={{flexDirection: "column"}}>
+    <InformationContainer className="finalpage container" style={{fontSize: '48px', width: "fit-content"}}>
+      Your Singleplayer has Game Ended
+    </InformationContainer>
+    <InformationContainer className="finalpage container" style={{ fontSize: "40px" }}>
+        You got: {localStorage.getItem("score")} Points
+    </InformationContainer>
+    <InformationContainer className="finalpage container">
+      <div style={{ fontSize: "25px" }}>
+        This game has been added to your Game History,
+      </div>
+      <div style={{ fontSize: "25px" }}>
+        but your score won't be added to the leaderboard (Multiplayer only)
+      </div>
+      </InformationContainer>
+      <div className="finalpage button-container">
+        <Button style={{fontSize: "15px"}} onClick={() => endGame()}>
           Back to Home Page
         </Button>
       </div>
