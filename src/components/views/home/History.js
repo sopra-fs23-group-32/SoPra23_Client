@@ -44,7 +44,7 @@ const HistoryPage = () => {
   const [userGameHistoryAnswer, setUserGameHistoryAnswer] = useState([]);
 
   const [open, setOpen] = useState(false);
-  const [gameId, setGameId] = useState(1);
+  const [gameId, setGameId] = useState(2);
   const handleOpen = (gameId) => {setGameId(gameId); setOpen(true);};
   const handleClose = () => setOpen(false);
   
@@ -113,9 +113,7 @@ const HistoryPage = () => {
               <td style={{ width: "20%", textAlign: "center" }}>{gameInfo.gameRounds}</td>
               <td style={{ width: "20%", textAlign: "center" }}>{gameInfo.playerNum}</td>
               <td>
-                <IconButton
-                  title="Detials"
-                  color="primary"
+                <IconButton title="Detials" color="primary"
                   onClick={() => {
                     handleOpen(gameInfo.gameId);
                     fetchGameHistoryData(gameInfo.gameId);
@@ -124,6 +122,26 @@ const HistoryPage = () => {
                   <ArrowDropDownCircleIcon />
                 </IconButton>
               </td>
+              <Modal open={open} onClose={handleClose}
+                aria-labelledby="modal-modal-title" aria-describedby="modal-modal-description"
+              >
+                <Box color="primary" sx={style}>
+                  <Typography id="modal-modal-title" variant="h6" component="h2">
+                    Game ID - {gameId}
+                  </Typography>
+                  <Typography id="modal-modal-description" sx={{ mt: 2 }}>
+                    Score: {/* {userGameHistoryStats.gameScore} */}
+                  </Typography>
+                  <Typography id="modal-modal-description" sx={{ mt: 2 }}>
+                    CorrectRate: {/* {userGameHistoryStats.correctRate} */}
+                  </Typography>
+                  <Typography id="modal-modal-description" sx={{ mt: 2 }}>
+                    <div>{userGameHistoryAnswer.map((answer) => (
+                        <Answers answer={answer}/>
+                      ))}</div>
+                  </Typography>
+                </Box>
+              </Modal>
             </tr>
           ))}
         </tbody>
