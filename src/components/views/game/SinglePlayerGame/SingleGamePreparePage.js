@@ -28,10 +28,38 @@ const UrgeWithPleasureComponent = ({ duration }) => (
 const RoundCountdown = () => {
   // use react-router-dom's hook to access the history
   const history = useHistory();
-  const [duration, setDuration] = useState(5);
+  const [duration, setDuration] = useState(8);
   const [secondsLeft, setSecondsLeft] = useState(duration);
   const [intervalId, setIntervalId] = useState(null);
-  const gameId = localStorage.getItem("gameId");
+
+  const roundNumber = localStorage.getItem("roundNumber");
+  const totalRounds = localStorage.getItem("totalRounds");
+  const score = localStorage.getItem("score");
+
+  const setLocalStorageItems = (question) => {
+    const cityNamesString = JSON.stringify([
+      question.option1, question.option2, question.option3, question.option4,
+    ]);
+    localStorage.setItem("citynames", cityNamesString);
+    localStorage.setItem("PictureUrl", question.pictureUrl);
+    localStorage.setItem("CorrectOption", question.correctOption);
+  };
+
+  useEffect(() => {
+    async function fetchQuestion() {
+      try {
+        const response = await api.put(`games/${localStorage.getItem("gameId")}`);
+        setLocalStorageItems(response.data);
+        console.log(response.data);
+        await new Promise((resolve) => setTimeout(resolve, 1000));
+      }
+      catch (error) {
+        toast.error(`${error.response.data.message}`);
+        console.log(handleError(error));
+      }
+    }
+    fetchQuestion();
+  }, []);
 
   useEffect(() => {
     const intervalId = setInterval(() => {
@@ -41,51 +69,20 @@ const RoundCountdown = () => {
   }, []);
 
   useEffect(() => {
-//    if(secondsLeft===8){
-//      getGameDetails(gameId);
-//    }
-
     if (secondsLeft === 0) {
       clearInterval(secondsLeft);
       clearInterval(intervalId);
       setTimeout(() => {
-        history.push(`/SingleGamePage/${gameId}`);
+        history.push(`/SingleGamePage/${localStorage.getItem("gameId")}`);
       }, 500);
     }
   }, [secondsLeft, intervalId]);
 
-  const getGameDetails = async (gameId) => {
-    try {
-      const response = await api.put(`/games/${gameId}`);
-      const question = response.data;
-      const cityNamesString = JSON.stringify([
-        question.option1,
-        question.option2,
-        question.option3,
-        question.option4,
-      ]);
-      localStorage.setItem("citynames2", cityNamesString);
-      localStorage.setItem("PictureUrl", question.pictureUrl);
-      localStorage.setItem("CorrectOption", question.correctOption);
-      
-    } catch (error) {
-      throw error;
-    }
-  };
-
+  
   const handleExitButtonClick = async () => {
     await api.delete(`games/${localStorage.getItem("gameId")}`);
     history.push("/home");
   };
-
-  const roundNumber = localStorage.getItem("roundNumber");
-  const totalRounds = localStorage.getItem("totalRounds");
-  const score = localStorage.getItem("score");
-
-  console.log("total: ",totalRounds, "roundNumber:",roundNumber);
-  if (roundNumber > totalRounds) {
-    history.push(`/SingleGamePage/${gameId}/GameFinishPage`);
-  }
 
   return (
     <div className="round countdown container">

@@ -10,14 +10,13 @@ import "styles/views/game/GamePage.scss";
 const SingleGamePage = () => {
   const [isAnswerSubmitted, setIsAnswerSubmitted] = useState(false); // new state variable
   const [score, setScore] = useState(localStorage.getItem("score"));
-  const [roundTime, setRoundTime] = useState(15);
-  const [roundNumber, setRoundNumber] = useState(
-    localStorage.getItem("roundNumber")
-  );
-  const [correctOption, setCorrectOption] = useState(
-    localStorage.getItem("CorrectOption")
-  );
+  const [roundTime, setRoundTime] = useState(localStorage.getItem("countdownTime"));
   const [selectedCityName, setSelectedCityName] = useState(null);
+
+  const cityNamesString = localStorage.getItem("citynames");
+  const cityNames = JSON.parse(cityNamesString);
+  const correctOption = localStorage.getItem("CorrectOption");
+  const roundNumber = localStorage.getItem("roundNumber");
   const gameId = localStorage.getItem("gameId");
 
   const history = useHistory();
@@ -36,13 +35,17 @@ const SingleGamePage = () => {
     return () => clearInterval(intervalId);
   }, [history]);
 
-  const nextGame = async () => {
+  const nextGame = () => {
+    // remove all local storage of previous question
+    localStorage.removeItem("citynames");
+    localStorage.removeItem("PictureUrl");
+    localStorage.removeItem("CorrectOption");
+    // go to next page
     if (localStorage.getItem("roundNumber") === localStorage.getItem("totalRounds")) {
       history.push(`/SingleGamePage/${gameId}/GameFinishPage`);
     }
     else {
       localStorage.setItem("roundNumber", Number(roundNumber) + 1);
-      await getNextGameDetail(gameId);
       history.push(`/SingleGamePage/${gameId}/RoundCountPage`);
     }
   };
@@ -50,27 +53,6 @@ const SingleGamePage = () => {
   const handleCityNameButtonClick = (cityName) => {
     setSelectedCityName(cityName);
   };
-
-  const getNextGameDetail = async (gameId) => {
-    try {
-      const response = await api.put(`/games/${gameId}`);
-      const question = response.data;
-      const cityNamesString = JSON.stringify([
-        question.option1,
-        question.option2,
-        question.option3,
-        question.option4,
-      ]);
-      localStorage.setItem("citynames", cityNamesString);
-      localStorage.setItem("PictureUrl", question.pictureUrl);
-      localStorage.setItem("CorrectOption", question.correctOption);
-      return;
-    } catch (error) {
-      throw error;
-    }
-  };
-  const cityNamesString = localStorage.getItem("citynames");
-  const cityNames = JSON.parse(cityNamesString);
 
   const handleExitButtonClick = async () => {
     await api.delete(`games/${localStorage.getItem("gameId")}`);
@@ -91,12 +73,10 @@ const SingleGamePage = () => {
             timeTaken: 15 - roundTime,
           }
         );
-        const score2 = parseInt(localStorage.getItem("score")) + response.data;
-        setScore(score2);
-
-        localStorage.setItem("score", score2);
+        const score_new = parseInt(localStorage.getItem("score")) + response.data;
+        setScore(score_new);
+        localStorage.setItem("score", score_new);
       } catch (error) {
-        //                console.error("Error submitting answer", error);
         toast.error("Failed in submitting answer!");
         console.log(handleError(error));
       }

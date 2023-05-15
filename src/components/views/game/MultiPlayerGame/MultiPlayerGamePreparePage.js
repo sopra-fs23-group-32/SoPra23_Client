@@ -28,9 +28,7 @@ const UrgeWithPleasureComponent = ({ duration }) => (
 
 const RoundCountdown = () => {
   // use react-router-dom's hook to access the history
-  const [roundNumber, setRoundNumber] = useState(
-  localStorage.getItem("roundNumber")
-  );
+  const roundNumber = localStorage.getItem("roundNumber");
   const [score, setScore] = useState(localStorage.getItem("playerScore"));
   const history = useHistory();
   const [duration, setDuration] = useState(555555555555);
@@ -43,23 +41,37 @@ const RoundCountdown = () => {
 
   const getGameInfo = async () => {
     const response = await api.get(`/games/${localStorage.getItem("gameId")}/`);
-
     var currentRound = response.data.currentRound;
     // input User Ranking when implemented
   };
 
-  const endGame = async (gameId) => {
-    try {
-      const response = await api.get(`/games/${gameId}/results`);
-      console.log('Game result:', response.data);
-      // Do something with the response, e.g. update state or redirect to a new page
-    } catch (error) {
-//      console.error('Error getting game result:', error);
-        toast.error("Failed in getting game result!");
+  const setLocalStorageItems = (question) => {
+    const cityNamesString = JSON.stringify([
+      question.option1, question.option2, question.option3, question.option4,
+    ]);
+    localStorage.setItem("citynames", cityNamesString);
+    localStorage.setItem("PictureUrl", question.pictureUrl);
+    localStorage.setItem("CorrectOption", question.correctOption);
+  };
+
+  useEffect(() => {
+    async function fetchQuestion() {
+      try {
+        const response = await api.put(`games/${localStorage.getItem("gameId")}`);
+        setLocalStorageItems(response.data);
+        console.log(response.data);
+        await new Promise((resolve) => setTimeout(resolve, 1000));
+      }
+      catch (error) {
+        toast.error(`${error.response.data.message}`);
         console.log(handleError(error));
+      }
     }
-    history.push(`/GameFinishPage/`);
-  }
+    if (localStorage.getItem("isServer") === 1) {
+      fetchQuestion();
+    }
+    // if game state == round_update, then fetch question using GET 
+  }, []);
 
   useEffect(() => {
     const intervalId = setInterval(() => {
@@ -69,10 +81,6 @@ const RoundCountdown = () => {
   }, []);
 
   useEffect(() => {
-//    if(secondsLeft===8){
-//      getGameDetails(gameId);
-//    }
-
     if (secondsLeft === 0) {
       clearInterval(secondsLeft);
       clearInterval(intervalId);
@@ -82,29 +90,10 @@ const RoundCountdown = () => {
     }
   }, [secondsLeft, intervalId]);
 
-  const getGameDetails = async (gameId) => {
-    try {
-      const response = await api.put(`/games/${gameId}`);
-      const question = response.data;
-      const cityNamesString = JSON.stringify([
-        question.option1,
-        question.option2,
-        question.option3,
-        question.option4,
-      ]);
-      localStorage.setItem("citynames2", cityNamesString);
-      localStorage.setItem("PictureUrl", question.pictureUrl);
-      localStorage.setItem("CorrectOption", question.correctOption);
-      
-    } catch (error) {
-      throw error;
-    }
-  };
-
 
   useEffect(() => {
     // effect callbacks are synchronous to prevent race conditions. So we put the async function inside:
-    async function fetchData() {
+    async function fetchRanking() {
       try {
         const response = await api.get(
           `/games/${localStorage.getItem("gameId")}/ranking`
@@ -120,17 +109,12 @@ const RoundCountdown = () => {
           console.log(response.data);
         }, 500);
       } catch (error) {
-//        console.error(
-//          `An error occurs while fetching the users: \n${handleError(error)}`
-//        );
-//        console.error("Details:", error);
-//        alert("Something went wrong while fetching the users!");
         toast.error("Something went wrong while fetching the users!");
         console.log(handleError(error));
       }
     }
-    fetchData();
-  }, [leaderboardData]);
+    fetchRanking();
+  }, []);
 
   const handleExitButtonClick = () => {
     history.push("/Home");
@@ -146,10 +130,6 @@ const RoundCountdown = () => {
 
   const totalRounds = localStorage.getItem("totalRounds")
   const username = localStorage.getItem("username")
-
-  console.log("total: ",totalRounds, "roundNumber:",roundNumber);
-  if (roundNumber > totalRounds) {
-    endGame(gameId);}
 
   const calculateRowPosition = (currentRank, previousRank) => {
     const position = currentRank - previousRank;
