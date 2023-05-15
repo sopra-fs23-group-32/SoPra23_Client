@@ -3,6 +3,8 @@ import React, { useState } from "react";
 import { Button } from "components/ui/Button";
 import { api, handleError } from "helpers/api";
 import InformationContainer from "components/ui/BaseContainer";
+import { Spinner } from "components/ui/Spinner";
+
 import {
     InputLabel,
     Select,
@@ -12,9 +14,10 @@ import {
 import Switch from "react-switch";
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
-
 import "styles/views/home/Lobby.scss";
 const Lobby = () => {
+    const [loading, setLoading] = useState(false);
+
 
     const [targetPlayerNumber, setTargetPlayerNumber] = useState(1);
     const [selectedCategory, setSelectedCategory] = useState("EUROPE");
@@ -126,6 +129,12 @@ const Lobby = () => {
         }
     };
 
+    const startGame = async (category, rounds, time) => {
+        setLoading(true);
+        await startGameSingleplayer(category, rounds, time);
+        setLoading(false);
+      };
+      
     const handleAddPlayer = async (playerID) => {
         try {
             const gameID = localStorage.getItem("gameId");
@@ -242,17 +251,17 @@ const Lobby = () => {
                     </Button>
                 ) : (
                     <Button
-                        style={{ display: "inline-block", margin: "auto"}}
-                        onClick={() =>
-                            startGameSingleplayer(
-                                selectedCategory,
-                                gameRounds,
-                                countdownTime
-                            )
-                        }
-                    >
-                        Start Game
-                    </Button>
+                    style={{ display: "inline-block", margin: "auto"}}
+                    onClick={() =>
+                      startGame(
+                        selectedCategory,
+                        gameRounds,
+                        countdownTime
+                      )
+                    }
+                  >
+                    {loading ? <Spinner /> : 'Start Game'}
+                  </Button>
                 )}
                 </div>
                 <div>
