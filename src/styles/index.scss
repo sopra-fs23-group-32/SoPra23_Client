@@ -52,7 +52,7 @@ button {
   display: flex;
   justify-content: center;
   align-items: center;
-  height: flex;
+  height: 100vh;
 }
 
 .content {
@@ -92,7 +92,6 @@ button {
 }
 
 .input {
-
   padding: 0 10px;
   border: 2px solid #cccccc;
   border-radius: 5px;

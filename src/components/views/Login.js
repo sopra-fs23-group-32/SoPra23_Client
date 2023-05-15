@@ -1,47 +1,45 @@
-import React, {useState} from 'react';
+import React, { useState } from "react";
 import { useHistory } from "react-router-dom";
-import {api, handleError} from 'helpers/api';
-import 'styles/views/Login.scss';
+import { api, handleError } from "helpers/api";
+import "styles/views/Login.scss";
 import BaseContainer from "components/ui/BaseContainer";
 import { Button } from "components/ui/Button";
+
 import { TextField } from "@mui/material";
 
 import PropTypes from "prop-types";
-import User from 'models/User';
-import { ToastContainer, toast } from 'react-toastify';
-import 'react-toastify/dist/ReactToastify.css';
-import InformationContainer from "components/ui/BaseContainer";
+import User from "models/User";
 
 const FormField = (props) => {
     return (
-      <div className="login field">
-      <input className="login input"
-          label={props.label}
-          placeholder="Enter Username here..."
-          value={props.value}
-          onChange={(e) => props.onChange(e.target.value)}
-          onKeyDown={(e) => props.onKeyDown(e)}
-          >
-      </input>
-      </div>
+        <div className="login field">
+            <TextField
+                label={props.label}
+                className="login input"
+                placeholder="Enter Username here..."
+                value={props.value}
+                onChange={(e) => props.onChange(e.target.value)}
+                onKeyDown={(e) => props.onKeyDown(e)}
+            />
+        </div>
     );
 };
 
 const FormField2 = (props) => {
-  return (
-    <div className="login field">
-      <input
-        label={props.label}
-        type="password"
-        className="login input"
-        placeholder="Enter Password here..."
-        value={props.value}
-        onChange={(e) => props.onChange(e.target.value)}
-        onKeyDown={(e) => props.onKeyDown(e)}
-        id="fullWidth">
-      </input>
-     </div>
-  );
+    return (
+        <div className="login field">
+            <TextField
+                label={props.label}
+                type="password"
+                className="login input"
+                placeholder="Enter Password here..."
+                value={props.value}
+                onChange={(e) => props.onChange(e.target.value)}
+                onKeyDown={(e) => props.onKeyDown(e)}
+                id="fullWidth"
+            />
+        </div>
+    );
 };
 
 FormField.propTypes = {
@@ -50,14 +48,12 @@ FormField.propTypes = {
     onChange: PropTypes.func,
 };
 FormField2.propTypes = {
-  label: PropTypes.string,
-  value: PropTypes.string,
-  onChange: PropTypes.func,
+    label: PropTypes.string,
+    value: PropTypes.string,
+    onChange: PropTypes.func,
 };
 
-
-
-const Login = props => {
+const Login = (props) => {
     const history = useHistory();
     const [username, setUsername] = useState("");
     const [password, setPassword] = useState("");
@@ -66,69 +62,77 @@ const Login = props => {
         try {
             const requestBody = JSON.stringify({ username, password });
             const response = await api.put("/login", requestBody);
-            // Get the returned user and update a new object.
+
             const user = new User(response.data);
-            // Store the token into the local storage.
+
             localStorage.setItem("userId", user.userId);
             localStorage.setItem("username", user.username);
-
-            // Login successfully worked --> navigate to the route /home in the HomeRouter
             history.push("/home");
-        }
-        catch (error) {
-//          alert(`An error occurs during the login: \n${handleError(error)}`);
-            toast.error(`${error.response.data.message}`);
-            console.log(handleError(error));
+        } catch (error) {
+            alert(`An error occurs during the login: \n${handleError(error)}`);
         }
     };
 
     const handleKeyDown = (e) => {
-      if (e.keyCode === 13) {
-        doLogin();
-      }
+        if (e.keyCode === 13) {
+            doLogin();
+        }
     };
 
-
     return (
-      <div className="Login container" style={{flexDirection: "column"}}>
-        <InformationContainer className="login container" style={{fontSize: '48px', width: "fit-content"}}>
-          Login
-        </InformationContainer>
-      <InformationContainer className="login container" style={{flexDirection: "column"}}>
-        <div className="login form">
-          <FormField
-            value={username}
-            onChange={un => setUsername(un)}
-            onKeyDown = {handleKeyDown}
-          />
+        <BaseContainer>
+            <div id="container">
+                <section className="container">
+                    <div className="bg-image"></div>
+                    <div className="content">
+                        <div></div>
+                        <div className="Logo"></div>
+                        <div className="headerrow">
+                            <div className="headerp1">
+                                <h1>User Login</h1>
+                            </div>
+                        </div>
 
-          <FormField2
-            placeholder="mas"
-            value={password}
-            onChange={n => setPassword(n)}
-            onKeyDown = {handleKeyDown}
-          />
+                        <div className="login container">
+                            <div className="login form">
+                                <FormField
+                                    value={username}
+                                    onChange={(un) => setUsername(un)}
+                                    onKeyDown={handleKeyDown}
+                                />
 
+                                <FormField2
+                                    placeholder="mas"
+                                    value={password}
+                                    onChange={(n) => setPassword(n)}
+                                    onKeyDown={handleKeyDown}
+                                />
 
+                                <div className="register-button-container">
+                                    <Button
+                                        disabled={!username || !password}
+                                        width="40%"
+                                        onClick={() => doLogin()}
+                                    >
+                                        Login
+                                    </Button>
 
-          <div className="login-button-container" style={{display: "flex",justifyContent: 'space-between'}} >
-          <Button style={{flex:1, marginRight:"40px"}} disabled={!username || !password} onClick={() => doLogin()}>
-            Login
-          </Button>
-          <Button style={{flex:1}} onClick={() => history.push('/register')}>
-            Register here
-          </Button>
-          </div>
-        </div>
-    </InformationContainer>
-    <ToastContainer />
-    </div>
-
-  );
+                                    <Button
+                                        width="40%"
+                                        onClick={() =>
+                                            history.push("/register")
+                                        }
+                                    >
+                                        Register here
+                                    </Button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+            </div>
+        </BaseContainer>
+    );
 };
 
-/**
- * You can get access to the history object's properties via the withRouter.
- * withRouter will pass updated match, location, and history props to the wrapped component whenever it renders.
- */
 export default Login;

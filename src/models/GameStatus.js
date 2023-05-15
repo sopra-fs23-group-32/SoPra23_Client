@@ -3,5 +3,5 @@ const GameStatus={
     ANSWERING: 'ANSWERING',
     WAITING: 'WAITING',
     ENDED: 'ENDED',
-  }
+};
 export default GameStatus;

@@ -3,8 +3,6 @@ import React, { useState } from "react";
 import { Button } from "components/ui/Button";
 import { api, handleError } from "helpers/api";
 import InformationContainer from "components/ui/BaseContainer";
-import { Spinner } from "components/ui/Spinner";
-
 import {
     InputLabel,
     Select,
@@ -12,12 +10,8 @@ import {
     TextField,
 } from "@mui/material";
 import Switch from "react-switch";
-import { ToastContainer, toast } from 'react-toastify';
-import 'react-toastify/dist/ReactToastify.css';
 import "styles/views/home/Lobby.scss";
-const Lobby = () => {
-    const [loading, setLoading] = useState(false);
-
+const StartGamePage = () => {
 
     const [targetPlayerNumber, setTargetPlayerNumber] = useState(1);
     const [selectedCategory, setSelectedCategory] = useState("EUROPE");
@@ -55,9 +49,6 @@ const Lobby = () => {
     };
 
     const createGame = async (category, gameRounds, gameDuration) => {
-        if (gameRounds === 0) {
-          toast.error("The rounds should not be less than 1!")
-        }
         try {
             let category_uppercase = category.toUpperCase();
 
@@ -86,9 +77,11 @@ const Lobby = () => {
             localStorage.setItem("isServer", 1);
             history.push("/StartGamePage");
         } catch (error) {
-//            alert(`Something went wrong during game start: \n${handleError(error)}`);
-              toast.error(`${error.response.data.message}`);
-              console.log(handleError(error));
+            alert(
+                `Something went wrong during game start: \n${handleError(
+                    error
+                )}`
+            );
         }
     };
 
@@ -97,10 +90,6 @@ const Lobby = () => {
         gameRounds,
         gameDuration
     ) => {
-        if (gameRounds === 0) {
-          toast.error("The rounds should not be less than 1")
-        }
-//        else {}
         try {
             //create gameID
             localStorage.setItem("score", 0);
@@ -120,21 +109,17 @@ const Lobby = () => {
             await fetchQuestion(gameId);
             await handleAddPlayer(localStorage.getItem("userId"));
             setTimeout(() => {
-                history.push(`/SinglegamePage/${gameId}/RoundCountPage`);
+                history.push(`/gamePage/${gameId}/RounddownCountdown`);
             }, 1000);
         } catch (error) {
-//            alert(`Something went wrong during game start: \n${handleError(error)}`);
-              toast.error(`${error.response.data.message}`);
-              console.log(handleError(error));
+            alert(
+                `Something went wrong during game start: \n${handleError(
+                    error
+                )}`
+            );
         }
     };
 
-    const startGame = async (category, rounds, time) => {
-        setLoading(true);
-        await startGameSingleplayer(category, rounds, time);
-        setLoading(false);
-      };
-      
     const handleAddPlayer = async (playerID) => {
         try {
             const gameID = localStorage.getItem("gameId");
@@ -142,9 +127,7 @@ const Lobby = () => {
                 `/games/${gameID}/players/${playerID}`
             );
         } catch (error) {
-//            console.error("Error adding player", error);
-            toast.error(`${error.response.data.message}`);
-            console.log(handleError(error));
+            console.error("Error adding player", error);
         }
     };
 
@@ -154,7 +137,10 @@ const Lobby = () => {
     return (
         <div className="lobby container">
             <div className="lobby layout">
-                <InformationContainer className="lobby container_left">
+                <InformationContainer
+                    className="lobby container_left"
+                    id="information-container"
+                >
                     <div style={{ fontSize: "40px" }}>Game Settings</div>
                     <div
                         style={{
@@ -238,11 +224,10 @@ const Lobby = () => {
                     </div>
                 </InformationContainer>
             </div>
-            <div className="lobby button-container" style={{flexDirection:"column"}}>
-                <div className="lobby button-container">
+            <div className="lobby buttons">
                 {isMultiplayer ? (
                     <Button
-                        style={{ display: "inline-block", margin: "0 10px"}}
+                        style={{ display: "inline-block", margin: "0 10px" }}
                         onClick={() =>
                             createGame(selectedCategory, gameRounds, 30)
                         }
@@ -251,22 +236,21 @@ const Lobby = () => {
                     </Button>
                 ) : (
                     <Button
-                    style={{ display: "inline-block", margin: "auto"}}
-                    onClick={() =>
-                      startGame(
-                        selectedCategory,
-                        gameRounds,
-                        countdownTime
-                      )
-                    }
-                  >
-                    {loading ? <Spinner /> : 'Start Game'}
-                  </Button>
+                        style={{ display: "inline-block", margin: "0 10px" }}
+                        onClick={() =>
+                            startGameSingleplayer(
+                                selectedCategory,
+                                gameRounds,
+                                countdownTime
+                            )
+                        }
+                    >
+                        Start Game
+                    </Button>
                 )}
-                </div>
-                <div>
                 <Button
                     style={{ display: "inline-block", margin: "0 10px" }}
+                    // onClick={() => joinMultiPlayerGame()}
                     onClick={() => history.push("/JoinGame")}
                 >
                     Join Multiplayer Game
@@ -276,7 +260,7 @@ const Lobby = () => {
                     style={{ display: "inline-block", margin: "0 10px" }}
                     onClick={() => history.push("/home")}
                 >
-                    Back to Home Page
+                    Back to Home Page{" "}
                 </Button>
                 <div
                     style={{
@@ -286,10 +270,10 @@ const Lobby = () => {
                         marginBottom: "10px",
                     }}
                 ></div>
-                </div>
+                <div></div>
             </div>
         </div>
     );
 };
 
-export default Lobby;
+export default StartGamePage;

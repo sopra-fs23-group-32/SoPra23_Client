@@ -18,7 +18,7 @@ import {
 
 import "styles/views/home/Join.scss";
 
-const JoinGame = () => {
+const JoinGamePage = () => {
     const history = useHistory();
     const [openServers, setOpenServers] = useState([]);
 
@@ -119,4 +119,4 @@ const JoinGame = () => {
     );
 };
 
-export default JoinGame;
+export default JoinGamePage;

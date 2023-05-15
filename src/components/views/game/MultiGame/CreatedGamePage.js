@@ -3,8 +3,6 @@ import React, { useState, useEffect } from "react";
 import { Button } from "components/ui/Button";
 import { api } from "helpers/api";
 import InformationContainer from "components/ui/BaseContainer";
-import { Spinner } from "components/ui/Spinner";
-
 import {
     FormControl,
     InputLabel,
@@ -22,8 +20,6 @@ import WebSocketType from "models/WebSocketType";
 const CreatedGamePage = () => {
     const [userId, setUserId] = useState(localStorage.getItem("userId"));
     const [gameId, setGameId] = useState(localStorage.getItem("gameId"));
-    const [loadingMultiplayer, setLoadingMultiplayer] = useState(false);
-
     const [selectedCategory, setSelectedCategory] = useState(
         localStorage.getItem("category")
     );
@@ -105,13 +101,6 @@ const CreatedGamePage = () => {
         }
     }, []);
 
-    const startGameMultiplayerWithSpinner = async (gameId) => {
-        setLoadingMultiplayer(true);
-        await startGameMultiplayer(gameId);
-        setLoadingMultiplayer(false);
-      };
-    
-      
     const startGameMultiplayer = async (gameId) => {
         localStorage.setItem("score", 0);
         const response = await api.put(`games/${gameId}`);
@@ -217,19 +206,18 @@ const CreatedGamePage = () => {
                     <div className="lobby label">
                         {isServer == 1 ? (
                             <Button
-                            style={{
-                              display: "inline-block",
-                              margin: "0 10px",
-                            }}
-                            onClick={() =>
-                              startGameMultiplayerWithSpinner(
-                                localStorage.getItem("gameId")
-                              )
-                            }
-                          >
-                            {loadingMultiplayer ? <Spinner /> : 'Start Game'}
-                          </Button>
-                          
+                                style={{
+                                    display: "inline-block",
+                                    margin: "0 10px",
+                                }}
+                                onClick={() =>
+                                    startGameMultiplayer(
+                                        localStorage.getItem("gameId")
+                                    )
+                                }
+                            >
+                                Start Game
+                            </Button>
                         ) : null}
 
                         <Button
