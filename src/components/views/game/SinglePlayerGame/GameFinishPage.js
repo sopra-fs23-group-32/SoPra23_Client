@@ -28,7 +28,7 @@ const GameFinishPage = () => {
         );
         console.log("gamehistory", responseGameHistory.data);
         await new Promise((resolve) => setTimeout(resolve, 1000));
-      } 
+      }
       catch (error) {
         toast.error("Something went wrong while fetching the users!");
         console.log(handleError(error));
