@@ -13,29 +13,16 @@ const SingleGamePage = () => {
   const [roundTime, setRoundTime] = useState(localStorage.getItem("countdownTime"));
   const [selectedCityName, setSelectedCityName] = useState(null);
 
-  const cityNamesString = localStorage.getItem("citynames");
-  const cityNames = JSON.parse(cityNamesString);
+  const cityNames = JSON.parse(localStorage.getItem("citynames"));
   const correctOption = localStorage.getItem("CorrectOption");
   const roundNumber = localStorage.getItem("roundNumber");
+  const totalTime = localStorage.getItem("countdownTime");
   const gameId = localStorage.getItem("gameId");
+  const playerId = localStorage.getItem("userId");
 
   const history = useHistory();
 
-  useEffect(() => {
-    const intervalId = setInterval(() => {
-      setRoundTime((prevTimeLeft) => {
-        const newTimeLeft = prevTimeLeft - 1;
-        if (newTimeLeft <= 0) {
-          clearInterval(intervalId);
-          setIsAnswerSubmitted(true);
-        }
-        return newTimeLeft;
-      });
-    }, 1000);
-    return () => clearInterval(intervalId);
-  }, [history]);
-
-  const nextGame = () => {
+  const endRound = () => {
     // remove all local storage of previous question
     localStorage.removeItem("citynames");
     localStorage.removeItem("PictureUrl");
@@ -59,29 +46,46 @@ const SingleGamePage = () => {
     history.push("/home");
   };
 
-  const handleSubmit = async (e) => {
+  const submitAnswer = async(cityName, time) => {
+    setIsAnswerSubmitted(true);
+    try {
+      const response = await api.post(
+        `/games/${gameId}/players/${playerId}/answers`,
+        {answer: cityName, timeTaken: time,}
+      );
+      const score_new = parseInt(localStorage.getItem("score")) + response.data;
+      setScore(score_new);
+      localStorage.setItem("score", score_new);
+    } catch (error) {
+      toast.error(`Failed in submitting answer: \n${error.respond.data.message}`);
+      console.log(handleError(error));
+    }
+  }
+
+  useEffect(() => {
+    const intervalId = setInterval(() => {
+      setRoundTime((prevTimeLeft) => {
+        const newTimeLeft = prevTimeLeft - 1;
+        if (newTimeLeft <= 0) {
+          clearInterval(intervalId);
+          if(!isAnswerSubmitted) {
+            submitAnswer("no answer", totalTime);
+          }
+        }
+        return newTimeLeft;
+      });
+    }, 1000);
+    return () => clearInterval(intervalId);
+  }, [history]);
+
+
+  const handleSubmit = (e) => {
     e.preventDefault();
     if (!isAnswerSubmitted) {
-      const playerId = localStorage.getItem("userId");
-      try {
-        setIsAnswerSubmitted(true);
-
-        const response = await api.post(
-          `/games/${gameId}/players/${playerId}/answers`,
-          {
-            answer: selectedCityName,
-            timeTaken: 15 - roundTime,
-          }
-        );
-        const score_new = parseInt(localStorage.getItem("score")) + response.data;
-        setScore(score_new);
-        localStorage.setItem("score", score_new);
-      } catch (error) {
-        toast.error("Failed in submitting answer!");
-        console.log(handleError(error));
-      }
-    } else {
-      nextGame();
+      submitAnswer(selectedCityName, totalTime - roundTime);
+    }
+    else {
+      endRound();
     }
   };
 
