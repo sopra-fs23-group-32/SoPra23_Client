@@ -3,18 +3,22 @@ import React, { useState } from "react";
 import { Button } from "components/ui/Button";
 import { api, handleError } from "helpers/api";
 import InformationContainer from "components/ui/BaseContainer";
+import { Spinner } from "components/ui/Spinner";
 import { InputLabel, Select, MenuItem, TextField } from "@mui/material";
 import Switch from "react-switch";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 
 import "styles/views/home/Lobby.scss";
+
+
 const Lobby = () => {
   const [selectedCategory, setSelectedCategory] = useState("EUROPE");
   const [gameRounds, setGameRounds] = useState(1);
   const [countdownTime, setCountdownTime] = useState(15);
   const [isMultiplayer, setIsMultiplayer] = useState(true);
   const [targetPlayerNumber, setTargetPlayerNumber] = useState(1);
+    const [isLoading, setIsLoading] = useState(false);
 
   // use react-router-dom's hook to access the history
   const history = useHistory();
@@ -159,12 +163,19 @@ const Lobby = () => {
               Create Game
             </Button>
           ) : (
+            <div>
+              {isLoading ? (
+                  <Spinner />
+            ) : (
             <Button style={{ display: "inline-block", margin: "auto" }}
-              onClick={() => startGameSingleplayer(selectedCategory, gameRounds, countdownTime)}
+              onClick={() => {setIsLoading(true);
+                startGameSingleplayer(selectedCategory, gameRounds, countdownTime);}}
             >
               Start Game
             </Button>
           )}
+        </div>
+        )};
         </div>
         <div>
           <Button style={{ display: "inline-block", margin: "0 10px" }}
