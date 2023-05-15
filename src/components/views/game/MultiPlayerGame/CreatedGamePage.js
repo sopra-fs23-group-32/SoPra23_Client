@@ -237,7 +237,7 @@ const CreatedGamePage = () => {
                             }}
                             onClick={() => backToHome()}
                         >
-                            Back to Home Page
+                            Back to dsHome Page
                         </Button>
                     </div>
                 </InformationContainer>

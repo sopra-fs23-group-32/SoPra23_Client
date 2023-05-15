@@ -25,6 +25,8 @@ const JoinGame = () => {
     useEffect(() => {
         const fetchGamedata = async () => {
             const gameInfosResponse = await api.get("/games/");
+            console.log("gameinfo", gameInfosResponse);
+            console.log("openservers",openServers);
             const gameInfos = gameInfosResponse.data;
             setOpenServers(gameInfos);
         };
@@ -41,7 +43,7 @@ const JoinGame = () => {
         localStorage.setItem("gamePlayer", serverInfo.playerNum)
         localStorage.setItem("isServer", 0);
         
-        history.push("/lobby");
+        history.push("/StartGamePage");
     }
 
     return (
@@ -94,7 +96,7 @@ const JoinGame = () => {
                                                 {openServer.category}
                                             </TableCell>
                                             <TableCell align="center">
-                                                {openServer.gameRounds}
+                                                {openServer.totalRounds}
                                             </TableCell>
                                             <TableCell align="center">
                                                 <p onClick={() => joinServer(openServer)}>Join</p>
