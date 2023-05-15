@@ -3,6 +3,7 @@ import React, { useState } from "react";
 import { Button } from "components/ui/Button";
 import { api, handleError } from "helpers/api";
 import InformationContainer from "components/ui/BaseContainer";
+import { Spinner } from "components/ui/Spinner";
 import {
     InputLabel,
     Select,
@@ -14,6 +15,8 @@ import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 
 import "styles/views/home/Lobby.scss";
+
+
 const Lobby = () => {
 
     const [targetPlayerNumber, setTargetPlayerNumber] = useState(1);
@@ -21,6 +24,7 @@ const Lobby = () => {
     const [isMultiplayer, setIsMultiplayer] = useState(true);
     const [gameRounds, setGameRounds] = useState(1);
     const [countdownTime, setCountdownTime] = useState(10);
+    const [isLoading, setIsLoading] = useState(false);
 
     // use react-router-dom's hook to access the history
     const history = useHistory();
@@ -28,6 +32,15 @@ const Lobby = () => {
     const handleToggle = () => {
         setIsMultiplayer(!isMultiplayer);
     };
+
+    const handleClick = () => {
+        setIsLoading(true);
+        startGameSingleplayer(
+            selectedCategory,
+            gameRounds,
+            countdownTime
+        );
+    }
 
     const setLocalStorageItems = (question) => {
         const cityNamesString = JSON.stringify([
@@ -142,6 +155,7 @@ const Lobby = () => {
     localStorage.setItem("countdownTime", countdownTime);
     localStorage.setItem("sameCoundownTime", countdownTime);
 
+
     return (
         <div className="lobby container">
             <div className="lobby layout">
@@ -241,19 +255,19 @@ const Lobby = () => {
                         Create Game
                     </Button>
                 ) : (
-                    <Button
-                        style={{ display: "inline-block", margin: "auto"}}
-                        onClick={() =>
-                            startGameSingleplayer(
-                                selectedCategory,
-                                gameRounds,
-                                countdownTime
-                            )
-                        }
-                    >
-                        Start Game
-                    </Button>
+                    <div>
+                        {isLoading ? (
+                            <Spinner />
+                ) : (
+                        <Button
+                            style={{ display: "inline-block", margin: "auto"}}
+                            onClick={handleClick}
+                            >
+                            Start Game
+                        </Button>
                 )}
+                    </div>
+                )};
                 </div>
                 <div>
                 <Button
