@@ -94,10 +94,10 @@ const RoundCountdown = () => {
           style={{ fontSize: "45px", height: "100px", width: "125%" }}
           onClick={handleExitButtonClick}
         >
-          Exit
+          Exit Game
         </Button>
       </div>
-      <div style={{ dislay: "flex" }}>
+      <div className="roundcountdown layout" style={{ dislay: "flex" }}>
         <InformationContainer
           className="roundcountdown container_left"
           id="information-container"
@@ -105,7 +105,12 @@ const RoundCountdown = () => {
           <div style={{ fontSize: "40px" }}>
             Round {roundNumber} of {totalRounds} is starting soon...
           </div>
-          <div style={{ fontSize: "30px" }}>
+          </InformationContainer>
+          <InformationContainer
+          className="roundcountdown container_left"
+          id="information-container"
+          
+        ><div style={{ fontSize: "30px" }}>
             Your Score: {score}
           </div>
         </InformationContainer>

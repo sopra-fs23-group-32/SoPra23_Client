@@ -24,7 +24,8 @@ const Lobby = () => {
     const [isMultiplayer, setIsMultiplayer] = useState(true);
     const [gameRounds, setGameRounds] = useState(1);
     const [countdownTime, setCountdownTime] = useState(10);
-    const [isLoading, setIsLoading] = useState(false);
+    const [isLoadingGame, setIsLoadingGame] = useState(false);
+    const [isLoadingMultiplayerLobby, setIsLoadingMultiplayerLobby] = useState(false);
 
     // use react-router-dom's hook to access the history
     const history = useHistory();
@@ -34,12 +35,17 @@ const Lobby = () => {
     };
 
     const handleClick = () => {
-        setIsLoading(true);
+        setIsLoadingGame(true);
         startGameSingleplayer(
             selectedCategory,
             gameRounds,
             countdownTime
         );
+    }
+
+    const handleOtherClick = () => {
+        setIsLoadingMultiplayerLobby(true);
+        createGame(selectedCategory, gameRounds, 30);
     }
 
     const setLocalStorageItems = (question) => {
@@ -246,17 +252,21 @@ const Lobby = () => {
             <div className="lobby button-container" style={{flexDirection:"column"}}>
                 <div className="lobby button-container">
                 {isMultiplayer ? (
-                    <Button
-                        style={{ display: "inline-block", margin: "0 10px"}}
-                        onClick={() =>
-                            createGame(selectedCategory, gameRounds, 30)
-                        }
-                    >
-                        Create Game
-                    </Button>
+                    <div>
+                        {isLoadingMultiplayerLobby ? (
+                            <Spinner/>
+                        ) : (
+                            <Button
+                            style={{ display: "inline-block", margin: "0 10px"}}
+                            onClick={handleOtherClick}
+                        >
+                            Create Game
+                        </Button>
+                        )}
+                    </div>
                 ) : (
                     <div>
-                        {isLoading ? (
+                        {isLoadingGame ? (
                             <Spinner />
                 ) : (
                         <Button

@@ -2,11 +2,11 @@
 
 .finalpage {
   &.container {
-    background: transparentize(rgb(65, 64, 64), 0.7);
+    background: #001F3F;
     color: white;
     padding: 1em;
     border-radius: $borderRadius;
-    box-shadow: $dropShadow;
+
     display: flex;
     flex-direction: column;
     align-items: center;

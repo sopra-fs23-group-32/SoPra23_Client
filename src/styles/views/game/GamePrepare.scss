@@ -7,7 +7,7 @@
     &.layout {
         padding: 1em;
         display: flex;
-        flex-direction: row;
+        flex-direction: column;
         align-items: center;
         border-radius: $borderRadius;
         column-gap: 1em;
@@ -22,10 +22,10 @@
         background: rgba(25, 121, 184, 0.5);
         padding: 2em;
         border-radius: $borderRadius;
+        background: #001F3F;
         display: flex;
         flex-direction: column;
         align-items: center;
-        box-shadow: $dropShadow;
         row-gap: 2em;
         font-weight: bold;
     }
