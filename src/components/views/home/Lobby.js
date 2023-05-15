@@ -164,18 +164,18 @@ const Lobby = () => {
             </Button>
           ) : (
             <div>
-              {isLoading ? (
-                  <Spinner />
-            ) : (
-            <Button style={{ display: "inline-block", margin: "auto" }}
-              onClick={() => {setIsLoading(true);
-                startGameSingleplayer(selectedCategory, gameRounds, countdownTime);}}
-            >
-              Start Game
-            </Button>
-          )}
-        </div>
-        )};
+              {isLoading ? (<Spinner />) : (
+                <Button style={{ display: "inline-block", margin: "auto" }}
+                  onClick={() => {
+                    setIsLoading(true);
+                    startGameSingleplayer(selectedCategory, gameRounds, countdownTime);}
+                  }
+                >
+                  Start Game
+                </Button>
+              )}
+            </div>
+          )};
         </div>
         <div>
           <Button style={{ display: "inline-block", margin: "0 10px" }}
