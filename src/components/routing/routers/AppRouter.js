@@ -11,11 +11,12 @@ import JoinGame from "components/views/game/JoinGame";
 
 import SingleGamePreparePage from "components/views/game/SinglePlayerGame/SingleGamePreparePage";
 import SingleGamePage from "components/views/game/SinglePlayerGame/SingleGamePage";
+import SingleGameFinishPage from "components/views/game/SinglePlayerGame/GameFinishPage";
 
 import CreatedGamePage from "components/views/game/MultiPlayerGame/CreatedGamePage";
 import MutliPlayerGamePreparePage from "components/views/game/MultiPlayerGame/MultiPlayerGamePreparePage";
 import MultiPlayerGamePage from "components/views/game/MultiPlayerGame/MultiPlayerGamePage";
-import MultiPlayerGameFinishPage from "components/views/game/MultiPlayerGame/GameFinishPage";
+import MultiPlayerGameFinishPage from "components/views/game/MultiPlayerGame/MultiPlayerGameFinishPage";
 
 /**
  * Main router of your application.
@@ -56,6 +57,9 @@ const AppRouter = () => {
         <Route exact path={`/SingleGamePage/:gameId`}>
           <SingleGamePage />
         </Route>
+        <Route exact path={`/SingleGamePage/:gameId/GameFinishPage`}>
+          <SingleGameFinishPage />
+        </Route>
 
         <Route path="/StartGamePage">
           <CreatedGamePage />
@@ -69,7 +73,9 @@ const AppRouter = () => {
         <Route exact path={`/MultiGamePage/:gameId`}>
           <MultiPlayerGamePage />
         </Route>
-
+        <Route exact path={`/MultiGamePage/:gameId/GameFinish`}>
+          <MultiPlayerGameFinishPage />
+        </Route>
 
       </Switch>
     </BrowserRouter>
