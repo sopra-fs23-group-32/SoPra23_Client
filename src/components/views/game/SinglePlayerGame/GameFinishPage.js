@@ -1,5 +1,5 @@
 import { useHistory } from "react-router-dom";
-import React, { useState, useEffect } from "react";
+import React, { useEffect } from "react";
 import { Button } from "components/ui/Button";
 import { api, handleError } from "helpers/api";
 import InformationContainer from "components/ui/BaseContainer";
@@ -12,6 +12,11 @@ const GameFinishPage = () => {
   const history = useHistory();
 
   const endGame = async () => {
+    localStorage.removeItem("category");
+    localStorage.removeItem("totalRounds");
+    localStorage.removeItem("countdownTime");
+    localStorage.removeItem("roundNumber");
+    localStorage.removeItem("score");
     await api.delete(`games/${localStorage.getItem("gameId")}`);
     history.push("/home");
   };
@@ -39,23 +44,20 @@ const GameFinishPage = () => {
 
   return (
     <div className="finalpage container">
-      <h2 style={{ font: "40px" }}>
+      <h2 style={{ font: "50px" }}>
         -- Single Player Game Ended --
       </h2>
-
       <h2 style={{ font: "40px" }}>
         You got {localStorage.getItem("score")} Pts
       </h2>
       <h2 style={{ font: "30px" }}>
         Your Game History has saved,
-      </h2>
-      <h2 style={{ font: "30px" }}>
-        but your score won't added to the leaderboard
+        but your score won't be added to the leaderboard.
       </h2>
       
       <div className="final button-container">
         <Button onClick={() => endGame()}>
-          Back to Home Screen
+          Back to Home Page
         </Button>
       </div>
       <ToastContainer />
