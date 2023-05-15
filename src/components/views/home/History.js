@@ -3,19 +3,18 @@ import { useHistory } from "react-router-dom";
 import { api, handleError } from "helpers/api";
 import { Spinner } from "components/ui/Spinner";
 import { Button } from "components/ui/Button";
+import InformationContainer from "components/ui/BaseContainer";
 import PropTypes from "prop-types";
-
 import { IconButton } from "@mui/material";
 import ArrowDropDownCircleIcon from "@mui/icons-material/ArrowDropDownCircle";
 import Typography from "@mui/material/Typography";
 import Modal from "@mui/material/Modal";
 import Box from "@mui/material/Box";
-
-import "styles/views/home/History.scss";
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 
-import InformationContainer from "components/ui/BaseContainer";
+import "styles/views/home/History.scss";
+
 const Answers = ({ answer }) => (
   <div className="history label">
     {answer.answer} - {answer.correctAnswer}
@@ -40,7 +39,7 @@ const style = {
 const HistoryPage = () => {
   const history = useHistory();
   const [userGameInfo, setUserGameInfo] = useState([]);
-  const [userGameHistoryStats, setUserGameHistoryStats] = useState();
+  const [userGameHistoryStats, setUserGameHistoryStats] = useState({gameScore: 0, correctRate: 0.00});
   const [userGameHistoryAnswer, setUserGameHistoryAnswer] = useState([]);
 
   const [open, setOpen] = useState(false);
@@ -70,22 +69,19 @@ const HistoryPage = () => {
     try {
       const url = "/users/"+localStorage.getItem("userId") + "/gameHistories/"+gameId;
       const responseStats = await api.get(url + "/stats");
+      setUserGameHistoryStats(responseStats.data);
+      console.log(responseStats);
       const responseAnswer = await api.get(url + "/answer");
+      setUserGameHistoryAnswer(responseAnswer.data);
+      console.log(responseAnswer);
       // delays continuous execution of an async operation for 1 second.
       // This is just a fake async call, so that the spinner can be displayed
       await new Promise((resolve) => setTimeout(resolve, 1000));
-      // Get the returned users and update the state.
-      setUserGameHistoryStats(responseStats.data);
-      console.log(responseStats);
-      setUserGameHistoryAnswer(responseAnswer.data);
-      console.log(responseAnswer);
-      
     } catch (error) {
-      console.error(
-        `An error occurs while fetching the userGameHistory: \n${handleError(error)}`
+      toast.error(
+        `An error occurs while fetching the userGameHistory: \n${error.respond.data.message}`
       );
-      console.error("Details:", error);
-      alert("Something went wrong while fetching the userGameHistory.");
+      console.log(handleError(error));
     }
   }
 
@@ -126,16 +122,15 @@ const HistoryPage = () => {
                 aria-labelledby="modal-modal-title" aria-describedby="modal-modal-description"
               >
                 <Box color="primary" sx={style}>
-                  <Typography id="modal-modal-title" variant="h6" component="h2">
+                  <Typography id="modal-modal-title" variant="h4" component="h2">
                     Game ID - {gameId}
                   </Typography>
-                  <Typography id="modal-modal-description" sx={{ mt: 2 }}>
-                    Score: {/* {userGameHistoryStats.gameScore} */}
+                  <Typography id="modal-modal-description" sx={{ mt: 3 }}>
+                    <div>Score: {userGameHistoryStats.gameScore}</div>
+                    <div>CorrectRate: {userGameHistoryStats.correctRate}</div>
                   </Typography>
-                  <Typography id="modal-modal-description" sx={{ mt: 2 }}>
-                    CorrectRate: {/* {userGameHistoryStats.correctRate} */}
-                  </Typography>
-                  <Typography id="modal-modal-description" sx={{ mt: 2 }}>
+                  <Typography id="modal-modal-description" sx={{ mt: 3 }}>
+                    <h3>Your Answer - Correct Answer</h3>
                     <div>{userGameHistoryAnswer.map((answer) => (
                         <Answers answer={answer}/>
                       ))}</div>
@@ -149,8 +144,8 @@ const HistoryPage = () => {
     ) : (
       <div className="no-games-message">No games have been played yet.</div>
     )}
-  </>
-);
+    </>
+  );
   UserGameInfo.propTypes = {
     gameInfo: PropTypes.object,
   };
@@ -176,6 +171,7 @@ const HistoryPage = () => {
         </Button>
       </div>
       </InformationContainer>
+      <ToastContainer />
     </div>
   );
 };
