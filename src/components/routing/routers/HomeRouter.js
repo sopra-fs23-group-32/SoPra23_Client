@@ -5,8 +5,7 @@ import Profile from "components/views/home/Profile"
 
 import ScoreBoard from "components/views/home/ScoreBoard"
 import HistoryPage from '../../views/home/History';
-import RoundCountdown from "components/views/game/RoundCountdown";
-import GameFinishPage from "components/views/game/MultiPlayerGame/GameFinishPage"
+import GameFinishPage from "components/views/game/MultiPlayerGame/MultiPlayerGameFinishPage"
 
 const HomeRouter = props => {
   /**
@@ -29,14 +28,6 @@ const HomeRouter = props => {
       <Route exact path={`${props.base}/profile`}>
         <Profile />
       </Route>
-
-      <Route exact path={`${props.base}/RoundCountdown`}>
-        <RoundCountdown/>
-      </Route>
-      <Route exact path={`${props.base}/GameFinish`}>
-        <GameFinishPage/>
-      </Route>
-
     </div>
   );
 };

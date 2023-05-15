@@ -3,51 +3,46 @@ import React, { useState, useEffect } from "react";
 import { Button } from "components/ui/Button";
 import { api, handleError } from "helpers/api";
 import InformationContainer from "components/ui/BaseContainer";
-import {
-  Table,
-  TableBody,
-  TableCell,
-  TableContainer,
-  TableHead,
-  TableRow,
-  Paper,
-} from "@mui/material";
+import { Table, TableBody, TableCell, TableHead, TableRow,} from "@mui/material";
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
 import "styles/views/game/FinalPage.scss";
 
-// const PlayerRanking = ({ ranking }) => (
-//   <div className="history label">
-//     {answer.answer} - {answer.correctAnswer}
-//   </div>
-// );
-// PlayerRanking.propTypes = {
-//   ranking: PropTypes.object,
-// };
-
-const GameFinishPage = () => {
+const MultiPlayerGameFinishPage = () => {
   const history = useHistory();
   const [playerRanking, setPlayerRanking] = useState([]);
+
+  const endGame = async () => {
+    if (localStorage.getItem("isServer") === 1){
+      // games/${localStorage.getItem("gameId")}
+      await api.delete(`games/${localStorage.getItem("gameId")}`);
+    }
+    history.push("/home");
+  };
 
   useEffect(() => {
     // effect callbacks are synchronous to prevent race conditions. So we put the async function inside:
     const saveGameHistory = async () => {
       // ${localStorage.getItem("gameId")}
-      const response = await api.post(`/gameInfo/1`);
+      const response = await api.post(`/gameInfo/${localStorage.getItem("gameId")}`);
       console.log(response.data);
     };
 
     const fetchData = async () => {
       try {
-        // saveGameHistory();
+        if (localStorage.getItem("isServer") === 1) {
+          saveGameHistory();
+        }
         // /users/${localStorage.getItem("userId")}/gameHistories/${localStorage.getItem("gameId")}
-        // const responseGameInfo = await api.post(
-        //   `/users/2/gameHistories/1}`
-        // );
-        // console.log("gamehistory", responseGameInfo.data);
+        const responseGameInfo = await api.post(
+          `/users/${localStorage.getItem("userId")}/gameHistories/${localStorage.getItem("gameId")}`
+        );
+        console.log("gamehistory", responseGameInfo.data);
         // get the final ranking
         // /games/${localStorage.getItem("gameId")}/ranking
         const responseRanking = await api.get(
-          `/games/1/ranking`
+          `/games/${localStorage.getItem("gameId")}/ranking`
         );
         await new Promise((resolve) => setTimeout(resolve, 1000));
         // Get the returned users and update the state.
@@ -55,9 +50,11 @@ const GameFinishPage = () => {
         console.log("player", responseRanking.data);
       }
       catch (error) {
-        console.error(`An error occurs while saving the game history:\n${handleError(error)}`);
-        console.error("Details:", error);
-        alert("Something went wrong while saving the game history!");
+//        console.error(`An error occurs while saving the game history:\n${handleError(error)}`);
+//        console.error("Details:", error);
+//        alert("Something went wrong while saving the game history!");
+        toast.error("Something went wrong while saving the game history!");
+        console.log(handleError(error));
       }
     };
     fetchData();
@@ -65,9 +62,7 @@ const GameFinishPage = () => {
 
   const groupedPlayers = playerRanking.reduce((groups, player) => {
     const { rank, playerName } = player;
-    if (!groups[rank]) {
-      groups[rank] = [];
-    }
+    if (!groups[rank]) { groups[rank] = []; }
     groups[rank].push(playerName);
     return groups;
   }, {});
@@ -118,19 +113,13 @@ const GameFinishPage = () => {
       </h2>
       
       <div className="final button-container">
-        <Button style={{ display: "block", margin: "auto", marginTop: "20px" }}
-          onClick={() => {
-            // games/${localStorage.getItem("gameId")}
-            // api.delete(`games/1`);
-            history.push("/home");
-          }}
-        >
+        <Button onClick={() => endGame()}>
           Back to Home Screen
         </Button>
       </div>
-      
+      <ToastContainer />
     </div>
   );
 
 };
-export default GameFinishPage;
+export default MultiPlayerGameFinishPage;

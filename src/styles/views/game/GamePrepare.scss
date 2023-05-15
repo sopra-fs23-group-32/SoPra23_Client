@@ -3,7 +3,7 @@
 /* The '&' is a shorthand for the containing element
   for more information visit https://sass-lang.com/guide
  */
-.lobby {
+.roundcountdown {
     &.layout {
         padding: 1em;
         display: flex;
@@ -19,24 +19,45 @@
         align-items: center;
     }
     &.container_left {
-        background: transparentize(rgb(65, 64, 64), 0.7);
+        background: rgba(25, 121, 184, 0.5);
         padding: 2em;
-        background: #001F3F;
         border-radius: $borderRadius;
         display: flex;
         flex-direction: column;
-        align-items: left;
+        align-items: center;
         box-shadow: $dropShadow;
         row-gap: 2em;
+        font-weight: bold;
     }
     &.container_right {
-        background: transparentize(rgb(65, 64, 64), 0.7);
+        background: rgba(25, 121, 184, 0);
         padding: 2em;
         border-radius: $borderRadius;
         display: flex;
         flex-direction: column;
         align-items: left;
-        box-shadow: $dropShadow;
+    }
+    &.leaderboard-container {
+        background: rgba(25, 121, 184, 0);
+        padding: 2em;
+        border-radius: $borderRadius;
+        display: flex;
+        flex-direction: column;
+        align-items: left;
+        row-gap: 2em;
+        font-weight: bold;
+        flex: 1;
+        margin-right: 200px;
+    }
+    &.countdown-container {
+        padding: 2em;
+        border-radius: $borderRadius;
+        display: flex;
+        flex-direction: column;
+        align-items: left;
+        row-gap: 2em;
+        font-weight: bold;
+        flex: 1;
     }
     &.user-list {
         padding-left: 0;
@@ -84,24 +105,19 @@
 			background-color: #1979b8;
             color: $textColor;
             height: 30px;
-            font-size: 14px;
+            font-size: 18px;
             font-weight: 400;
             border: none;
             border-radius: 0.5em;
-            &::placeholder {
-                color: #D4D4D4;
-              }
         }
     }
-
     &.button-container {
         display: flex;
         flex-direction: row;
         justify-content: center;
-        align-items: center;
+        margin-top: 2em;
         row-gap: 2em;
         column-gap: 1em;
-        
     }
     & p,
     h2 {
@@ -112,32 +128,10 @@
     }
 }
 
-.user {
-    &.container {
-        background: lighten($background, 5);
-        margin: 0.2em 0;
-        width: 25em;
-        padding: 10px;
-        flex-direction: column;
-        border-radius: $borderRadius;
-        display: flex;
-        align-items: left;
-    }
-    &.user-info {
-        font-weight: 600;
-        margin-left: 5px;
-        margin-right: auto;
-        margin-top: 2px;
-        color: $accent;
-    }
-}
 
-.player-name {
-    margin: auto;
-    margin-top: 20px;
-    background-color: #1979b8;
-    border-radius: 10px;
-    text-align: center;
+
+.countdown-text {
+  font-size: 50px;
 }
 
 .exit-button {
@@ -162,14 +156,31 @@
         background-color: #ccc;
     }
 }
-.leader-board {
-    padding: 20px 40px;
-    & p{
-        text-align: center;
-        font-size: 28px;
+.leaderboard {
+  table {
+    width: 200%;
+    border-collapse: collapse;
+    font-weight: bold;
+    font-size: 20px;
+
+    th, td {
+      padding: 10px;
+      text-align: left;
+      border-bottom: 1px solid #ccc;
+      text-align: center;
     }
+
+    th {
+      background-color: rgba(25, 121, 184, 0.9);
+      font-weight: bold;
+    }
+
+    tbody tr {
+      transition: transform 1s ease;
+    }
+  }
 }
 
-.round-down-count {
-    border-radius: 40px !important;
-}
+
+
+

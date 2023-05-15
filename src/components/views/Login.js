@@ -8,18 +8,21 @@ import { TextField } from "@mui/material";
 
 import PropTypes from "prop-types";
 import User from 'models/User';
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
+import InformationContainer from "components/ui/BaseContainer";
 
 const FormField = (props) => {
     return (
       <div className="login field">
-      <TextField
+      <input className="login input"
           label={props.label}
-          className="login input"
           placeholder="Enter Username here..."
           value={props.value}
           onChange={(e) => props.onChange(e.target.value)}
-          onKeyDown={(e) => props.onKeyDown(e)}        
-          />
+          onKeyDown={(e) => props.onKeyDown(e)}
+          >
+      </input>
       </div>
     );
 };
@@ -27,7 +30,7 @@ const FormField = (props) => {
 const FormField2 = (props) => {
   return (
     <div className="login field">
-      <TextField
+      <input
         label={props.label}
         type="password"
         className="login input"
@@ -35,10 +38,9 @@ const FormField2 = (props) => {
         value={props.value}
         onChange={(e) => props.onChange(e.target.value)}
         onKeyDown={(e) => props.onKeyDown(e)}
-        id="fullWidth"
-        
-        />
-    </div>
+        id="fullWidth">
+      </input>
+     </div>
   );
 };
 
@@ -74,7 +76,9 @@ const Login = props => {
             history.push("/home");
         }
         catch (error) {
-            alert(`An error occurs during the login: \n${handleError(error)}`);
+//          alert(`An error occurs during the login: \n${handleError(error)}`);
+            toast.error(`${error.response.data.message}`);
+            console.log(handleError(error));
         }
     };
 
@@ -83,30 +87,21 @@ const Login = props => {
         doLogin();
       }
     };
-    
-    
+
+
     return (
-      <BaseContainer>
-<div id= "container">
-    <section className="container">
-  <div className="bg-image"></div>
-  <div className="content" >
-    
-  <div></div>
-  <div className="Logo"></div>
-  <div className="headerrow" >
-      <div className="headerp1" ><h1>User Login</h1></div>
-  </div>
-
-
-      <div className="login container">
+      <div className="Login container" style={{flexDirection: "column"}}>
+        <InformationContainer className="login container" style={{fontSize: '48px', width: "fit-content"}}>
+          Login
+        </InformationContainer>
+      <InformationContainer className="login container" style={{flexDirection: "column"}}>
         <div className="login form">
           <FormField
             value={username}
             onChange={un => setUsername(un)}
             onKeyDown = {handleKeyDown}
           />
-         
+
           <FormField2
             placeholder="mas"
             value={password}
@@ -114,24 +109,21 @@ const Login = props => {
             onKeyDown = {handleKeyDown}
           />
 
-      
 
-          <div className="register-button-container" >
-          <Button disabled={!username || !password}  width="40%" onClick={() => doLogin()}>Login</Button>
 
-          <td>&nbsp;&nbsp;&nbsp;</td>
-          <div className="login-button-container">
-
-          <Button   width="40%" onClick={() => history.push('/register')}>Register here</Button>
-
-          </div>
+          <div className="login-button-container" style={{display: "flex",justifyContent: 'space-between'}} >
+          <Button style={{flex:1, marginRight:"40px"}} disabled={!username || !password} onClick={() => doLogin()}>
+            Login
+          </Button>
+          <Button style={{flex:1}} onClick={() => history.push('/register')}>
+            Register here
+          </Button>
           </div>
         </div>
-      </div>
-      </div>
-      </section>
-</div>
-    </BaseContainer>
+    </InformationContainer>
+    <ToastContainer />
+    </div>
+
   );
 };
 

@@ -3,13 +3,15 @@ import { useHistory } from "react-router-dom";
 import { api, handleError } from "helpers/api";
 import { Spinner } from "components/ui/Spinner";
 import { Button } from "components/ui/Button";
+import InformationContainer from "components/ui/BaseContainer";
 import PropTypes from "prop-types";
-
 import { IconButton } from "@mui/material";
 import ArrowDropDownCircleIcon from "@mui/icons-material/ArrowDropDownCircle";
 import Typography from "@mui/material/Typography";
 import Modal from "@mui/material/Modal";
 import Box from "@mui/material/Box";
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
 import "styles/views/home/History.scss";
 
@@ -37,11 +39,11 @@ const style = {
 const HistoryPage = () => {
   const history = useHistory();
   const [userGameInfo, setUserGameInfo] = useState([]);
-  const [userGameHistoryStats, setUserGameHistoryStats] = useState();
+  const [userGameHistoryStats, setUserGameHistoryStats] = useState({gameScore: 0, correctRate: 0.00});
   const [userGameHistoryAnswer, setUserGameHistoryAnswer] = useState([]);
 
   const [open, setOpen] = useState(false);
-  const [gameId, setGameId] = useState(1);
+  const [gameId, setGameId] = useState(2);
   const handleOpen = (gameId) => {setGameId(gameId); setOpen(true);};
   const handleClose = () => setOpen(false);
   
@@ -56,11 +58,8 @@ const HistoryPage = () => {
         setUserGameInfo(response.data);
         console.log(response);
       } catch (error) {
-        console.error(
-          `An error occurs while fetching the userGameInfo: \n${handleError(error)}`
-        );
-        console.error("Details:", error);
-        alert("Something went wrong while fetching the userGameInfo.");
+        toast.error(`${error.response.data.message}`);
+        console.log(handleError(error));
       }
     }
     fetchGameInfoData();
@@ -70,79 +69,82 @@ const HistoryPage = () => {
     try {
       const url = "/users/"+localStorage.getItem("userId") + "/gameHistories/"+gameId;
       const responseStats = await api.get(url + "/stats");
+      setUserGameHistoryStats(responseStats.data);
+      console.log(responseStats);
       const responseAnswer = await api.get(url + "/answer");
+      setUserGameHistoryAnswer(responseAnswer.data);
+      console.log(responseAnswer);
       // delays continuous execution of an async operation for 1 second.
       // This is just a fake async call, so that the spinner can be displayed
       await new Promise((resolve) => setTimeout(resolve, 1000));
-      // Get the returned users and update the state.
-      setUserGameHistoryStats(responseStats.data);
-      console.log(responseStats);
-      setUserGameHistoryAnswer(responseAnswer.data);
-      console.log(responseAnswer);
-      
     } catch (error) {
-      console.error(
-        `An error occurs while fetching the userGameHistory: \n${handleError(error)}`
+      toast.error(
+        `An error occurs while fetching the userGameHistory: \n${error.respond.data.message}`
       );
-      console.error("Details:", error);
-      alert("Something went wrong while fetching the userGameHistory.");
+      console.log(handleError(error));
     }
   }
 
   
   const UserGameInfo = ({ userGameInfo }) => (
-    <table className="table">
-      <thead>
-        <tr>
-          <th>Game Id</th>
-          <th>Category</th>
-          <th>Date</th>
-          <th>Rounds</th>
-          <th>Player Number</th>
-          <th>More</th>
-        </tr>
-      </thead>
-      <tbody>
-        {userGameInfo.map((gameInfo, index) => (
-        <tr className={index % 2 !== 0 ? "odd" : "even"} key={gameInfo.gameId}>
-          <td style={{ width: "12%", textAlign: "center" }}>{gameInfo.gameId}</td>
-          <td style={{ width: "20%", textAlign: "center" }}>{gameInfo.category}</td>
-          <td style={{ width: "20%", textAlign: "center" }}>{new Date(gameInfo.gameDate).toISOString().slice(0,10)}</td>
-          <td style={{ width: "20%", textAlign: "center" }}>{gameInfo.gameRounds}</td>
-          <td style={{ width: "20%", textAlign: "center" }}>{gameInfo.playerNum}</td>
-          <td>
-            {" "}
-            <IconButton title="Detials" color="primary"
-              onClick={() => {handleOpen(gameInfo.gameId); fetchGameHistoryData(gameInfo.gameId);}}
-            >
-              <ArrowDropDownCircleIcon />
-            </IconButton>
-          </td>
-          <Modal open={open} onClose={handleClose}
-            aria-labelledby="modal-modal-title"
-            aria-describedby="modal-modal-description"
-          >
-            <Box color="primary" sx={style}>
-              <Typography id="modal-modal-title" variant="h6" component="h2">
-                Game ID - {gameId}
-              </Typography>
-              <Typography id="modal-modal-description" sx={{ mt: 2 }}>
-                Score: {userGameHistoryStats.gameScore}
-              </Typography>
-              <Typography id="modal-modal-description" sx={{ mt: 2 }}>
-                Correct Rate: {userGameHistoryStats.correctRate}
-              </Typography>
-              <Typography id="modal-modal-description" sx={{ mt: 2 }}>
-                <div>{userGameHistoryAnswer.map((answer) => (
-                    <Answers answer={answer}/>
-                  ))}</div>
-              </Typography>
-            </Box>
-          </Modal>
-        </tr>
-        ))}
-      </tbody>
-    </table>
+    <>
+    {userGameInfo.length > 0 ? (
+      <table className="table">
+        <thead>
+          <tr>
+            <th>Game Id</th>
+            <th>Category</th>
+            <th>Date</th>
+            <th>Rounds</th>
+            <th>Player Number</th>
+            <th>More</th>
+          </tr>
+        </thead>
+        <tbody>
+          {userGameInfo.map((gameInfo, index) => (
+            <tr className={index % 2 !== 0 ? "odd" : "even"} key={gameInfo.gameId}>
+              <td style={{ width: "12%", textAlign: "center" }}>{gameInfo.gameId}</td>
+              <td style={{ width: "20%", textAlign: "center" }}>{gameInfo.category}</td>
+              <td style={{ width: "20%", textAlign: "center" }}>{new Date(gameInfo.gameDate).toISOString().slice(0,10)}</td>
+              <td style={{ width: "20%", textAlign: "center" }}>{gameInfo.gameRounds}</td>
+              <td style={{ width: "20%", textAlign: "center" }}>{gameInfo.playerNum}</td>
+              <td>
+                <IconButton title="Detials" color="primary"
+                  onClick={() => {
+                    handleOpen(gameInfo.gameId);
+                    fetchGameHistoryData(gameInfo.gameId);
+                  }}
+                >
+                  <ArrowDropDownCircleIcon />
+                </IconButton>
+              </td>
+              <Modal open={open} onClose={handleClose}
+                aria-labelledby="modal-modal-title" aria-describedby="modal-modal-description"
+              >
+                <Box color="primary" sx={style}>
+                  <Typography id="modal-modal-title" variant="h4" component="h2">
+                    Game ID - {gameId}
+                  </Typography>
+                  <Typography id="modal-modal-description" sx={{ mt: 3 }}>
+                    <div>Score: {userGameHistoryStats.gameScore}</div>
+                    <div>CorrectRate: {userGameHistoryStats.correctRate}</div>
+                  </Typography>
+                  <Typography id="modal-modal-description" sx={{ mt: 3 }}>
+                    <h3>Your Answer - Correct Answer</h3>
+                    <div>{userGameHistoryAnswer.map((answer) => (
+                        <Answers answer={answer}/>
+                      ))}</div>
+                  </Typography>
+                </Box>
+              </Modal>
+            </tr>
+          ))}
+        </tbody>
+      </table>
+    ) : (
+      <div className="no-games-message">No games have been played yet.</div>
+    )}
+    </>
   );
   UserGameInfo.propTypes = {
     gameInfo: PropTypes.object,
@@ -157,14 +159,19 @@ const HistoryPage = () => {
   }
     
   return (
-    <div className="history container">
-      <h2>History - User: {localStorage.getItem("username")}</h2>
-      <div>{userGameInfoList}</div>
-      <div className="history button-container">
+    <div className="History container" style={{flexDirection:"column"}}>
+      <InformationContainer className="history container" style={{fontSize: '48px', width: "fit-content"}}>
+        Your Game History:  {localStorage.getItem("username")}
+      </InformationContainer>
+      <InformationContainer className="history container">
+        <div>{userGameInfoList}</div>
+        <div className="history button-container">
         <Button width="300%" onClick={() => history.push("/home")}>
           Return to Home
         </Button>
-      </div>    
+      </div>
+      </InformationContainer>
+      <ToastContainer />
     </div>
   );
 };

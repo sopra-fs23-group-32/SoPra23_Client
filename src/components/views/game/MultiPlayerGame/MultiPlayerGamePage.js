@@ -7,15 +7,16 @@ import Stomp from "stompjs";
 import { getDomain } from "helpers/getDomain";
 import WebSocketType from "models/WebSocketType";
 import GameStatus from "models/GameStatus";
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
 import "styles/views/game/GamePage.scss";
 
 const MultiPlayerGamePage = () => {
   const [isAnswerSubmitted, setIsAnswerSubmitted] = useState(false); // new state variable
   const [score, setScore] = useState(localStorage.getItem("score"));
-  const [correctOption, setCorrectOption] = useState(
-    localStorage.getItem("CorrectOption")
-  );
+
+  const correctOption = localStorage.getItem("CorrectOption");
   const [selectedCityName, setSelectedCityName] = useState(null);
   const [roundTime, setRoundTime] = useState(0);
   const roundNumber = localStorage.getItem("roundNumber");
@@ -37,6 +38,21 @@ const MultiPlayerGamePage = () => {
     return () => clearInterval(intervalId);
   }, [isAnswerSubmitted]);
 
+  const nextGame = () => {
+    // remove all local storage of previous question
+    localStorage.removeItem("citynames");
+    localStorage.removeItem("PictureUrl");
+    localStorage.removeItem("CorrectOption");
+    // go to next page
+    if (localStorage.getItem("roundNumber") === localStorage.getItem("totalRounds")) {
+      history.push(`/MultiGamePage/${gameId}/GameFinish`);
+    }
+    else {
+      localStorage.setItem("roundNumber", Number(roundNumber) + 1);
+      history.push(`/MultiGamePage/${gameId}/RoundCountPage`);
+    }
+  };
+
   useEffect(() => {
     let subscription;
     const Socket = new SockJS(getDomain() + "/socket");
@@ -50,29 +66,18 @@ const MultiPlayerGamePage = () => {
           `/instance/games/${gameId}`,
           async (message) => {
             const messagBody = JSON.parse(message.body);
-            if (messagBody.type == WebSocketType.GAME_END) {
+            if (messagBody.type === WebSocketType.GAME_END) {
               history.push("/lobby");
-            } else if (
-              messagBody.type == WebSocketType.PLAYER_ADD ||
-              messagBody.type == WebSocketType.PLAYRE_REMOVE
+            }
+            else if (messagBody.type === WebSocketType.PLAYER_ADD 
+              || messagBody.type === WebSocketType.PLAYRE_REMOVE
             ) {
               //update userlist
-            } else if (
-              messagBody.type == WebSocketType.ANSWER_UPDATE &&
-              messagBody.load == GameStatus.WAITING
+            }
+            else if (messagBody.type === WebSocketType.ANSWER_UPDATE 
+              && messagBody.load === GameStatus.WAITING
             ) {
-              if (
-                localStorage.getItem("roundNumber") ==
-                localStorage.getItem("totalRounds")
-              ) {
-                endGame();
-              } else if (localStorage.getItem("isServer") == 1) {
-                nextGame();
-              }
-            } else if (messagBody.type == WebSocketType.ROUND_UPDATE) {
-              const currentRound = Number(localStorage.getItem("roundNumber"));
-              localStorage.setItem("roundNumber", currentRound + 1);
-              history.push(`/MultiGamePage/${gameId}/RoundCountPage/`);
+              nextGame();
             }
           }
         );
@@ -91,16 +96,9 @@ const MultiPlayerGamePage = () => {
   const cityNamesString = localStorage.getItem("citynames");
   const cityNames = JSON.parse(cityNamesString);
 
-  const endGame = () => {
-    history.push(`/GameFinish/`);
-  };
-
-  const nextGame = async () => {
-    const response = await api.put(`/games/${gameId}`);
-  };
 
   const handleExitButtonClick = async () => {
-    history.push("/Home");
+    history.push("/home");
   };
 
   const handleSubmit = async (e) => {
@@ -121,7 +119,9 @@ const MultiPlayerGamePage = () => {
       setScore(score2);
       localStorage.setItem("score", score2);
     } catch (error) {
-      console.error("Error submitting answer", error);
+//      console.error("Error submitting answer", error);
+        toast.error("Failed in submitting answer!");
+        console.log(handleError(error));
     }
   };
 
@@ -188,6 +188,7 @@ const MultiPlayerGamePage = () => {
           </Grid>
         </Container>
       </div>
+      <ToastContainer />
     </div>
   );
 };
