@@ -18,7 +18,7 @@ const Lobby = () => {
   const [countdownTime, setCountdownTime] = useState(15);
   const [isMultiplayer, setIsMultiplayer] = useState(true);
   const [targetPlayerNumber, setTargetPlayerNumber] = useState(1);
-    const [isLoading, setIsLoading] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
 
   // use react-router-dom's hook to access the history
   const history = useHistory();
@@ -177,7 +177,7 @@ const Lobby = () => {
             </div>
           )};
         </div>
-        <div>
+        <div className="lobby button-container">
           <Button style={{ display: "inline-block", margin: "0 10px" }}
             onClick={() => history.push("/JoinGame")}
           >
@@ -198,6 +198,7 @@ const Lobby = () => {
           ></div>
         </div>
       </div>
+      <ToastContainer />
     </div>
   );
 };
