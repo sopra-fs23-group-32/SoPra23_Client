@@ -52,26 +52,24 @@ const MultiPlayerGamePage = () => {
           `/instance/games/${gameId}`,
           async (message) => {
             const messagBody = JSON.parse(message.body);
-            if (messagBody.type == WebSocketType.GAME_END) {
+            if (messagBody.type === WebSocketType.GAME_END) {
               history.push("/lobby");
             } else if (
-              messagBody.type == WebSocketType.PLAYER_ADD ||
-              messagBody.type == WebSocketType.PLAYRE_REMOVE
+              messagBody.type === WebSocketType.PLAYER_ADD ||
+              messagBody.type === WebSocketType.PLAYRE_REMOVE
             ) {
               //update userlist
             } else if (
-              messagBody.type == WebSocketType.ANSWER_UPDATE &&
-              messagBody.load == GameStatus.WAITING
+              messagBody.type === WebSocketType.ANSWER_UPDATE &&
+              messagBody.load === GameStatus.WAITING
             ) {
-              if (
-                localStorage.getItem("roundNumber") ==
-                localStorage.getItem("totalRounds")
-              ) {
-                endGame();
-              } else if (localStorage.getItem("isServer") == 1) {
+              if (localStorage.getItem("roundNumber") === localStorage.getItem("totalRounds")) {
+                history.push(`/MultiGamePage/${gameId}/GameFinish`);
+              }
+              else if (localStorage.getItem("isServer") === 1) {
                 nextGame();
               }
-            } else if (messagBody.type == WebSocketType.ROUND_UPDATE) {
+            } else if (messagBody.type === WebSocketType.ROUND_UPDATE) {
               const currentRound = Number(localStorage.getItem("roundNumber"));
               localStorage.setItem("roundNumber", currentRound + 1);
               history.push(`/MultiGamePage/${gameId}/RoundCountPage`);
@@ -92,10 +90,6 @@ const MultiPlayerGamePage = () => {
 
   const cityNamesString = localStorage.getItem("citynames");
   const cityNames = JSON.parse(cityNamesString);
-
-  const endGame = () => {
-    history.push(`/GameFinish/`);
-  };
 
   const nextGame = async () => {
     const response = await api.put(`/games/${gameId}`);

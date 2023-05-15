@@ -27,31 +27,11 @@ const UrgeWithPleasureComponent = ({ duration }) => (
 
 const RoundCountdown = () => {
   // use react-router-dom's hook to access the history
-  const [roundNumber, setRoundNumber] = useState(
-  localStorage.getItem("roundNumber")
-  );
-  const [score, setScore] = useState(localStorage.getItem("playerScore"));
   const history = useHistory();
-  const [players, setPlayers] = useState("");
   const [duration, setDuration] = useState(5);
   const [secondsLeft, setSecondsLeft] = useState(duration);
   const [intervalId, setIntervalId] = useState(null);
-
   const gameId = localStorage.getItem("gameId");
-
-
-  const endGame = async (gameId) => {
-    try {
-      const response = await api.get(`/games/${gameId}/results`);
-      console.log('Game result:', response.data);
-      // Do something with the response, e.g. update state or redirect to a new page
-    } catch (error) {
-//      console.error('Error getting game result:', error);
-        toast.error("Cannot get game result!");
-        console.log(handleError(error));
-    }
-    history.push(`/GameFinishPage/`);
-  }
 
   useEffect(() => {
     const intervalId = setInterval(() => {
@@ -93,16 +73,19 @@ const RoundCountdown = () => {
     }
   };
 
-  const handleExitButtonClick = () => {
-    history.push("/Home");
+  const handleExitButtonClick = async () => {
+    await api.delete(`games/${localStorage.getItem("gameId")}`);
+    history.push("/home");
   };
 
-
-  const totalRounds = localStorage.getItem("totalRounds")
+  const roundNumber = localStorage.getItem("roundNumber");
+  const totalRounds = localStorage.getItem("totalRounds");
+  const score = localStorage.getItem("score");
 
   console.log("total: ",totalRounds, "roundNumber:",roundNumber);
   if (roundNumber > totalRounds) {
-    endGame(gameId);}
+    history.push(`/SingleGamePage/${gameId}/GameFinishPage`);
+  }
 
   return (
     <div className="round countdown container">
@@ -120,8 +103,10 @@ const RoundCountdown = () => {
           id="information-container"
         >
           <div style={{ fontSize: "40px" }}>
-            {/* Replace 2 with {currentRound+1} and 5 with {roundNumber}*/}
             Round {roundNumber} of {totalRounds} is starting soon...
+          </div>
+          <div style={{ fontSize: "30px" }}>
+            Your Score: {score}
           </div>
         </InformationContainer>
         <div className="roundcountdown layout" style={{ flexDirection: "row" }}>
