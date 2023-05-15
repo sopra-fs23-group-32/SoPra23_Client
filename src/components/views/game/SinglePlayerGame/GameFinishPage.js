@@ -3,127 +3,64 @@ import React, { useState, useEffect } from "react";
 import { Button } from "components/ui/Button";
 import { api, handleError } from "helpers/api";
 import InformationContainer from "components/ui/BaseContainer";
-import {Table, TableBody, TableCell, TableContainer,
-  TableHead, TableRow, Paper,} from "@mui/material";
-import { ToastContainer, toast } from 'react-toastify';
-import 'react-toastify/dist/ReactToastify.css';
+import { ToastContainer, toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
 import "styles/views/game/FinalPage.scss";
 
-
 const GameFinishPage = () => {
-    const history = useHistory();
-    const [players, setPlayers] = useState([]);
+  const history = useHistory();
 
-    useEffect(() => {
-        // effect callbacks are synchronous to prevent race conditions. So we put the async function inside:
-        const saveGameHistory = async () => {
-            const response = await api.post(`/gameInfo/${localStorage.getItem("gameId")}`);
-            console.log(response.data)
-        }
-        const saveUserGameHistory = async () => {
-            const response = await api.post(`/users/${localStorage.getItem("userId")}/gameHistories/${localStorage.getItem("gameId")}`);
-            console.log("gamehistory", response.data);
-        }
-        const fetchData = async () => {
-            try {
-                saveGameHistory();
-                saveUserGameHistory();
-                const response = await api.get(
-                    `/games/${localStorage.getItem("gameId")}/ranking`
-                );
-                await new Promise((resolve) => setTimeout(resolve, 1000));
-                // Get the returned users and update the state.
-                setPlayers(response.data);
-                await api.delete(`games/${localStorage.getItem("gameId")}`);
-            } catch (error) {
-//                console.error(
-//                    `An error occurs while fetching the users: \n${handleError(
-//                        error
-//                    )}`
-//                );
-//                console.error("Details:", error);
-//                alert("Something went wrong while fetching the users!");
-                toast.error("Something went wrong while fetching the users!");
-                console.log(handleError(error));
-            }
-        }
-        fetchData();
-    }, []);
-    return (
-        <div className="round countdown container">
-            <div style={{ dislay: "flex" }}>
-                <InformationContainer
-                    className="lobby container_left"
-                    id="information-container"
-                >
-                    <div style={{ fontSize: "40px" }}>
-                        {/* Replace 2 with {currentRound+1} and 5 with {roundNumber}*/}
-                        The last round has been played
-                    </div>
-                </InformationContainer>
-                <div>
-                    <InformationContainer
-                        className="lobby container_left"
-                        id="information-container"
-                    >
-                        <TableContainer
-                            component={Paper}
-                            sx={{ backgroundColor: "transparent" }}
-                        >
-                            <Table
-                                sx={{ minWidth: 650 }}
-                                aria-label="simple table"
-                                className="score-table"
-                            >
-                                <TableHead>
-                                    <TableRow>
-                                        <TableCell></TableCell>
-                                        <TableCell align="center">
-                                            UserName
-                                        </TableCell>
-                                        <TableCell align="center">
-                                            Score
-                                        </TableCell>
-                                    </TableRow>
-                                </TableHead>
-                                <TableBody>
-                                    {players.map((player, index) => (
-                                        <TableRow
-                                            key={index}
-                                            sx={{
-                                                "&:last-child td, &:last-child th":
-                                                    {
-                                                        border: 0,
-                                                    },
-                                            }}
-                                        >
-                                            <TableCell
-                                                component="th"
-                                                scope="row"
-                                            >
-                                                {player.rank}.
-                                            </TableCell>
-                                            <TableCell align="center">
-                                                <p>{player.playerName}</p>
-                                            </TableCell>
-                                            <TableCell align="center">
-                                                {player.score} Points
-                                            </TableCell>
-                                        </TableRow>
-                                    ))}
-                                </TableBody>
-                            </Table>
-                        </TableContainer>
-                        <p>You {localStorage.getItem("score")} Pts</p>
-                    </InformationContainer>
-                    <Button onClick={() => history.push("/home")} style={{ display: "block", margin: "auto", marginTop: "20px" }}>
-                        Back to Home Screen
-                    </Button>
-                </div>
-            </div>
-            <ToastContainer />
-        </div>
-    );
+  const endGame = async () => {
+    await api.delete(`games/${localStorage.getItem("gameId")}`);
+    history.push("/home");
+  };
+
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const responseGameInfo = await api.post(
+          `/gameInfo/${localStorage.getItem("gameId")}`
+        );
+        console.log(responseGameInfo.data);
+        const responseGameHistory = await api.post(
+          `/users/${localStorage.getItem("userId")}/gameHistories/${localStorage.getItem("gameId")}`
+        );
+        console.log("gamehistory", responseGameHistory.data);
+        await new Promise((resolve) => setTimeout(resolve, 1000));
+      } 
+      catch (error) {
+        toast.error("Something went wrong while fetching the users!");
+        console.log(handleError(error));
+      }
+    };
+    fetchData();
+  }, []);
+
+  return (
+    <div className="finalpage container">
+      <h2 style={{ font: "40px" }}>
+        -- Single Player Game Ended --
+      </h2>
+
+      <h2 style={{ font: "40px" }}>
+        You got {localStorage.getItem("score")} Pts
+      </h2>
+      <h2 style={{ font: "30px" }}>
+        Your Game History has saved,
+      </h2>
+      <h2 style={{ font: "30px" }}>
+        but your score won't added to the leaderboard
+      </h2>
+      
+      <div className="final button-container">
+        <Button onClick={() => endGame()}>
+          Back to Home Screen
+        </Button>
+      </div>
+      <ToastContainer />
+    </div>
+  );
 };
+
 export default GameFinishPage;
