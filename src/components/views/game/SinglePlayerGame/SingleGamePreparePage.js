@@ -1,10 +1,8 @@
 import { useHistory } from "react-router-dom";
 import React, { useState, useEffect } from "react";
-import { Spinner } from "components/ui/Spinner";
 import { Button } from "components/ui/Button";
 import { api, handleError } from "helpers/api";
 import InformationContainer from "components/ui/BaseContainer";
-import Switch from "react-switch";
 import PropTypes from "prop-types";
 import { CountdownCircleTimer } from 'react-countdown-circle-timer';
 import { ToastContainer, toast } from 'react-toastify';
@@ -27,14 +25,16 @@ const UrgeWithPleasureComponent = ({ duration }) => (
 
 const RoundCountdown = () => {
   // use react-router-dom's hook to access the history
-  const history = useHistory();
-  const [duration, setDuration] = useState(8);
+  const duration = 8;
   const [secondsLeft, setSecondsLeft] = useState(duration);
   const [intervalId, setIntervalId] = useState(null);
 
   const roundNumber = localStorage.getItem("roundNumber");
   const totalRounds = localStorage.getItem("totalRounds");
+  const category = localStorage.getItem("category");
   const score = localStorage.getItem("score");
+
+  const history = useHistory();
 
   const setLocalStorageItems = (question) => {
     const cityNamesString = JSON.stringify([
@@ -50,7 +50,7 @@ const RoundCountdown = () => {
       try {
         const response = await api.put(`games/${localStorage.getItem("gameId")}`);
         setLocalStorageItems(response.data);
-        console.log(response.data);
+        console.log(response);
         await new Promise((resolve) => setTimeout(resolve, 1000));
       }
       catch (error) {
@@ -95,22 +95,16 @@ const RoundCountdown = () => {
         </Button>
       </div>
       <div style={{ dislay: "flex" }}>
-        <InformationContainer
-          className="roundcountdown container_left"
-          id="information-container"
-        >
+        <InformationContainer className="roundcountdown container_left">
           <div style={{ fontSize: "40px" }}>
             Round {roundNumber} of {totalRounds} is starting soon...
           </div>
           <div style={{ fontSize: "30px" }}>
-            Your Score: {score}
+            City Category: {category}, Your Score: {score}
           </div>
         </InformationContainer>
         <div className="roundcountdown layout" style={{ flexDirection: "row" }}>
-          <InformationContainer
-            className="roundcountdown container_right"
-            id="information-container"
-          >
+          <InformationContainer className="roundcountdown container_right">
           <div className="countdown-text">
             <UrgeWithPleasureComponent duration={duration} />
           </div>
