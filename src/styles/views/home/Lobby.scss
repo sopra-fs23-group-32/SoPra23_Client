@@ -17,6 +17,9 @@
         display: flex;
         flex-direction: column;
         align-items: center;
+        margin: 50px auto 0;
+        width: 30%;
+        padding: 30px;
     }
     &.container_left {
         background: transparentize(rgb(65, 64, 64), 0.7);
@@ -49,18 +52,18 @@
     }
     &.category-select {
         display: flex;
+        align-items: baseline;
+        justify-content: space-between;
     }
     &.label {
         font-size: 20px;
-        font-weight: 400;
         color: $textColor;
-        display: inline;
-        padding: 10px;
+               
     }
     &.category {
         margin-left: 20px;
         width: 60%;
-        border-radius: 10px;
+        border-radius: $borderRadius;
         background-color: #1979b8;
 		color: $textColor;
         &.Mui-disabled {
@@ -77,7 +80,7 @@
     &.round {
         margin-left: 30px;
         width: 60%;
-        border-radius: 10px;
+        border-radius: $borderRadius;
         background-color: #1979b8;
 		color: $textColor;
         .MuiInputBase-input {

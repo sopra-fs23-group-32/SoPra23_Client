@@ -38,10 +38,9 @@ const style = {
 
 const HistoryPage = () => {
   const history = useHistory();
-  const [userGameInfo, setUserGameInfo] = useState([]);
+  const [userGameInfo, setUserGameInfo] = useState(null);
   const [userGameHistoryStats, setUserGameHistoryStats] = useState({gameScore: 0, correctRate: 0.00});
   const [userGameHistoryAnswer, setUserGameHistoryAnswer] = useState([]);
-
   const [open, setOpen] = useState(false);
   const [gameId, setGameId] = useState(2);
   const handleOpen = (gameId) => {setGameId(gameId); setOpen(true);};
@@ -150,9 +149,9 @@ const HistoryPage = () => {
     gameInfo: PropTypes.object,
   };
 
-  let userGameInfoList = <Spinner />;
+  let userGameInfoList = <Spinner />
 
-  if (userGameInfo) {
+  if (userGameInfo !== null) {
     userGameInfoList = (
       <UserGameInfo userGameInfo={userGameInfo} />
     );

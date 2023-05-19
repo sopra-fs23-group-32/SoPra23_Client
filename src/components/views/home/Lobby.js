@@ -95,10 +95,12 @@ const Lobby = () => {
   };
 
   return (
-    <div className="lobby container">
+    <div className="Lobby container" style={{flexDirection: "column"}}>
+      <InformationContainer className="lobby container" style={{fontSize: '48px', width: "fit-content"}}>
+        Game Settings
+      </InformationContainer>
       <div className="lobby layout">
         <InformationContainer className="lobby container_left">
-          <div style={{ fontSize: "40px" }}>Game Settings</div>
           <div style={{ display: "grid", gridTemplateColumns: "1fr auto 1fr", gap: "10px",}}>
             <div style={{ textAlign: "right" }}>
               <span style={{ fontSize: "20px" }}>Singleplayer</span>
@@ -118,9 +120,13 @@ const Lobby = () => {
             </div>
           </div>
           <div className="lobby category-select">
-            <InputLabel className="lobby label">Category</InputLabel>
-            <Select labelId="demo-simple-select-label" id="demo-simple-select"
-              value={selectedCategory} label="category"
+            <InputLabel className="lobby label" style={{paddingLeft:"1px"}}>Category:</InputLabel>
+            <Select 
+              labelId="demo-simple-select-label"
+              id="demo-simple-select"
+              value={selectedCategory}
+              label="category"
+              style={{ height: '45px', marginBottom: '16px', marginLeft: '5px' }}
               onChange={(e) => setSelectedCategory(e.target.value)}
               inputProps={{
                 MenuProps: {
@@ -140,11 +146,11 @@ const Lobby = () => {
             </Select>
           </div>
           <div className="lobby category-select">
-            <InputLabel className="lobby label">Rounds:</InputLabel>
+            <InputLabel className="lobby label" style={{paddingLeft:"1px"}}>Rounds:</InputLabel>
             <TextField
               className="lobby round"
               inputProps={{
-                style: { textAlign: "center" },
+                style: { textAlign: "center", height: "10px"},
               }}
               placeholder="enter number of rounds..."
               value={gameRounds}
