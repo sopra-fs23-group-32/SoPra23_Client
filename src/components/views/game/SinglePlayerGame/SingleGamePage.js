@@ -37,15 +37,6 @@ const SingleGamePage = () => {
     }
   };
 
-  const handleCityNameButtonClick = (cityName) => {
-    setSelectedCityName(cityName);
-  };
-
-  const handleExitButtonClick = async () => {
-    await api.delete(`games/${localStorage.getItem("gameId")}`);
-    history.push("/home");
-  };
-
   const submitAnswer = async(cityName, time) => {
     setIsAnswerSubmitted(true);
     try {
@@ -76,7 +67,7 @@ const SingleGamePage = () => {
       });
     }, 1000);
     return () => clearInterval(intervalId);
-  }, [history]);
+  }, []);
 
 
   const handleSubmit = (e) => {
@@ -89,9 +80,12 @@ const SingleGamePage = () => {
     }
   };
 
+  const handleCityNameButtonClick = (cityName) => {
+    setSelectedCityName(cityName);
+  };
+
   const cityNameButtons = cityNames.map((cityName) => (
-    <button
-      key={cityName}
+    <button key={cityName}
       className={`city-name-button ${
         isAnswerSubmitted
           ? cityName === correctOption
@@ -109,12 +103,25 @@ const SingleGamePage = () => {
       {cityName}
     </button>
   ));
+      
+  const handleExitButtonClick = async () => {
+    localStorage.removeItem("category");
+    localStorage.removeItem("totalRounds");
+    localStorage.removeItem("countdownTime");
+    localStorage.removeItem("roundNumber");
+    localStorage.removeItem("score");
+    localStorage.removeItem("citynames");
+    localStorage.removeItem("PictureUrl");
+    localStorage.removeItem("CorrectOption");
+    await api.delete(`games/${gameId}`);
+    history.push("/home");
+  };
 
   return (
     <div className="guess-the-city">
       <div className="guess-the-city header">
         <button className="exit-button" onClick={handleExitButtonClick}>
-          Exit
+          Exit Game
         </button>
       </div>
 
