@@ -59,6 +59,12 @@ const Home = () => {
         My Profile
       </Button>
       <Button
+        style={{ fontSize: "45px", width: "25%", height: "100px" }}
+        onClick={() => history.push("/home/about")}
+      >
+        About
+      </Button>
+      <Button
         style={{
           fontSize: "45px",
           width: "25%",
