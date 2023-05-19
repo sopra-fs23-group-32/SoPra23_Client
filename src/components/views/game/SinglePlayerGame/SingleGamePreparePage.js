@@ -33,6 +33,7 @@ const RoundCountdown = () => {
   const totalRounds = localStorage.getItem("totalRounds");
   const category = localStorage.getItem("category");
   const score = localStorage.getItem("score");
+  const gameId = localStorage.getItem("gameId");
 
   const history = useHistory();
 
@@ -45,10 +46,11 @@ const RoundCountdown = () => {
     localStorage.setItem("CorrectOption", question.correctOption);
   };
 
+  // fetch question and save in localstorage
   useEffect(() => {
     async function fetchQuestion() {
       try {
-        const response = await api.put(`games/${localStorage.getItem("gameId")}`);
+        const response = await api.put(`games/${gameId}`);
         setLocalStorageItems(response.data);
         console.log(response);
         await new Promise((resolve) => setTimeout(resolve, 1000));
@@ -61,6 +63,7 @@ const RoundCountdown = () => {
     fetchQuestion();
   }, []);
 
+  // set a timer
   useEffect(() => {
     const intervalId = setInterval(() => {
       setSecondsLeft((prevSecondsLeft) => prevSecondsLeft - 1);
@@ -68,32 +71,40 @@ const RoundCountdown = () => {
     return () => clearInterval(intervalId);
   }, []);
 
+  // go to next page when time out
   useEffect(() => {
     if (secondsLeft === 0) {
       clearInterval(secondsLeft);
       clearInterval(intervalId);
       setTimeout(() => {
-        history.push(`/SingleGamePage/${localStorage.getItem("gameId")}`);
+        history.push(`/SingleGamePage/${gameId}`);
       }, 500);
     }
   }, [secondsLeft, intervalId]);
 
-  
-  const handleExitButtonClick = async () => {
-    await api.delete(`games/${localStorage.getItem("gameId")}`);
+  const handleExitButtonClick = async() => {
+    localStorage.removeItem("category");
+    localStorage.removeItem("totalRounds");
+    localStorage.removeItem("countdownTime");
+    localStorage.removeItem("roundNumber");
+    localStorage.removeItem("score");
+    localStorage.removeItem("citynames");
+    localStorage.removeItem("PictureUrl");
+    localStorage.removeItem("CorrectOption");
+    await api.delete(`games/${gameId}`);
     history.push("/home");
   };
 
   return (
     <div className="round countdown container">
       <div style={{ position: "fixed", top: 75, left: 75 }}>
-        <Button
-          style={{ fontSize: "45px", height: "100px", width: "125%" }}
+        <Button style={{ fontSize: "45px", height: "100px", width: "100%" }}
           onClick={handleExitButtonClick}
         >
           Exit Game
         </Button>
       </div>
+
       <div className="roundcountdown layout" style={{ dislay: "flex" }}>
         <InformationContainer className="roundcountdown container_left">
           <div style={{ fontSize: "40px" }}>
