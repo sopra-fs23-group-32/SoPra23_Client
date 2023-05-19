@@ -1,16 +1,15 @@
 import { useHistory } from "react-router-dom";
 import React, { useState, useEffect } from "react";
-import { Spinner } from "components/ui/Spinner";
 import { Button } from "components/ui/Button";
 import { api, handleError } from "helpers/api";
 import InformationContainer from "components/ui/BaseContainer";
-import Switch from "react-switch";
 import PropTypes from "prop-types";
 import { CountdownCircleTimer } from 'react-countdown-circle-timer';
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 
 import "styles/views/game/GamePrepare.scss";
+import { FALSE, TRUE } from "node-sass";
 
 
 const UrgeWithPleasureComponent = ({ duration }) => (
@@ -26,24 +25,24 @@ const UrgeWithPleasureComponent = ({ duration }) => (
   </CountdownCircleTimer>
 );
 
-const RoundCountdown = () => {
+const MultiModeRoundCountdown = () => {
   // use react-router-dom's hook to access the history
-  const roundNumber = localStorage.getItem("roundNumber");
-  const [score, setScore] = useState(localStorage.getItem("playerScore"));
-  const history = useHistory();
-  const [duration, setDuration] = useState(555555555555);
+  const duration = 10;
   const [secondsLeft, setSecondsLeft] = useState(duration);
   const [intervalId, setIntervalId] = useState(null);
+
   const [leaderboardData, setLeaderboardData] = useState([]);
   const [previousRoundData, setPreviousRoundData] = useState([]);
 
+  const roundNumber = localStorage.getItem("roundNumber");
+  const totalRounds = localStorage.getItem("totalRounds");
+  const category = localStorage.getItem("category");
+  const score = localStorage.getItem("myScore");
+  const username = localStorage.getItem("username")
   const gameId = localStorage.getItem("gameId");
+  const playerId = localStorage.getItem("userId");
 
-  const getGameInfo = async () => {
-    const response = await api.get(`/games/${localStorage.getItem("gameId")}/`);
-    var currentRound = response.data.currentRound;
-    // input User Ranking when implemented
-  };
+  const history = useHistory();
 
   const setLocalStorageItems = (question) => {
     const cityNamesString = JSON.stringify([
@@ -54,25 +53,34 @@ const RoundCountdown = () => {
     localStorage.setItem("CorrectOption", question.correctOption);
   };
 
-  useEffect(() => {
-    async function fetchQuestion() {
-      try {
-        const response = await api.put(`games/${localStorage.getItem("gameId")}`);
-        setLocalStorageItems(response.data);
-        console.log(response.data);
-        await new Promise((resolve) => setTimeout(resolve, 1000));
+  async function fetchQuestion(isServer) {
+    try {
+      let response;
+      if(isServer === true) {
+        response = await api.put(`games/${gameId}`);
       }
-      catch (error) {
-        toast.error(`${error.response.data.message}`);
-        console.log(handleError(error));
+      else {
+        response = await api.get(`games/${gameId}/questions`);
       }
+      setLocalStorageItems(response.data);
+      console.log(response.data);
+      await new Promise((resolve) => setTimeout(resolve, 1000));
     }
+    catch (error) {
+      toast.error(`${error.response.data.message}`);
+      console.log(handleError(error));
+    }
+  }
+
+  // fetch question and save in localstorage
+  useEffect(() => {
     if (localStorage.getItem("isServer") === 1) {
-      fetchQuestion();
+      fetchQuestion(true);
     }
     // if game state == round_update, then fetch question using GET 
   }, []);
 
+  // set a timer
   useEffect(() => {
     const intervalId = setInterval(() => {
       setSecondsLeft((prevSecondsLeft) => prevSecondsLeft - 1);
@@ -80,134 +88,127 @@ const RoundCountdown = () => {
     return () => clearInterval(intervalId);
   }, []);
 
+  // go to next page when time out
   useEffect(() => {
     if (secondsLeft === 0) {
       clearInterval(secondsLeft);
       clearInterval(intervalId);
       setTimeout(() => {
+        if(localStorage.getItem("isServer") === 0){
+          fetchQuestion(false);
+        }
         history.push(`/MultiGamePage/${gameId}`);
       }, 500);
     }
   }, [secondsLeft, intervalId]);
 
 
+  // get all players' ranking
   useEffect(() => {
-    // effect callbacks are synchronous to prevent race conditions. So we put the async function inside:
     async function fetchRanking() {
       try {
-        const response = await api.get(
-          `/games/${localStorage.getItem("gameId")}/ranking`
-        );
-        if (roundNumber === 1) {
-          setPreviousRoundData(leaderboardData);
-          console.log("Previous round data", leaderboardData)
-        }
-
-        setTimeout(() => {
-          setLeaderboardData(response.data)
-          console.log("this is what i want", response)
-          console.log(response.data);
-        }, 500);
+        const response = await api.get(`/games/${gameId}/ranking`);
+        // if (roundNumber === 1) {
+        //   setPreviousRoundData(leaderboardData);
+        //   console.log("Previous round data", leaderboardData)
+        // }
+        setLeaderboardData(response.data);
+        console.log(response);
+        await new Promise((resolve) => setTimeout(resolve, 1000));
       } catch (error) {
-        toast.error("Something went wrong while fetching the users!");
+        toast.error(`${error.response.data.message}`);
         console.log(handleError(error));
       }
     }
     fetchRanking();
   }, []);
 
-  const handleExitButtonClick = () => {
-    history.push("/Home");
-  };
-
-  const handleSub = async () => {
-    console.log(localStorage.getItem("gameId"));
-    const response2 = await api.get(
-      `/games/${localStorage.getItem("gameId")}/players`
-    );
-    console.log("this is what i want", response2);
-  };
-
-  const totalRounds = localStorage.getItem("totalRounds")
-  const username = localStorage.getItem("username")
-
   const calculateRowPosition = (currentRank, previousRank) => {
     const position = currentRank - previousRank;
     return position * 100 + '%';
   };
 
+  const PlayerRanking = ({leaderboardData}) => (
+    <table className="leaderboard">
+      <thead>
+        <tr>
+          <th>Rank</th>
+          <th>Player Name</th>
+          <th>Score</th>
+        </tr>
+      </thead>
+      <tbody>
+        {leaderboardData.map((rankEntry, index) => {
+          const previousRank = roundNumber > 1 ? 
+            previousRoundData.find((data) => data.playerName === rankEntry.playerName)?.rank
+             : rankEntry.rank;
+          const position = calculateRowPosition(rankEntry.rank, previousRank);
+
+          return (
+            <tr key={rankEntry.id}
+              style={{ transform: `translateY(${position})`,
+                backgroundColor: rankEntry.playerName === username ? 'rgba(200, 0, 0, 0.5)' : 'rgba(128, 128, 128, 0.5)',}}
+            >
+              <td>{rankEntry.rank}</td>
+              <td>{rankEntry.playerName}</td>
+              <td>{rankEntry.score}</td>
+            </tr>
+          );
+        })}
+      </tbody>
+    </table>
+  )
+  PlayerRanking.propTypes = {
+    rankEntry: PropTypes.object,
+  };
+
+  let playRankingList = <Spinner />
+
+  if (leaderboardData !== null) {
+    playRankingList = (
+      <PlayerRanking leaderboardData={leaderboardData} />
+    );
+  }
+
+  const handleExitButtonClick = async() => {
+    await api.delete(`games/${gameId}/players/${playerId}`);
+    history.push("/home");
+  };
+
   return (
     <div className="round countdown container">
       <div style={{ position: "fixed", top: 75, left: 75 }}>
-        <Button
-          style={{ fontSize: "45px", height: "100px", width: "125%" }}
+        <Button style={{ fontSize: "45px", height: "100px", width: "100%" }}
           onClick={handleExitButtonClick}
         >
-          Exit
+          Exit Game
         </Button>
       </div>
-      <div style={{ dislay: "flex" }}>
-        <InformationContainer
-          className="roundcountdown container_left"
-          id="information-container"
-        >
+
+      <div className="roundcountdown layout" style={{ dislay: "flex" }}>
+        <InformationContainer className="roundcountdown container_left">
           <div style={{ fontSize: "40px" }}>
-            {/* Replace 2 with {currentRound+1} and 5 with {roundNumber}*/}
             Round {roundNumber} of {totalRounds} is starting soon...
           </div>
+          <div style={{ fontSize: "30px" }}>
+            City Category: {category}, Your Score: {score}
+          </div>
         </InformationContainer>
-        <div className="roundcountdown layout" style={{ display: "flex", flexDirection: "row" }}>
-          <InformationContainer
-            className="roundcountdown leaderboard-container"
-            id="information-container"
-          >
-            <div className="leaderboard">
-              <table>
-                <thead>
-                  <tr>
-                    <th>Rank</th>
-                    <th>Player Name</th>
-                    <th>Score</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {leaderboardData.map((entry, index) => {
-                    const previousRank = roundNumber > 1 ? previousRoundData.find((data) => data.playerName === entry.playerName)?.rank : entry.rank;
-                    const position = calculateRowPosition(entry.rank, previousRank);
 
-                    return (
-                      <tr
-                        key={entry.id}
-                        style={{
-                          transform: `translateY(${position})`,
-                          backgroundColor: entry.playerName === username ? 'rgba(200, 0, 0, 0.5)' : 'rgba(128, 128, 128, 0.5)',
-                         }}
-                      >
-                        <td>{entry.rank}</td>
-                        <td>{entry.playerName}</td>
-                        <td>{entry.score}</td>
-                      </tr>
-                    );
-                  })}
-                </tbody>
-              </table>
-            </div>
+        <div className="roundcountdown layout" style={{ display: "flex", flexDirection: "row" }}>
+          <InformationContainer className="roundcountdown leaderboard-container">
+            <div>{playRankingList}</div>
           </InformationContainer>
-          <div></div>
-          <div></div>
-          <div></div>
-           <InformationContainer
-             className="roundcountdown container_right"
-             id="information-container"
-           >
-           <div className="countdown-text">
-             <UrgeWithPleasureComponent duration={duration} />
-           </div>
-           </InformationContainer>
+
+          <InformationContainer className="roundcountdown container_right">
+          <div className="countdown-text">
+            <UrgeWithPleasureComponent duration={duration} />
+          </div>
+          </InformationContainer>
         </div>
       </div>
       <ToastContainer />
     </div>
   );
 };
-export default RoundCountdown;
+export default MultiModeRoundCountdown;
