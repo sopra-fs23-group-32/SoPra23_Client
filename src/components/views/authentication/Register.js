@@ -3,7 +3,7 @@ import {api, handleError} from 'helpers/api';
 import User from 'models/User';
 import {useHistory} from 'react-router-dom';
 import {Button} from 'components/ui/Button';
-import 'styles/views/Register.scss';
+import 'styles/views/authentication/Register.scss';
 import { TextField } from "@mui/material";
 import BaseContainer from "components/ui/BaseContainer";
 import PropTypes from "prop-types";
@@ -89,12 +89,10 @@ const Register = () => {
   };
 
 
-  return (
+return (
     <div className="Registration container" style={{flexDirection: "column"}}>
-      <InformationContainer className="registration container" style={{fontSize: '48px', width: "fit-content"}}>
-        Registration
-      </InformationContainer>
-    <InformationContainer className="registration container" style={{flexDirection: "column"}}>
+      <InformationContainer className="registration container"style={{fontSize:"2rem",flexDirection: "column"}}>
+      <div className="registration-heading">Register a new account</div>
       <div className="registration form">
         <FormField
           value={username}
@@ -128,6 +126,7 @@ const Register = () => {
   </div>
 
 );
+
 };
 
 

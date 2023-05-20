@@ -41,13 +41,13 @@ const JoinGame = () => {
         localStorage.setItem("gamePlayer", serverInfo.playerNum)
         localStorage.setItem("isServer", 0);
         
-        history.push("/lobby");
+        history.push("/StartGamePage");
     }
 
     return (
         <Container className="joinboard container">
             <div className="headerrow">
-                <h2>Join the Server</h2>
+                <h2>Join a Multiplayer Game</h2>
             </div>
             <div className="joinboard field">
                 <div className="sever-field">
@@ -64,10 +64,10 @@ const JoinGame = () => {
                                 <TableRow>
                                     <TableCell></TableCell>
                                     <TableCell align="center">
-                                        Category
+                                        Region
                                     </TableCell>
                                     <TableCell align="center">
-                                        Rounds
+                                        Number of Rounds
                                     </TableCell>
                                     <TableCell align="center">Join</TableCell>
                                 </TableRow>
@@ -110,8 +110,8 @@ const JoinGame = () => {
                     <Button width="30%" onClick={() => history.push("/home")}>
                         Return to home
                     </Button>
-                    <Button width="30%" onClick={() => history.push("/lobby")}>
-                        Create Server
+                    <Button width="30%" onClick={() => history.push("/lobby/multiplayer")}>
+                        Create a Multiplayer Game
                     </Button>
                 </div>
             </div>

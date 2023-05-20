@@ -1,11 +1,12 @@
 import {Redirect, Route} from "react-router-dom";
 import PropTypes from 'prop-types';
 import Home from "components/views/home/Home";
-import Profile from "components/views/home/Profile"
-import About from "components/views/home/About"
-import ScoreBoard from "components/views/home/ScoreBoard"
-import HistoryPage from '../../views/home/History';
-import GameFinishPage from "components/views/game/MultiPlayerGame/MultiPlayerGameFinishPage"
+import Profile from "components/views/userinfo/Profile"
+import About from "components/views/game/About"
+import SinglePlayerGamePage from "components/views/game/SinglePlayerGame/SinglePlayerGamePage";
+import GameFinishPage from "components/views/game/GameFinishPage"
+import JoinGame from "components/views/game/MultiPlayerGame/JoinGame";
+import ScoreBoard from "components/views/userinfo/ScoreBoard"
 
 const HomeRouter = props => {
   /**
@@ -19,9 +20,7 @@ const HomeRouter = props => {
       <Route exact path={`${props.base}/dashboard`}>
         <Home/>
       </Route>
-      <Route exact path={`${props.base}/history`}>
-        <HistoryPage/>
-      </Route>
+     
       <Route exact path={`${props.base}/scoreboard`}>
         <ScoreBoard />
       </Route>
@@ -31,6 +30,19 @@ const HomeRouter = props => {
       <Route exact path={`${props.base}/about`}>
         <About />
       </Route>
+      
+      
+     
+      <Route exact path={`${props.base}/RoundCountdown`}>
+        <SinglePlayerGamePage/>
+      </Route>
+      <Route exact path={`${props.base}/GameFinish`}>
+        <GameFinishPage/>
+      </Route>
+      <Route exact path={`${props.base}/JoinGame`}>
+        <JoinGame/>
+      </Route>
+
     </div>
   );
 };

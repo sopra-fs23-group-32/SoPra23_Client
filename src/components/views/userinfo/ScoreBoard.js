@@ -7,7 +7,7 @@ import PropTypes from "prop-types";
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import InformationContainer from "components/ui/BaseContainer";
-import "styles/views/home/ScoreBoard.scss";
+import "styles/views/userinfo/ScoreBoard.scss";
 import { InputLabel, Select, MenuItem, TextField } from "@mui/material";
 
 const ScoreBoard = () => {

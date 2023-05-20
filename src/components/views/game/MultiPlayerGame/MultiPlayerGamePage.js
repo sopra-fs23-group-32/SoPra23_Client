@@ -1,196 +1,194 @@
 import { useHistory } from "react-router-dom";
 import React, { useState, useEffect } from "react";
+import "styles/views/game/GamePage.scss";
 import { api, handleError } from "helpers/api";
+import "styles/views/game/Lobby.scss";
+
 import { Grid, Container } from "@mui/material";
+
 import SockJS from "sockjs-client";
 import Stomp from "stompjs";
 import { getDomain } from "helpers/getDomain";
 import WebSocketType from "models/WebSocketType";
 import GameStatus from "models/GameStatus";
-import { ToastContainer, toast } from 'react-toastify';
-import 'react-toastify/dist/ReactToastify.css';
-
-import "styles/views/game/GamePage.scss";
 
 const MultiPlayerGamePage = () => {
-  const [isAnswerSubmitted, setIsAnswerSubmitted] = useState(false); // new state variable
-  const [score, setScore] = useState(localStorage.getItem("score"));
-
-  const correctOption = localStorage.getItem("CorrectOption");
-  const [selectedCityName, setSelectedCityName] = useState(null);
-  const [roundTime, setRoundTime] = useState(0);
-  const roundNumber = localStorage.getItem("roundNumber");
-  const history = useHistory();
-  const gameId = localStorage.getItem("gameId");
-
-  useEffect(() => {
-    const intervalId = setInterval(() => {
-      setRoundTime((prevTime) => {
-        const newTime = prevTime + 1;
-        if (isAnswerSubmitted) {
-          clearInterval(intervalId);
-          return newTime;
-        } else {
-          return newTime;
-        }
-      });
-    }, 1000);
-    return () => clearInterval(intervalId);
-  }, [isAnswerSubmitted]);
-
-  const nextGame = () => {
-    // remove all local storage of previous question
-    localStorage.removeItem("citynames");
-    localStorage.removeItem("PictureUrl");
-    localStorage.removeItem("CorrectOption");
-    // go to next page
-    if (localStorage.getItem("roundNumber") === localStorage.getItem("totalRounds")) {
-      history.push(`/MultiGamePage/${gameId}/GameFinish`);
-    }
-    else {
-      localStorage.setItem("roundNumber", Number(roundNumber) + 1);
-      history.push(`/MultiGamePage/${gameId}/RoundCountPage`);
-    }
-  };
-
-  useEffect(() => {
-    let subscription;
-    const Socket = new SockJS(getDomain() + "/socket");
-    const stompClient = Stomp.over(Socket);
-    stompClient.connect(
-      {},
-      (frame) => {
-        console.log("Socket connected!");
-        console.log(frame);
-        subscription = stompClient.subscribe(
-          `/instance/games/${gameId}`,
-          async (message) => {
-            const messagBody = JSON.parse(message.body);
-            if (messagBody.type === WebSocketType.GAME_END) {
-              history.push("/lobby");
-            }
-            else if (messagBody.type === WebSocketType.PLAYER_ADD 
-              || messagBody.type === WebSocketType.PLAYRE_REMOVE
-            ) {
-              //update userlist
-            }
-            else if (messagBody.type === WebSocketType.ANSWER_UPDATE 
-              && messagBody.load === GameStatus.WAITING
-            ) {
-              nextGame();
-            }
-          }
-        );
-      },
-      (err) => console.log(err)
+    const [isAnswerSubmitted, setIsAnswerSubmitted] = useState(false); // new state variable
+    const [score, setScore] = useState(localStorage.getItem("score"));
+    const [correctOption, setCorrectOption] = useState(
+        localStorage.getItem("CorrectOption")
     );
-    return () => {
-      subscription.unsubscribe();
-    };
-  }, []);
+    const [selectedCityName, setSelectedCityName] = useState(null);
+    const [roundTime, setRoundTime] = useState(0);
+    const roundNumber = localStorage.getItem("roundNumber");
+    const history = useHistory();
+    const gameId = localStorage.getItem("gameId");
 
-  const handleCityNameButtonClick = (cityName) => {
-    setSelectedCityName(cityName);
-  };
+    useEffect(() => {
+        const intervalId = setInterval(() => {
+            setRoundTime((prevTime) => {
+                const newTime = prevTime + 1;
+                if (isAnswerSubmitted) {
+                    clearInterval(intervalId);
+                    return newTime;
+                } else {
+                    return newTime;
+                }
+            });
+        }, 1000);
+        return () => clearInterval(intervalId);
+    }, [isAnswerSubmitted]);
 
-  const cityNamesString = localStorage.getItem("citynames");
-  const cityNames = JSON.parse(cityNamesString);
+    useEffect(() => {
+        let subscription;
+        const Socket = new SockJS(getDomain() + "/socket");
+        const stompClient = Stomp.over(Socket);
+        stompClient.connect(
+            {},
+            (frame) => {
+                console.log("Socket connected!");
+                console.log(frame);
+                subscription = stompClient.subscribe(`/instance/games/${gameId}`, async (message) => {
+                    const messagBody = JSON.parse(message.body);
+                    if(messagBody.type == WebSocketType.GAME_END) {
+                        history.push('/lobby');
+                    }
+                    else if(messagBody.type == WebSocketType.PLAYER_ADD || messagBody.type == WebSocketType.PLAYRE_REMOVE) {
+                        //update userlist
+                    } else if(messagBody.type == WebSocketType.ANSWER_UPDATE && messagBody.load == GameStatus.WAITING) {
 
-
-  const handleExitButtonClick = async () => {
-    history.push("/home");
-  };
-
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-    const playerId = localStorage.getItem("userId");
-    try {
-      setIsAnswerSubmitted(true);
-
-      const response = await api.post(
-        `/games/${gameId}/players/${playerId}/answers`,
-        {
-          answer: selectedCityName,
-          timeTaken: roundTime,
+                        if(localStorage.getItem("roundNumber") == localStorage.getItem("totalRounds")) {
+                            endGame();
+                        } else if(localStorage.getItem("isServer") == 1) {
+                            nextGame();
+                        }
+                    } else if(messagBody.type == WebSocketType.ROUND_UPDATE) {
+                        const currentRound = Number(localStorage.getItem("roundNumber"));
+                        localStorage.setItem("roundNumber", currentRound + 1);
+                        history.push(`/MultiPlayerGamePage/${gameId}/RoundCountPage/`);
+                    }
+                });
+            },
+            (err) => console.log(err)
+        );
+        return () => {
+            subscription.unsubscribe();
         }
-      );
-      const score2 = parseInt(localStorage.getItem("score")) + response.data;
+    }, []);
 
-      setScore(score2);
-      localStorage.setItem("score", score2);
-    } catch (error) {
-//      console.error("Error submitting answer", error);
-        toast.error("Failed in submitting answer!");
-        console.log(handleError(error));
+    const handleCityNameButtonClick = (cityName) => {
+        setSelectedCityName(cityName);
+    };
+
+    const cityNamesString = localStorage.getItem("citynames");
+    const cityNames = JSON.parse(cityNamesString);
+
+    const endGame = () => { history.push(`/GameFinish/`); };
+
+    const nextGame = async () => {
+        const response = await api.put(`/games/${gameId}`);
     }
-  };
 
-  const cityNameButtons = cityNames.map((cityName) => (
-    <button
-      key={cityName}
-      className={`city-name-button ${
-        isAnswerSubmitted
-          ? cityName === correctOption
-            ? "green-button"
-            : cityName === selectedCityName
-            ? "yellow-button"
-            : "white-button"
-          : cityName === selectedCityName
-          ? "dark-button"
-          : "blue-button"
-      }`}
-      disabled={isAnswerSubmitted === true}
-      onClick={() => handleCityNameButtonClick(cityName)}
-    >
-      {cityName}
-    </button>
-  ));
+    const handleExitButtonClick = async () => {
+        history.push("/Home");
+    };
 
-  return (
-    <div className="guess-the-city">
-      <div className="guess-the-city header">
-        <button className="exit-button" onClick={handleExitButtonClick}>
-          Exit
+    const handleSubmit = async (e) => {
+        e.preventDefault();
+        const playerId = localStorage.getItem("userId");
+        try {
+            setIsAnswerSubmitted(true);
+
+            const response = await api.post(
+                `/games/${gameId}/players/${playerId}/answers`,
+                {
+                    answer: selectedCityName,
+                    timeTaken: roundTime,
+                }
+            );
+            const score2 =
+                parseInt(localStorage.getItem("score")) + response.data;
+
+            setScore(score2);
+            localStorage.setItem("score", score2);
+        } catch (error) {
+            console.error("Error submitting answer", error);
+        }
+    };
+
+    const cityNameButtons = cityNames.map((cityName) => (
+        <button
+            key={cityName}
+            className={`city-name-button ${
+                isAnswerSubmitted
+                    ? cityName === correctOption
+                        ? "green-button"
+                        : cityName === selectedCityName
+                        ? "yellow-button"
+                        : "white-button"
+                    : cityName === selectedCityName
+                    ? "dark-button"
+                    : "blue-button"
+            }`}
+            disabled={isAnswerSubmitted === true}
+            onClick={() => handleCityNameButtonClick(cityName)}
+        >
+            {cityName}
         </button>
-      </div>
+    ));
 
-      <div className="guess-the-city main">
-        <Container>
-          <Grid container spacing={4}>
-            <Grid item md={6}>
-              <div>
-                <img
-                  className="city-image"
-                  src={localStorage.getItem("PictureUrl")}
-                  alt="City Image"
-                />
-              </div>
-              <div style={{ textAlign: "center" }}>
-                <p>Your Score: {score}</p>
-              </div>
-            </Grid>
-            <Grid item md={6}>
-              <Grid container justifyContent={"space-around"}>
-                <p>Round {roundNumber}</p>
-                <p>Time {roundTime}</p>
-              </Grid>
-              <div className="city-button-container">
-                {cityNameButtons}
-                <form onSubmit={handleSubmit} className="submit-form">
-                  {isAnswerSubmitted ? null : (
-                    <button type="submit" className="submit-button">
-                      Subtmit Answer
-                    </button>
-                  )}
-                </form>
-              </div>
-            </Grid>
-          </Grid>
-        </Container>
-      </div>
-      <ToastContainer />
-    </div>
-  );
+    return (
+        <div className="guess-the-city">
+            <div className="guess-the-city header">
+                <button className="exit-button" onClick={handleExitButtonClick}>
+                    Exit
+                </button>
+            </div>
+
+            <div className="guess-the-city main">
+                <Container>
+                    <Grid container spacing={4}>
+                        <Grid item md={6}>
+                            <div>
+                                <img
+                                    className="city-image"
+                                    src={localStorage.getItem("PictureUrl")}
+                                    alt="City Image"
+                                />
+                            </div>
+                            <div style={{ textAlign: "center" }}>
+                                <p>Your Score: {score}</p>
+                            </div>
+                        </Grid>
+                        <Grid item md={6}>
+                            <Grid container justifyContent={"space-around"}>
+                                <p>Round {roundNumber}</p>
+                                <p>
+                                    Time {roundTime}
+                                </p>
+                            </Grid>
+                            <div className="city-button-container">
+                                {cityNameButtons}
+                                <form
+                                    onSubmit={handleSubmit}
+                                    className="submit-form"
+                                >
+                                    {isAnswerSubmitted ? null : (
+                                        <button
+                                            type="submit"
+                                            className="submit-button"
+                                        >
+                                            Subtmit Answer
+                                        </button>
+                                    )}
+                                </form>
+                            </div>
+                        </Grid>
+                    </Grid>
+                </Container>
+            </div>
+        </div>
+    );
 };
 
 export default MultiPlayerGamePage;

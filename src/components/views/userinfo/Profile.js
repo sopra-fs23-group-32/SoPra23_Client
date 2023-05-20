@@ -8,7 +8,7 @@ import InformationContainer from "components/ui/BaseContainer";
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 
-import "styles/views/home/Profile.scss";
+import "styles/views/userinfo/Profile.scss";
 
 const ProfileInfo = ({ user, setUsername, setBirthDay, setOldPwd, setPassword }) => (
     <div className="user-profile">

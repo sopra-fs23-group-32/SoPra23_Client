@@ -9,7 +9,7 @@ import Switch from "react-switch";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 
-import "styles/views/home/Lobby.scss";
+import "styles/views/game/Lobby.scss";
 
 
 const Lobby = () => {

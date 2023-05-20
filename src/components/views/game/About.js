@@ -2,7 +2,7 @@ import { useHistory } from "react-router-dom";
 import { Button } from "components/ui/Button";
 import 'react-toastify/dist/ReactToastify.css';
 import InformationContainer from "components/ui/BaseContainer";
-import "styles/views/home/About.scss";
+import "styles/views/game/About.scss";
 
 const About = () => {
   // use react-router-dom's hook to access the history

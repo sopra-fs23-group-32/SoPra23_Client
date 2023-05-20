@@ -10,7 +10,7 @@ import {
     MenuItem,
     TextField,
 } from "@mui/material";
-import "styles/views/home/Lobby.scss";
+import "styles/views/game/Lobby.scss";
 
 import SockJS from "sockjs-client";
 import Stomp from "stompjs";
@@ -18,6 +18,7 @@ import { getDomain } from "helpers/getDomain";
 import WebSocketType from "models/WebSocketType";
 
 const CreatedGamePage = () => {
+    const [isLoading, setIsLoading] = useState(false);
     const [userId, setUserId] = useState(localStorage.getItem("userId"));
     const [gameId, setGameId] = useState(localStorage.getItem("gameId"));
     const [selectedCategory, setSelectedCategory] = useState(
@@ -68,6 +69,10 @@ const CreatedGamePage = () => {
         leaveGame();
         history.push('/JoinGame')
     }
+   console.log("players: ",gamePlayers);
+    {gamePlayers.map((player, index) => <p className="lobby player-name" key={index}>
+    {console.log("Players",player.username)}
+</p>)}
 
     useEffect(() => {
         addUser();
@@ -90,7 +95,7 @@ const CreatedGamePage = () => {
                     } else if(messagBody.type == WebSocketType.ROUND_UPDATE) {
                         const currentRound = Number(localStorage.getItem("roundNumber"));
                         localStorage.setItem("roundNumber", currentRound + 1);
-                        history.push(`/MultiGamePage/${gameId}/RoundCountPage/`);
+                        history.push(`/MultiPlayerGamePage/${gameId}/RoundCountPage/`);
                     }
                 });
             },
@@ -241,7 +246,6 @@ const CreatedGamePage = () => {
                         </Button>
                     </div>
                 </InformationContainer>
-
                 <InformationContainer
                     className="lobby container_right"
                     style={{ display: "flex", flexDirection: "column" }}

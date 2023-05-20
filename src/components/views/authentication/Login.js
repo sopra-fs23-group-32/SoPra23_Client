@@ -1,7 +1,7 @@
 import React, {useState} from 'react';
 import { useHistory } from "react-router-dom";
 import {api, handleError} from 'helpers/api';
-import 'styles/views/Login.scss';
+import 'styles/views/authentication/Login.scss';
 import BaseContainer from "components/ui/BaseContainer";
 import { Button } from "components/ui/Button";
 import { TextField } from "@mui/material";
@@ -89,12 +89,10 @@ const Login = props => {
     };
 
 
-    return (
+   return (
       <div className="Login container" style={{flexDirection: "column"}}>
-        <InformationContainer className="login container" style={{fontSize: '48px', width: "fit-content"}}>
-          Login
-        </InformationContainer>
-      <InformationContainer className="login container" style={{flexDirection: "column"}}>
+      <InformationContainer className="login container"style={{fontSize:"2rem",flexDirection: "column"}}>
+      <div className="login-heading">Login to your account</div>
         <div className="login form">
           <FormField
             value={username}
@@ -102,7 +100,8 @@ const Login = props => {
             onKeyDown = {handleKeyDown}
           />
 
-          <FormField2
+          <FormField2 
+            style={{fontSize:"2rem"}}
             placeholder="mas"
             value={password}
             onChange={n => setPassword(n)}
