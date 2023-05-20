@@ -66,7 +66,7 @@ const RoundCountdown = () => {
       setSecondsLeft((prevSecondsLeft) => prevSecondsLeft - 1);
     }, 1000);
     return () => clearInterval(intervalId);
-  });
+  }, []);
 
   // go to next page when time out
   useEffect(() => {

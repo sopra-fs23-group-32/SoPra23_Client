@@ -69,14 +69,13 @@ const Register = () => {
       // Get the returned user and update a new object.
       const user = new User(response.data);
       // Store the token into the local storage.
-      localStorage.setItem("token", user.token);
+      // localStorage.setItem("token", user.token);
       localStorage.setItem("userId", user.userId);
       localStorage.setItem("username", user.username);
-
       // Login successfully worked --> navigate to the route /game in the GameRouter
       history.push(`/home`);
-    } catch (error) {
-//      alert(`Something went wrong during the login: \n${handleError(error)}`);
+    }
+    catch (error) {
         toast.error(`${error.response.data.message}`);
         console.log(handleError(error));
     }
@@ -107,12 +106,10 @@ const Register = () => {
           onChange={n => setPassword(n)}
           onKeyDown = {handleKeyDown}
         />
-        <div style={{fontSize:"14px", marginBottom:"20px"}}>
+        <div style={{fontSize:"16px", marginBottom:"20px"}}>
           <div>The password has to contain one of the following:</div>
           <div>An uppercase letter, a lowercase letter and a number</div>
         </div>
-
-    
 
         <div className="registration-button-container" style={{display: "flex",justifyContent: 'space-between'}} >
         <Button style={{flex:1, marginRight:"40px"}} disabled={!username || !password} onClick={() => doRegister()}>

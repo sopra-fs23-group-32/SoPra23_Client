@@ -63,8 +63,7 @@ const Lobby = () => {
       localStorage.setItem("gameId", gameId);
 
       handleAddPlayer(gameId);
-      localStorage.setItem("score", 0);
-      localStorage.setItem("isServer", 1);
+      localStorage.setItem("isServer", true);
       await new Promise((resolve) => setTimeout(resolve, 1000));
       history.push("/StartGamePage");
     }
@@ -82,14 +81,13 @@ const Lobby = () => {
       localStorage.setItem("category", category);
       localStorage.setItem("totalRounds", gameRounds);
       localStorage.setItem("countdownTime", gameDuration);
-      localStorage.setItem("roundNumber", 1);
-
       const requestBody = {category:category, totalRounds:gameRounds, countdownTime:gameDuration,};
       const response = (await api.post("/games", requestBody)).data;
       const gameId = response.gameId;
       localStorage.setItem("gameId", gameId);
-
       handleAddPlayer(gameId);
+
+      localStorage.setItem("roundNumber", 1);
       localStorage.setItem("score", 0);
       await new Promise((resolve) => setTimeout(resolve, 1000));
       history.push(`/SinglegamePage/${gameId}/RoundCountPage`);

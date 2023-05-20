@@ -14,7 +14,7 @@ const ScoreBoard = () => {
   // use react-router-dom's hook to access the history
   const history = useHistory();
   const [userRanking, setUserRanking] = useState(null);
-  const [selectedCategory, setSelectedCategory] = useState("WORLD");
+  const [selectedCategory, setSelectedCategory] = useState("ALL");
 
   const goProfile = (profileId) => {
     localStorage.setItem("profileId", profileId);
@@ -25,7 +25,7 @@ const ScoreBoard = () => {
     async function fetchData() {
       try {
         let urlCategory;
-        if(selectedCategory === "WORLD") {
+        if(selectedCategory === "ALL") {
           urlCategory = "/users/ranking";
         }
         else {
@@ -89,8 +89,7 @@ const ScoreBoard = () => {
       <InformationContainer className="profile container" style={{width: "fit-content"}}>
         <div className="scoreboard label" style={{alignItems:"baseline"}}>
             <InputLabel className="scoreboard label">Pick a city category:</InputLabel>
-            <Select 
-              labelId="demo-simple-select-label"
+            <Select labelId="demo-simple-select-label"
               id="demo-simple-select"
               value={selectedCategory}
               style={{ height: '45px', marginBottom: '16px' }}
@@ -110,7 +109,7 @@ const ScoreBoard = () => {
               <MenuItem value={"SOUTH_AMERICA"}>South America</MenuItem>
               <MenuItem value={"AFRICA"}>Africa</MenuItem>
               <MenuItem value={"OCEANIA"}>Oceania</MenuItem>
-              <MenuItem value={"WORLD"}>World</MenuItem>
+              <MenuItem value={"ALL"}>All</MenuItem>
             </Select>
           </div>
       
