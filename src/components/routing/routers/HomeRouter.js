@@ -5,7 +5,6 @@ import Profile from "components/views/home/Profile"
 import About from "components/views/home/About"
 import ScoreBoard from "components/views/home/ScoreBoard"
 import HistoryPage from '../../views/home/History';
-import GameFinishPage from "components/views/game/MultiPlayerGame/MultiPlayerGameFinishPage"
 
 const HomeRouter = props => {
   /**
