@@ -52,9 +52,27 @@ const AppRouter = () => {
                     <SinglePlayerGamePage />
                 </Route>
 
+<<<<<<< HEAD
                 <Route exact path={`/gamePage/:gameId/RounddownCountdown`}>
                     <SinglePlayerGamePreparePage />
                 </Route>
+=======
+        <Route path="/StartGamePage">
+          <CreatedGamePage />
+        </Route>
+        <Route path="/JoinGame">
+          <JoinGame />
+        </Route>
+        <Route exact path={`/MultiGamePage/:gameId/RoundCountPage`}>
+          <MutliPlayerGamePreparePage />
+        </Route>
+        <Route exact path={`/MultiGamePage/:gameId`}>
+          <MultiPlayerGamePage />
+        </Route>
+        <Route exact path={`/MultiGamePage/:gameId/GameFinish`}>
+          <MultiPlayerGameFinishPage />
+        </Route>
+>>>>>>> d7dc155fcc2078ba4502daa39675f8aec011b33e
 
                 <Route exact path={`/MultiPlayerGamePage/:gameId`}>
                     <MultiPlayerGamePage />                    

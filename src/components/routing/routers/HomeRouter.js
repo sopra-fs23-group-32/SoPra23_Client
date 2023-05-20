@@ -1,12 +1,19 @@
 import {Redirect, Route} from "react-router-dom";
 import PropTypes from 'prop-types';
 import Home from "components/views/home/Home";
+<<<<<<< HEAD
 import Profile from "components/views/userinfo/Profile"
 import About from "components/views/game/About"
 import SinglePlayerGamePage from "components/views/game/SinglePlayerGame/SinglePlayerGamePage";
 import GameFinishPage from "components/views/game/GameFinishPage"
 import JoinGame from "components/views/game/MultiPlayerGame/JoinGame";
 import ScoreBoard from "components/views/userinfo/ScoreBoard"
+=======
+import Profile from "components/views/home/Profile"
+import About from "components/views/home/About"
+import ScoreBoard from "components/views/home/ScoreBoard"
+import HistoryPage from '../../views/home/History';
+>>>>>>> d7dc155fcc2078ba4502daa39675f8aec011b33e
 
 const HomeRouter = props => {
   /**

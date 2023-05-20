@@ -13,13 +13,18 @@ import "styles/views/game/Lobby.scss";
 
 
 const Lobby = () => {
+  // basic settings
   const [selectedCategory, setSelectedCategory] = useState("EUROPE");
   const [gameRounds, setGameRounds] = useState(1);
   const [countdownTime, setCountdownTime] = useState(15);
+  // for Multi Mode
   const [isMultiplayer, setIsMultiplayer] = useState(true);
   const [targetPlayerNumber, setTargetPlayerNumber] = useState(1);
+  // for UI
   const [isLoadingGame, setIsLoadingGame] = useState(false);
   const [isLoadingMultiplayerLobby, setIsLoadingMultiplayerLobby] = useState(false);
+
+  const userId = localStorage.getItem("userId");
 
   // use react-router-dom's hook to access the history
   const history = useHistory();
@@ -28,11 +33,12 @@ const Lobby = () => {
     setIsMultiplayer(!isMultiplayer);
   };
 
-  const handleAddPlayer = async (playerID) => {
+  const handleAddPlayer = async (gameId) => {
     try {
-      const gameID = localStorage.getItem("gameId");
-      const response = await api.post(`/games/${gameID}/players/${playerID}`);
-    } catch (error) {
+      const response = await api.post(`/games/${gameId}/players/${userId}`);
+      console.log(response);
+    }
+    catch (error) {
       toast.error(`${error.response.data.message}`);
       console.log(handleError(error));
     }
@@ -47,16 +53,16 @@ const Lobby = () => {
       localStorage.setItem("category", category);
       localStorage.setItem("totalRounds", gameRounds);
       localStorage.setItem("countdownTime", gameDuration);
-      localStorage.setItem("gamePlayer", targetPlayerNumber);
       localStorage.setItem("targetPlayerNumber", targetPlayerNumber);
-      localStorage.setItem("roundNumber", 1);
+      localStorage.setItem("targetPlayerNumber", targetPlayerNumber);
 
       // Create Game
       const requestBody = {category:category_uppercase, totalRounds:gameRounds, countdownTime:gameDuration,};
       const response = (await api.post("/games", requestBody)).data;
-      localStorage.setItem("gameId", response.gameId);
+      const gameId = response.gameId;
+      localStorage.setItem("gameId", gameId);
 
-      handleAddPlayer(localStorage.getItem("userId"));
+      handleAddPlayer(gameId);
       localStorage.setItem("score", 0);
       localStorage.setItem("isServer", 1);
       await new Promise((resolve) => setTimeout(resolve, 1000));
@@ -83,7 +89,7 @@ const Lobby = () => {
       const gameId = response.gameId;
       localStorage.setItem("gameId", gameId);
 
-      handleAddPlayer(localStorage.getItem("userId"));
+      handleAddPlayer(gameId);
       localStorage.setItem("score", 0);
       await new Promise((resolve) => setTimeout(resolve, 1000));
       history.push(`/SinglegamePage/${gameId}/RoundCountPage`);
@@ -159,58 +165,56 @@ const Lobby = () => {
           </div>
         </InformationContainer>
       </div>
-      <div className="lobby button-container"
-        style={{ flexDirection: "column" }}
-      >
-        <div className="lobby button-container">
-          {isMultiplayer ? (
-            <div>
-            {isLoadingMultiplayerLobby ? (<Spinner/>) : (
-            <Button style={{ display: "inline-block", margin: "0 10px" }}
-              onClick={() => {
-                setIsLoadingMultiplayerLobby(true);
-                createGame(selectedCategory, gameRounds, countdownTime);
-              }}
-            >
-              Create Game
-            </Button>
-            )}
-            </div>
-          ) : (
-            <div>
-              {isLoadingGame ? (<Spinner />) : (
-                <Button style={{ display: "inline-block", margin: "auto" }}
-                  onClick={() => {
-                    setIsLoadingGame(true);
-                    startGameSingleplayer(selectedCategory, gameRounds, countdownTime);}
-                  }
-                >
-                  Start Game
-                </Button>
-              )}
-            </div>
-          )};
-        </div>
-        <div className="lobby button-container">
-          <Button style={{ display: "inline-block", margin: "0 10px" }}
-            onClick={() => history.push("/JoinGame")}
-          >
-            Join Multiplayer Game
-          </Button>
 
+      <div className="lobby button-container">
+        {isMultiplayer ? (
+          <div>
+          {isLoadingMultiplayerLobby ? (<Spinner/>) : (
           <Button style={{ display: "inline-block", margin: "0 10px" }}
-            onClick={() => history.push("/home")}
-          >
-            Back to Home Page
-          </Button>
-          <div style={{
-              display: "flex",
-              justifyContent: "center",
-              alignItems: "center",
-              marginBottom: "10px",
+            onClick={() => {
+              setIsLoadingMultiplayerLobby(true);
+              createGame(selectedCategory, gameRounds, countdownTime);
             }}
-          ></div>
-        </div>
+          >
+            Create Game
+          </Button>
+          )}
+          </div>
+        ) : (
+          <div>
+            {isLoadingGame ? (<Spinner />) : (
+              <Button style={{ display: "inline-block", margin: "auto" }}
+                onClick={() => {
+                  setIsLoadingGame(true);
+                  startGameSingleplayer(selectedCategory, gameRounds, countdownTime);}
+                }
+              >
+                Start Game
+              </Button>
+            )}
+          </div>
+        )};
+      </div>
+
+      <div className="lobby button-container">
+        <Button style={{ display: "inline-block", margin: "0 10px" }}
+          onClick={() => history.push("/JoinGame")}
+        >
+          Join Multiplayer Game
+        </Button>
+
+        <Button style={{ display: "inline-block", margin: "0 10px" }}
+          onClick={() => history.push("/home")}
+        >
+          Back to Home Page
+        </Button>
+        <div style={{
+            display: "flex",
+            justifyContent: "center",
+            alignItems: "center",
+            marginBottom: "10px",
+          }}
+        ></div>
       </div>
       <ToastContainer />
     </div>
