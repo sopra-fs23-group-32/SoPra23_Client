@@ -130,13 +130,11 @@ const SingleGamePage = () => {
           <Grid container spacing={4}>
             <Grid item md={6}>
               <div style={{ alignItems: 'center', display: "block"}}>
-                  <img className="city-image" alt="City Image" 
-                    src={localStorage.getItem("PictureUrl")}
-                  />
-                </div>
-                <div style={{ textAlign: "center" }}>
-                  <p>Your Score: {score}</p>
-                </div>
+                <img className="city-image" alt="GuessImg" src={localStorage.getItem("PictureUrl")}/>
+              </div>
+              <div style={{ textAlign: "center" }}>
+                <p>Your Score: {score}</p>
+              </div>
             </Grid>
             <Grid item md={6}>
               <Grid container justifyContent={"space-around"}>

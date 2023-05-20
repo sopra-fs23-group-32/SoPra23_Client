@@ -46,7 +46,6 @@ const RoundCountdown = () => {
     localStorage.setItem("CorrectOption", question.correctOption);
   };
 
-  // fetch question and save in localstorage
   useEffect(() => {
     async function fetchQuestion() {
       try {
@@ -60,16 +59,14 @@ const RoundCountdown = () => {
         console.log(handleError(error));
       }
     }
+    // fetch question and save in localstorage
     fetchQuestion();
-  }, []);
-
-  // set a timer
-  useEffect(() => {
+    // set a timer
     const intervalId = setInterval(() => {
       setSecondsLeft((prevSecondsLeft) => prevSecondsLeft - 1);
     }, 1000);
     return () => clearInterval(intervalId);
-  }, []);
+  });
 
   // go to next page when time out
   useEffect(() => {
