@@ -35,36 +35,37 @@ const Home = () => {
   return (
     <div className="home button-container">
       <Button
-        style={{ fontSize: "45px", width: "25%", height: "100px" }}
+        style={{ fontSize: "45px", width: "25%", height: "80px" }}
         onClick={() => history.push("/lobby")}
       >
         Start Game
       </Button>
       <Button
-        style={{ fontSize: "45px", width: "25%", height: "100px" }}
+        style={{ fontSize: "45px", width: "25%", height: "80px" }}
         onClick={() => history.push("/home/scoreboard")}
       >
         Leaderboard
       </Button>
       <Button
-        style={{ fontSize: "45px", width: "25%", height: "100px" }}
+        style={{ fontSize: "45px", width: "25%", height: "80px" }}
         onClick={() => history.push("/home/history")}
       >
         Game History
       </Button>
       <Button
-        style={{ fontSize: "45px", width: "25%", height: "100px" }}
+        style={{ fontSize: "45px", width: "25%", height: "80px" }}
         onClick={() => goProfile(localStorage.getItem("userId"))}
       >
         My Profile
       </Button>
       <Button
-        style={{
-          fontSize: "45px",
-          width: "25%",
-          height: "100px",
-          marginTop: "40px",
-        }}
+        style={{ fontSize: "45px", width: "25%", height: "80px" }}
+        onClick={() => history.push("/home/about")}
+      >
+        About
+      </Button>
+      <Button
+        style={{ fontSize: "45px", width: "25%", height: "80px",marginTop: "40px",}}
         onClick={() => doLogout()}
       >
         Logout

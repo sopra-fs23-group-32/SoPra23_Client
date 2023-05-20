@@ -65,7 +65,7 @@ const AppRouter = () => {
           <CreatedGamePage />
         </Route>
         <Route path="/JoinGame">
-          <JoinGame base="/JoinGame" />
+          <JoinGame />
         </Route>
         <Route exact path={`/MultiGamePage/:gameId/RoundCountPage`}>
           <MutliPlayerGamePreparePage />

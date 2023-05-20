@@ -111,6 +111,29 @@
             border-radius: 0.5em;
         }
     }
+    &.exit-button {
+        position: absolute;
+        background-color: #1979b8 !important;
+        top: 30px;
+        left: 30px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        background-color: transparent;
+        border: none;
+        cursor: pointer;
+        font-size: 2rem;
+        color: white;
+        text-transform: uppercase;
+        font-weight: bold;
+        padding: 1rem;
+        transition: all 0.3s;
+
+        &:hover {
+            background-color: #ccc;
+        }
+    }
+
     &.button-container {
         display: flex;
         flex-direction: row;

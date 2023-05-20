@@ -8,12 +8,13 @@ import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import InformationContainer from "components/ui/BaseContainer";
 import "styles/views/home/ScoreBoard.scss";
+import { InputLabel, Select, MenuItem, TextField } from "@mui/material";
 
 const ScoreBoard = () => {
   // use react-router-dom's hook to access the history
   const history = useHistory();
-  const [userRanking, setUserRanking] = useState([]);
-  const [selectedCategory, setSelectedCategory] = useState("WORLD");
+  const [userRanking, setUserRanking] = useState(null);
+  const [selectedCategory, setSelectedCategory] = useState("ALL");
 
   const goProfile = (profileId) => {
     localStorage.setItem("profileId", profileId);
@@ -24,7 +25,7 @@ const ScoreBoard = () => {
     async function fetchData() {
       try {
         let urlCategory;
-        if(selectedCategory === "WORLD") {
+        if(selectedCategory === "ALL") {
           urlCategory = "/users/ranking";
         }
         else {
@@ -45,28 +46,28 @@ const ScoreBoard = () => {
   }, [selectedCategory]);
 
   const UserRanking = ({ userRanking }) => (
-    <table className="table">
-      <thead>
-        <tr>
-          <th>Rank</th>
-          <th>Name</th>
-          <th>Score</th>
-          <th>Number of Games</th>
-          <th>Date created</th>
-        </tr>
-      </thead>
-      <tbody>
-          {userRanking.map((user, index) => (
-          <tr className={index % 2 !== 0 ? "odd" : "even"} key={user.userId} onClick={() => goProfile(user.userId)}>
-            <td style={{width: "8%"}}>{user.rank}</td>
-            <td style={{width: "22%"}}>{user.username}</td>
-            <td style={{width: "20%"}}>{user.score}</td>
-            <td style={{width: "20%"}}>{user.gameNum}</td>
-            <td style={{width: "20%"}}>{new Date(user.createDay).toISOString().slice(0,10)}</td>
+      <table className="table">
+        <thead>
+          <tr>
+            <th>Rank</th>
+            <th>Name</th>
+            <th>Score</th>
+            <th>Number of Games</th>
+            <th>Date created</th>
           </tr>
-          ))}
-      </tbody>
-    </table>
+        </thead>
+        <tbody>
+            {userRanking.map((user, index) => (
+            <tr className={index % 2 !== 0 ? "odd" : "even"} key={user.userId} onClick={() => goProfile(user.userId)}>
+              <td style={{width: "8%"}}>{user.rank}</td>
+              <td style={{width: "22%"}}>{user.username}</td>
+              <td style={{width: "20%"}}>{user.score}</td>
+              <td style={{width: "20%"}}>{user.gameNum}</td>
+              <td style={{width: "20%"}}>{new Date(user.createDay).toISOString().slice(0,10)}</td>
+            </tr>
+            ))}
+        </tbody>
+      </table>
   );
   UserRanking.propTypes = {
     user: PropTypes.object,
@@ -74,7 +75,7 @@ const ScoreBoard = () => {
 
   let sortedUserList = <Spinner />;
 
-  if (userRanking) {
+  if (userRanking !== null) {
     sortedUserList = <UserRanking userRanking={userRanking} />;
   } else {
     sortedUserList = <Spinner />;
@@ -85,19 +86,32 @@ const ScoreBoard = () => {
       <InformationContainer className="scoreboard container" style={{fontSize: '48px', width: "fit-content"}}>
         Leaderboard
       </InformationContainer>
-      <InformationContainer className="profile container" style={{marginBottom: "25px", width: "fit-content"}}>
-        <label className="scoreboard label">
-          <label style={{padding: "25px"}}>Pick a city category:</label>
-            <select value={selectedCategory} onChange={e => setSelectedCategory(e.target.value)}>
-              <option value="WORLD">All</option>
-              <option value="AFRICA">Africa</option>
-              <option value="ASIA">Asia</option>
-              <option value="EUROPE">Europe</option>
-              <option value="NORTH_AMERICA">North America</option>
-              <option value="OCEANIA">Oceania</option>
-              <option value="SOUTH_AMERICA">South America</option>
-            </select>
-        </label>
+      <InformationContainer className="profile container" style={{width: "fit-content"}}>
+        <div className="scoreboard label" style={{alignItems:"baseline"}}>
+            <InputLabel className="scoreboard label">Pick a city category:</InputLabel>
+            <Select labelId="demo-simple-select-label"
+              id="demo-simple-select"
+              value={selectedCategory}
+              style={{ height: '45px', marginBottom: '16px' }}
+              label="category"
+              onChange={(e) => setSelectedCategory(e.target.value)}
+              inputProps={{
+                MenuProps: {
+                  sx: { borderRadius: "10px"},
+                  MenuListProps: {sx: {backgroundColor: "#1979b8", color: "white",},},
+                },
+              }}
+              className="lobby category"
+            >
+              <MenuItem value={"EUROPE"}>Europe</MenuItem>
+              <MenuItem value={"ASIA"}>Asia</MenuItem>
+              <MenuItem value={"NORTH_AMERICA"}>North America</MenuItem>
+              <MenuItem value={"SOUTH_AMERICA"}>South America</MenuItem>
+              <MenuItem value={"AFRICA"}>Africa</MenuItem>
+              <MenuItem value={"OCEANIA"}>Oceania</MenuItem>
+              <MenuItem value={"ALL"}>All</MenuItem>
+            </Select>
+          </div>
       
       <div>{sortedUserList}</div>
       <div className="scoreboard button-container">
