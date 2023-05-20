@@ -53,12 +53,11 @@ const MultiPlayerGamePage = () => {
     const stompClient = Stomp.over(Socket);
     stompClient.connect(
       {}, (frame) => {
-        console.log("Socket connected!");
-        console.log(frame);
         subscription = stompClient.subscribe(
           `/instance/games/${gameId}`,
           async (message) => {
             const messagBody = JSON.parse(message.body);
+            console.log("Socket receive msg: ", messagBody);
             if (messagBody.type === WebSocketType.ANSWER_UPDATE 
               && messagBody.load === GameStatus.WAITING) {
               setIsWaiting(false);
@@ -127,7 +126,8 @@ const MultiPlayerGamePage = () => {
         toast.info(`Waiting for other players to answer...`)
       }
       else {
-        endRound(); // you are the last one
+        // you are the last one
+        endRound(); 
       }
     }
   };
@@ -157,30 +157,27 @@ const MultiPlayerGamePage = () => {
   ));
 
   const handleExitButtonClick = async () => {
-    if(isServer===true) {
-      toast.warning(`You can't leave the game as the host!`);
-    }
-    else{
-      await api.delete(`games/${gameId}/players/${playerId}`);
-      localStorage.removeItem("gameId");
-      localStorage.removeItem("category");
-      localStorage.removeItem("totalRounds");
-      localStorage.removeItem("countdownTime");
-      localStorage.removeItem("roundNumber");
-      localStorage.removeItem("myScore");
-      localStorage.removeItem("isServer");
-      localStorage.removeItem("citynames");
-      localStorage.removeItem("PictureUrl");
-      localStorage.removeItem("CorrectOption");
-      history.push("/home");
-    }
+    await api.delete(`games/${gameId}/players/${playerId}`);
+    localStorage.removeItem("gameId");
+    localStorage.removeItem("category");
+    localStorage.removeItem("totalRounds");
+    localStorage.removeItem("countdownTime");
+    localStorage.removeItem("roundNumber");
+    localStorage.removeItem("myScore");
+    localStorage.removeItem("isServer");
+    localStorage.removeItem("citynames");
+    localStorage.removeItem("PictureUrl");
+    localStorage.removeItem("CorrectOption");
+    history.push("/home");
   };
 
   return (
     <div className="guess-the-city">
       <div className="guess-the-city header">
-        <Button className="exit-button" onClick={handleExitButtonClick}
-          disabled={isServer===true}>
+        <Button className="exit-button"
+        onClick={handleExitButtonClick}
+        disabled={isServer===true}
+        >
           Exit Game
         </Button>
         

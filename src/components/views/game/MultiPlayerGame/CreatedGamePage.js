@@ -18,21 +18,21 @@ import "styles/views/game/WaitingPage.scss";
 const CreatedGamePage = () => {
   const [gamePlayers, setGamePlayers] = useState([]);
   const [playerNumber, setPlayerNumber] = useState(localStorage.getItem("playerNum"));
-
+  // 
   const gameId = localStorage.getItem("gameId");
   const category = localStorage.getItem("category");
   const totalRounds = localStorage.getItem("totalRounds");
   const totalTime = localStorage.getItem("countdownTime");
-  const userId = localStorage.getItem("userId");
-  const username = localStorage.getItem("username");
   const isServer = localStorage.getItem("isServer");
 
+  const userId = localStorage.getItem("userId");
+  const username = localStorage.getItem("username");
   const history = useHistory();
 
   async function fetchPlayer() {
     try{
       const response = await api.get(`/games/${localStorage.getItem("gameId")}/players`);
-      console.log(response);
+      console.log("Players", response.data);
       setGamePlayers(response.data);
       setPlayerNumber(response.data.length);
     }
@@ -56,22 +56,21 @@ const CreatedGamePage = () => {
     stompClient.connect(
       {},
       (frame) => {
-        console.log("Socket connected!");
-        console.log(frame);
         subscription = stompClient.subscribe(
           `/instance/games/${gameId}`,
           (message) => {
             const messagBody = JSON.parse(message.body);
+            console.log("Socket receive msg: ", messagBody);
             if (messagBody.type===WebSocketType.PLAYER_ADD ||
               messagBody.type===WebSocketType.PLAYER_REMOVE) {
               fetchPlayer();
             }
-            else if (isServer === 0 && messagBody.type===WebSocketType.GAME_START) {
+            else if (!isServer && messagBody.type===WebSocketType.GAME_START) {
               localStorage.setItem("myScore", 0);
               localStorage.setItem("roundNumber", 1);
               history.push(`/MultiGamePage/${gameId}/RoundCountPage/`);
             }
-            else if (isServer === 0 && messagBody.type===WebSocketType.GAME_END) {
+            else if (!isServer && messagBody.type===WebSocketType.GAME_END) {
               localStorage.removeItem("gameId");
               localStorage.removeItem("category");
               localStorage.removeItem("totalRounds");
@@ -92,11 +91,11 @@ const CreatedGamePage = () => {
   const leaveGame = async () => {
     if (isServer === 1) {
       const response = await api.delete(`/games/${gameId}`);
-      console.log(response);
+      console.log("Delete game:", response.data);
     }
     else {
       const response = await api.delete(`/games/${gameId}/players/${userId}`);
-      console.log(response);
+      console.log("Delete player:", response.data);
     }
     localStorage.removeItem("gameId");
     localStorage.removeItem("category");

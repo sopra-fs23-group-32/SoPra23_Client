@@ -56,7 +56,7 @@ const MultiModeRoundCountdown = () => {
     try {
       const response = await api.put(`games/${gameId}`);
       setLocalStorageItems(response.data);
-      console.log(response);
+      console.log("Generate question: ", response.data);
       await new Promise((resolve) => setTimeout(resolve, 1000));
       toast.info(`Question for next round created.`);
     }
@@ -70,7 +70,7 @@ const MultiModeRoundCountdown = () => {
     try {
       const response = await api.get(`games/${gameId}/questions`);
       setLocalStorageItems(response.data);
-      console.log(response);
+      console.log("Fetch question: ", response.data);
       await new Promise((resolve) => setTimeout(resolve, 1000));
       toast.info(`Got question for next round.`);
     }
@@ -89,7 +89,7 @@ const MultiModeRoundCountdown = () => {
         //   console.log("Previous round data", leaderboardData)
         // }
         setLeaderboardData(response.data);
-        console.log(response);
+        console.log("Ranking: ", response.data);
         await new Promise((resolve) => setTimeout(resolve, 1000));
       } catch (error) {
         toast.error(`${error.response.data.message}`);
@@ -168,30 +168,27 @@ const MultiModeRoundCountdown = () => {
   }
 
   const handleExitButtonClick = async() => {
-    if(isServer === true) {
-      toast.warning(`You can't leave the game as the host!`);
-    }
-    else{
-      await api.delete(`games/${gameId}/players/${playerId}`);
-      localStorage.removeItem("gameId");
-      localStorage.removeItem("category");
-      localStorage.removeItem("totalRounds");
-      localStorage.removeItem("countdownTime");
-      localStorage.removeItem("roundNumber");
-      localStorage.removeItem("myScore");
-      localStorage.removeItem("isServer");
-      localStorage.removeItem("citynames");
-      localStorage.removeItem("PictureUrl");
-      localStorage.removeItem("CorrectOption");
-      history.push("/home");
-    }
+    await api.delete(`games/${gameId}/players/${playerId}`);
+    localStorage.removeItem("gameId");
+    localStorage.removeItem("category");
+    localStorage.removeItem("totalRounds");
+    localStorage.removeItem("countdownTime");
+    localStorage.removeItem("roundNumber");
+    localStorage.removeItem("myScore");
+    localStorage.removeItem("isServer");
+    localStorage.removeItem("citynames");
+    localStorage.removeItem("PictureUrl");
+    localStorage.removeItem("CorrectOption");
+    history.push("/home");
   };
 
   return (
     <div className="round countdown container">
-      <div style={{ position: "fixed", top: 75, left: 75 }}>
-        <Button style={{ fontSize: "40px", height: "100px", width: "100%"}} 
-        onClick={() => handleExitButtonClick()} disabled={isServer===true}>
+      <div >
+        <Button className="round countdown exit-button"
+        onClick={handleExitButtonClick}
+        disabled={isServer===true}
+        >
           Exit Game
         </Button>
       </div>
