@@ -3,13 +3,8 @@ import React, { useState, useEffect } from "react";
 import { Button } from "components/ui/Button";
 import { api } from "helpers/api";
 import InformationContainer from "components/ui/BaseContainer";
-import {
-  FormControl,
-  InputLabel,
-  Select,
-  MenuItem,
-  TextField,
-} from "@mui/material";
+import { InputLabel, Select, MenuItem, TextField,} from "@mui/material";
+
 import "styles/views/home/Lobby.scss";
 
 import SockJS from "sockjs-client";
@@ -19,35 +14,27 @@ import WebSocketType from "models/WebSocketType";
 
 const CreatedGamePage = () => {
   const [gamePlayers, setGamePlayers] = useState([]);
-  const [targetPlayerNumber, setTargetPlayerNumber] = useState(
-    localStorage.getItem("gamePlayer")
-  );
+  const [playerNumber, setPlayerNumber] = useState(localStorage.getItem("playerNum"));
 
-  const totalRounds = localStorage.getItem("totalRounds");
-  const category = localStorage.getItem("category");
-  const totalTime = localStorage.getItem("countdownTime");
   const gameId = localStorage.getItem("gameId");
+  const category = localStorage.getItem("category");
+  const totalRounds = localStorage.getItem("totalRounds");
+  const totalTime = localStorage.getItem("countdownTime");
   const userId = localStorage.getItem("userId");
   const isServer = localStorage.getItem("isServer");
 
   const history = useHistory();
 
-  const handleSub = async () => {
+  const fetchPlayer = async () => {
     const response = await api.get(`/games/${localStorage.getItem("gameId")}/players`);
     setGamePlayers(response.data);
-    setTargetPlayerNumber(response.data.length);
+    // refresh current player number 
+    setPlayerNumber(response.data.length);
   };
 
-  const addUser = async () => {
-    if (localStorage.isServer == 0) {
-      const response = await api.post(`/games/${gameId}/players/${userId}`);
-      console.log("You Joined the game", response.data);
-    }
-  };
-
+  // automatically fetch player list
   useEffect(() => {
-    addUser();
-    handleSub();
+    fetchPlayer();
   }, []);
 
   useEffect(() => {
@@ -63,13 +50,14 @@ const CreatedGamePage = () => {
           `/instance/games/${gameId}`,
           (message) => {
             const messagBody = JSON.parse(message.body);
-            if (messagBody.type == WebSocketType.PLAYER_ADD ||
-              messagBody.type == WebSocketType.PLAYRE_REMOVE) {
-              handleSub();
+            if (messagBody.type === WebSocketType.PLAYER_ADD ||
+              messagBody.type === WebSocketType.PLAYRE_REMOVE) {
+              fetchPlayer();
             }
-            else if (messagBody.type == WebSocketType.ROUND_UPDATE) {
-              const currentRound = Number(localStorage.getItem("roundNumber"));
-              localStorage.setItem("roundNumber", currentRound + 1);
+            else if (messagBody.type === WebSocketType.ROUND_UPDATE
+              && isServer === 0) {
+              localStorage.setItem("score", 0);
+              localStorage.setItem("roundNumber", 1);
               history.push(`/MultiGamePage/${gameId}/RoundCountPage/`);
             }
           }
@@ -81,33 +69,35 @@ const CreatedGamePage = () => {
   }, []);
 
   const leaveGame = async () => {
-    localStorage.removeItem("totalRounds");
-    localStorage.removeItem("category");
-    localStorage.removeItem("countdownTime");
     localStorage.removeItem("gameId");
+    localStorage.removeItem("category");
+    localStorage.removeItem("totalRounds");
+    localStorage.removeItem("countdownTime");
+    localStorage.removeItem("playerNum");
     localStorage.removeItem("userId");
     localStorage.removeItem("isServer");
-    if (localStorage.isServer == 1) {
+    if (localStorage.isServer === 1) {
       const response = await api.delete(`/games/${gameId}`);
+      console.log(response);
     }
     else {
       const response = await api.delete(`/games/${gameId}/players/${userId}`);
+      console.log(response);
     }
   };
 
-  const backToHome = () => {
-    leaveGame();
-    history.push("/home");
+  const backToLobby = () => {
+    leaveGame(); history.push("/JoinGame");
   };
-
-  const joinOther = () => {
-    leaveGame();
-    history.push("/JoinGame");
+  const backToHome = () => {
+    leaveGame(); history.push("/home");
   };
 
   const startGameMultiplayer = async (gameId) => {
     localStorage.setItem("score", 0);
+    localStorage.setItem("roundNumber", 1);
     const response = await api.put(`games/${gameId}`);
+    console.log(response);
   };
 
   return (
@@ -122,11 +112,8 @@ const CreatedGamePage = () => {
           </div>
           <div className="lobby category-select">
             <InputLabel className="lobby label">Category</InputLabel>
-            <Select labelId="demo-simple-select-label"
-              id="demo-simple-select"
-              value={category}
+            <Select value={category} disabled
               label="category"
-              disabled
               inputProps={{
                 MenuProps: {
                   sx: {borderRadius: "10px",},
@@ -148,62 +135,34 @@ const CreatedGamePage = () => {
             <InputLabel className="lobby label">Rounds:</InputLabel>
             <TextField className="lobby round"
               inputProps={{ style: { textAlign: "center" },}}
-              placeholder="enter number of rounds..."
-              value={totalRounds}
-              disabled
+              value={totalRounds} disabled 
             />
           </div>
           <div className="lobby category-select">
-            <InputLabel className="lobby label">Players:</InputLabel>
-            <Select
-              labelId="demo-simple-select-label"
-              id="demo-simple-select"
-              label="player"
-              value={targetPlayerNumber}
-              disabled
-              inputProps={{
-                MenuProps: {
-                  sx: { borderRadius: "10px",},
-                  MenuListProps: {sx: {backgroundColor: "#1979b8",color: "white",},},
-                },
-              }}
-              className="lobby player"
-            >
-              <MenuItem value={1}>1</MenuItem>
-              <MenuItem value={2}>2</MenuItem>
-              <MenuItem value={3}>3</MenuItem>
-              <MenuItem value={4}>4</MenuItem>
-              <MenuItem value={5}>5</MenuItem>
-              <MenuItem value={6}>6</MenuItem>
-            </Select>
+            <InputLabel className="lobby label">Countdown Time:</InputLabel>
+            <TextField className="lobby player"
+              inputProps={{ style: { textAlign: "center" },}}
+              value={totalTime} disabled 
+            />
           </div>
 
-          <div></div>
-          <div className="lobby label">
+          <div className="lobby button-container">
             {isServer === 1 ? (
-              <Button style={{display: "inline-block", margin: "0 10px",}}
-                onClick={() => startGameMultiplayer(gameId)}
-              >
+              <Button onClick={() => startGameMultiplayer(gameId)}>
                 Start Game
               </Button>
             ) : null}
 
-            <Button style={{ display: "inline-block", margin: "0 10px",}}
-              onClick={() => joinOther()}
-            >
-              Join Other Game
+            <Button onClick={() => backToLobby()}>
+              Back to Lobby
             </Button>
-            <Button style={{ display: "inline-block", margin: "0 10px",}}
-              onClick={() => backToHome()}
-            >
+            <Button onClick={() => backToHome()}>
               Back to Home Page
             </Button>
           </div>
         </InformationContainer>
 
-        <InformationContainer className="lobby container_right"
-          style={{ display: "flex", flexDirection: "column" }}
-        >
+        <InformationContainer className="lobby container_right">
           <p style={{ fontSize: "20px", marginBottom: "20px" }}>
             Users in the lobby:
           </p>
