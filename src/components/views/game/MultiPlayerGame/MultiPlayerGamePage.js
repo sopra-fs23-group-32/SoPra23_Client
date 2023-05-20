@@ -1,32 +1,34 @@
 import { useHistory } from "react-router-dom";
 import React, { useState, useEffect } from "react";
+import { Button } from "components/ui/Button";
 import { api, handleError } from "helpers/api";
 import { Grid, Container } from "@mui/material";
+import GameStatus from "models/GameStatus";
 import SockJS from "sockjs-client";
 import Stomp from "stompjs";
 import { getDomain } from "helpers/getDomain";
 import WebSocketType from "models/WebSocketType";
-import GameStatus from "models/GameStatus";
+
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
-
 import "styles/views/game/GamePage.scss";
 
 const MultiPlayerGamePage = () => {
   const [isAnswerSubmitted, setIsAnswerSubmitted] = useState(false);
-  const [score, setScore] = useState(localStorage.getItem("score"));
+  const [score, setScore] = useState(localStorage.getItem("myScore"));
   const [roundTime, setRoundTime] = useState(localStorage.getItem("countdownTime"));
   const [selectedCityName, setSelectedCityName] = useState(null);
-  const [isWaiting, setIsWaiting] = useState(false);
+  // control the flow
+  const [isWaiting, setIsWaiting] = useState(true);
+  const [isContinue, setIsContinue] = useState(false);
 
   const gameId = localStorage.getItem("gameId");
   const roundNumber = localStorage.getItem("roundNumber");
   const totalTime = localStorage.getItem("countdownTime");
   const cityNames = JSON.parse(localStorage.getItem("citynames"));
   const correctOption = localStorage.getItem("CorrectOption");
-  
   const playerId = localStorage.getItem("userId");
-
+  const isServer = localStorage.getItem("isServer");
   const history = useHistory();
 
   const endRound = () => {
@@ -59,10 +61,11 @@ const MultiPlayerGamePage = () => {
             const messagBody = JSON.parse(message.body);
             if (messagBody.type === WebSocketType.ANSWER_UPDATE 
               && messagBody.load === GameStatus.WAITING) {
-              endRound();
-            }
-            else if (messagBody.load === GameStatus.ANSWERING) {
-              setIsWaiting(true);
+              setIsWaiting(false);
+              // have press the button
+              if(isContinue) {
+                endRound();
+              }
             }
             // else if (messagBody.type === WebSocketType.PLAYER_ADD 
             //   || messagBody.type === WebSocketType.PLAYRE_REMOVE) {
@@ -86,9 +89,9 @@ const MultiPlayerGamePage = () => {
         `/games/${gameId}/players/${playerId}/answers`,
         {answer: cityName, timeTaken: time,}
       );
-      const score_new = parseInt(localStorage.getItem("score")) + response.data;
+      const score_new = parseInt(score) + response.data;
       setScore(score_new);
-      localStorage.setItem("score", score_new);
+      localStorage.setItem("myScore", score_new);
     } catch (error) {
       toast.error(`Failed in submitting answer: \n${error.respond.data.message}`);
       console.log(handleError(error));
@@ -117,6 +120,16 @@ const MultiPlayerGamePage = () => {
     if (!isAnswerSubmitted) {
       submitAnswer(selectedCityName, totalTime - roundTime);
     }
+    else {
+      setIsContinue(true);
+      if(isWaiting) {
+        // press but not ok yet
+        toast.info(`Waiting for other players to answer...`)
+      }
+      else {
+        endRound(); // you are the last one
+      }
+    }
   };
 
   const handleCityNameButtonClick = (cityName) => {
@@ -144,16 +157,33 @@ const MultiPlayerGamePage = () => {
   ));
 
   const handleExitButtonClick = async () => {
-    await api.delete(`games/${gameId}/players/${playerId}`);
-    history.push("/home");
+    if(isServer===true) {
+      toast.warning(`You can't leave the game as the host!`);
+    }
+    else{
+      await api.delete(`games/${gameId}/players/${playerId}`);
+      localStorage.removeItem("gameId");
+      localStorage.removeItem("category");
+      localStorage.removeItem("totalRounds");
+      localStorage.removeItem("countdownTime");
+      localStorage.removeItem("roundNumber");
+      localStorage.removeItem("myScore");
+      localStorage.removeItem("isServer");
+      localStorage.removeItem("citynames");
+      localStorage.removeItem("PictureUrl");
+      localStorage.removeItem("CorrectOption");
+      history.push("/home");
+    }
   };
 
   return (
     <div className="guess-the-city">
       <div className="guess-the-city header">
-        <button className="exit-button" onClick={handleExitButtonClick}>
+        <Button className="exit-button" onClick={handleExitButtonClick}
+          disabled={isServer===true}>
           Exit Game
-        </button>
+        </Button>
+        
       </div>
 
       <div className="guess-the-city main">

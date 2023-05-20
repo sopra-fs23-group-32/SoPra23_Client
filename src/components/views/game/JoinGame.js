@@ -8,12 +8,12 @@ import {Table, TableBody, TableCell, TableContainer,
 } from "@mui/material";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
-
 import "styles/views/game/JoinGame.scss";
 
 const JoinGame = () => {
   const [openingGames, setOpeningGames] = useState([]);
   const userId = localStorage.getItem("userId");
+  const username = localStorage.getItem("username");
   
   const history = useHistory();
 
@@ -22,14 +22,16 @@ const JoinGame = () => {
       const response = await api.get("/games/");
       setOpeningGames(response.data);
       console.log(response)
+      await new Promise((resolve) => setTimeout(resolve, 1000));
     };
     fetchGamedata();
   }, []);
 
-  const handleAddPlayer = async (gameID) => {
+  const handleAddPlayer = async (gameId) => {
     try {
-      const response = await api.post(`/games/${gameID}/players/${userId}`);
+      const response = await api.post(`/games/${gameId}/players/${userId}`);
       console.log("You Joined the game", response.data);
+      toast.info(`Successfully add player '${username}'(ID ${userId}) to game(ID ${gameId})!`)
       await new Promise((resolve) => setTimeout(resolve, 1000));
     }
     catch (error) {
@@ -39,12 +41,12 @@ const JoinGame = () => {
   };
 
   const joinServer = async (game) => {
-    localStorage.setItem("isServer", 0);
     localStorage.setItem("gameId", game.gameId);
     localStorage.setItem("category", game.category);
     localStorage.setItem("totalRounds", game.totalRounds);
     localStorage.setItem("countdownTime", game.countdownTime);
-    localStorage.setItem("playerNum", game.currentPlayerNum);
+    localStorage.setItem("playerNum", game.playerNum);
+    localStorage.setItem("isServer", false);
     handleAddPlayer(game.gameId);
     history.push("/StartGamePage");
   };
@@ -57,19 +59,14 @@ const JoinGame = () => {
       </div>
       <div className="joinboard field">
         <div className="sever-field">
-          <TableContainer
-            component={Paper}
-            sx={{ backgroundColor: "transparent" }}
-          >
-            <Table sx={{ minWidth: 650 }}
-              aria-label="simple table"
-              className="score-table"
-            >
+          <TableContainer sx={{ backgroundColor: "transparent" }}>
+            <Table className="score-table" sx={{ minWidth: 650 }}>
               <TableHead>
                 <TableRow>
                   <TableCell></TableCell>
                   <TableCell align="center">Category</TableCell>
                   <TableCell align="center">Rounds</TableCell>
+                  <TableCell align="center">Player number</TableCell>
                   <TableCell align="center">Join</TableCell>
                 </TableRow>
               </TableHead>
@@ -86,13 +83,15 @@ const JoinGame = () => {
                         {openingGame.category}
                       </TableCell>
                       <TableCell align="center">
-                        {openingGame.gameRounds}
+                        {openingGame.totalRounds}
                       </TableCell>
                       <TableCell align="center">
-                        {openingGame.currentPlayerNum}
+                        {openingGame.playerNum}
                       </TableCell>
                       <TableCell align="center">
-                        <p onClick={() => joinServer(openingGame)}>Join</p>
+                        <p onClick={() => joinServer(openingGame)}>
+                          Join
+                        </p>
                       </TableCell>
                     </TableRow>
                   );

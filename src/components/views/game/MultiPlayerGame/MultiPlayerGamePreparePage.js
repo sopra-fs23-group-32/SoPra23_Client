@@ -26,7 +26,7 @@ const UrgeWithPleasureComponent = ({ duration }) => (
 
 const MultiModeRoundCountdown = () => {
   // use react-router-dom's hook to access the history
-  const duration = 10;
+  const duration = 15;
   const [secondsLeft, setSecondsLeft] = useState(duration);
   const [intervalId, setIntervalId] = useState(null);
 
@@ -40,7 +40,7 @@ const MultiModeRoundCountdown = () => {
   const playerId = localStorage.getItem("userId");
   const username = localStorage.getItem("username")
   const score = localStorage.getItem("myScore");
-
+  const isServer = localStorage.getItem("isServer");
   const history = useHistory();
 
   const setLocalStorageItems = (question) => {
@@ -52,18 +52,27 @@ const MultiModeRoundCountdown = () => {
     localStorage.setItem("CorrectOption", question.correctOption);
   };
 
-  async function fetchQuestion(isServer) {
+  async function generateQuestion() {
     try {
-      let response;
-      if(isServer === true) {
-        response = await api.put(`games/${gameId}`);
-      }
-      else {
-        response = await api.get(`games/${gameId}/questions`);
-      }
+      const response = await api.put(`games/${gameId}`);
       setLocalStorageItems(response.data);
-      console.log(response.data);
+      console.log(response);
       await new Promise((resolve) => setTimeout(resolve, 1000));
+      toast.info(`Question for next round created.`);
+    }
+    catch (error) {
+      toast.error(`${error.response.data.message}`);
+      console.log(handleError(error));
+    }
+  }
+
+  async function fetchQuestion() {
+    try {
+      const response = await api.get(`games/${gameId}/questions`);
+      setLocalStorageItems(response.data);
+      console.log(response);
+      await new Promise((resolve) => setTimeout(resolve, 1000));
+      toast.info(`Got question for next round.`);
     }
     catch (error) {
       toast.error(`${error.response.data.message}`);
@@ -86,11 +95,9 @@ const MultiModeRoundCountdown = () => {
         toast.error(`${error.response.data.message}`);
         console.log(handleError(error));
       }
-    };
-    // fetch question and save in localstorage
-    if (localStorage.getItem("isServer") === 1) {
-      fetchQuestion(true);
     }
+    // fetch question and save in localstorage
+    if (isServer) {generateQuestion();}
     // get all players' ranking
     fetchRanking();
     // set a timer
@@ -107,8 +114,8 @@ const MultiModeRoundCountdown = () => {
       clearInterval(secondsLeft);
       clearInterval(intervalId);
       setTimeout(() => {
-        if(localStorage.getItem("isServer") === 0){
-          fetchQuestion(false);
+        if(isServer === false){
+          fetchQuestion();
         }
         history.push(`/MultiGamePage/${gameId}`);
       }, 500);
@@ -136,16 +143,14 @@ const MultiModeRoundCountdown = () => {
              : rankEntry.rank;
           const position = calculateRowPosition(rankEntry.rank, previousRank);
 
-          return (
-            <tr key={rankEntry.id}
-              style={{ transform: `translateY(${position})`,
-                backgroundColor: rankEntry.playerName === username ? 'rgba(200, 0, 0, 0.5)' : 'rgba(128, 128, 128, 0.5)',}}
-            >
-              <td>{rankEntry.rank}</td>
-              <td>{rankEntry.playerName}</td>
-              <td>{rankEntry.score}</td>
-            </tr>
-          );
+          <tr key={rankEntry.playerName}
+            style={{ transform: `translateY(${position})`,
+              backgroundColor: rankEntry.playerName === username ? 'rgba(200, 0, 0, 0.5)' : 'rgba(128, 128, 128, 0.5)',}}
+          >
+            <td>{rankEntry.rank}</td>
+            <td>{rankEntry.playerName}</td>
+            <td>{rankEntry.score}</td>
+          </tr>
         })}
       </tbody>
     </table>
@@ -154,25 +159,39 @@ const MultiModeRoundCountdown = () => {
     rankEntry: PropTypes.object,
   };
 
-  let playRankingList = <Spinner />
+  let playerRankingList = <Spinner />
 
   if (leaderboardData !== null) {
-    playRankingList = (
+    playerRankingList = (
       <PlayerRanking leaderboardData={leaderboardData} />
     );
   }
 
   const handleExitButtonClick = async() => {
-    await api.delete(`games/${gameId}/players/${playerId}`);
-    history.push("/home");
+    if(isServer === true) {
+      toast.warning(`You can't leave the game as the host!`);
+    }
+    else{
+      await api.delete(`games/${gameId}/players/${playerId}`);
+      localStorage.removeItem("gameId");
+      localStorage.removeItem("category");
+      localStorage.removeItem("totalRounds");
+      localStorage.removeItem("countdownTime");
+      localStorage.removeItem("roundNumber");
+      localStorage.removeItem("myScore");
+      localStorage.removeItem("isServer");
+      localStorage.removeItem("citynames");
+      localStorage.removeItem("PictureUrl");
+      localStorage.removeItem("CorrectOption");
+      history.push("/home");
+    }
   };
 
   return (
     <div className="round countdown container">
       <div style={{ position: "fixed", top: 75, left: 75 }}>
-        <Button style={{ fontSize: "45px", height: "100px", width: "100%" }}
-          onClick={handleExitButtonClick}
-        >
+        <Button style={{ fontSize: "40px", height: "100px", width: "100%"}} 
+        onClick={() => handleExitButtonClick()} disabled={isServer===true}>
           Exit Game
         </Button>
       </div>
@@ -189,7 +208,7 @@ const MultiModeRoundCountdown = () => {
 
         <div className="roundcountdown layout" style={{ display: "flex", flexDirection: "row" }}>
           <InformationContainer className="roundcountdown leaderboard-container">
-            <div>{playRankingList}</div>
+            <div>{playerRankingList}</div>
           </InformationContainer>
 
           <InformationContainer className="roundcountdown container_right">

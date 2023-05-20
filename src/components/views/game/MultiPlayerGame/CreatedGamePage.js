@@ -1,16 +1,19 @@
 import { useHistory } from "react-router-dom";
 import React, { useState, useEffect } from "react";
 import { Button } from "components/ui/Button";
-import { api } from "helpers/api";
+import PropTypes from "prop-types";
+import { api, handleError } from "helpers/api";
+import { Spinner } from "components/ui/Spinner";
 import InformationContainer from "components/ui/BaseContainer";
 import { InputLabel, Select, MenuItem, TextField,} from "@mui/material";
-
-import "styles/views/home/Lobby.scss";
 
 import SockJS from "sockjs-client";
 import Stomp from "stompjs";
 import { getDomain } from "helpers/getDomain";
 import WebSocketType from "models/WebSocketType";
+
+import { ToastContainer, toast } from 'react-toastify';
+import "styles/views/game/WaitingPage.scss";
 
 const CreatedGamePage = () => {
   const [gamePlayers, setGamePlayers] = useState([]);
@@ -21,19 +24,28 @@ const CreatedGamePage = () => {
   const totalRounds = localStorage.getItem("totalRounds");
   const totalTime = localStorage.getItem("countdownTime");
   const userId = localStorage.getItem("userId");
+  const username = localStorage.getItem("username");
   const isServer = localStorage.getItem("isServer");
 
   const history = useHistory();
 
-  const fetchPlayer = async () => {
-    const response = await api.get(`/games/${localStorage.getItem("gameId")}/players`);
-    setGamePlayers(response.data);
-    // refresh current player number 
-    setPlayerNumber(response.data.length);
+  async function fetchPlayer() {
+    try{
+      const response = await api.get(`/games/${localStorage.getItem("gameId")}/players`);
+      console.log(response);
+      setGamePlayers(response.data);
+      setPlayerNumber(response.data.length);
+    }
+    catch (error) {
+      toast.error(`Failed to fetch player in game(ID ${gameId})\n
+        ${error.response.data.message}`);
+      console.log(handleError(error));
+    }
   };
 
   // automatically fetch player list
   useEffect(() => {
+    toast.info(`Successfully add player '${username}'(ID ${userId}) to game(ID ${gameId})!`)
     fetchPlayer();
   }, []);
 
@@ -50,15 +62,24 @@ const CreatedGamePage = () => {
           `/instance/games/${gameId}`,
           (message) => {
             const messagBody = JSON.parse(message.body);
-            if (messagBody.type === WebSocketType.PLAYER_ADD ||
-              messagBody.type === WebSocketType.PLAYRE_REMOVE) {
+            if (messagBody.type===WebSocketType.PLAYER_ADD ||
+              messagBody.type===WebSocketType.PLAYER_REMOVE) {
               fetchPlayer();
             }
-            else if (messagBody.type === WebSocketType.ROUND_UPDATE
-              && isServer === 0) {
-              localStorage.setItem("score", 0);
+            else if (isServer === 0 && messagBody.type===WebSocketType.GAME_START) {
+              localStorage.setItem("myScore", 0);
               localStorage.setItem("roundNumber", 1);
               history.push(`/MultiGamePage/${gameId}/RoundCountPage/`);
+            }
+            else if (isServer === 0 && messagBody.type===WebSocketType.GAME_END) {
+              localStorage.removeItem("gameId");
+              localStorage.removeItem("category");
+              localStorage.removeItem("totalRounds");
+              localStorage.removeItem("countdownTime");
+              localStorage.removeItem("playerNum");
+              localStorage.removeItem("isServer");
+              toast.warning("The host player has deleted this game.")
+              history.push(`/home`);
             }
           }
         );
@@ -69,14 +90,7 @@ const CreatedGamePage = () => {
   }, []);
 
   const leaveGame = async () => {
-    localStorage.removeItem("gameId");
-    localStorage.removeItem("category");
-    localStorage.removeItem("totalRounds");
-    localStorage.removeItem("countdownTime");
-    localStorage.removeItem("playerNum");
-    localStorage.removeItem("userId");
-    localStorage.removeItem("isServer");
-    if (localStorage.isServer === 1) {
+    if (isServer === 1) {
       const response = await api.delete(`/games/${gameId}`);
       console.log(response);
     }
@@ -84,6 +98,12 @@ const CreatedGamePage = () => {
       const response = await api.delete(`/games/${gameId}/players/${userId}`);
       console.log(response);
     }
+    localStorage.removeItem("gameId");
+    localStorage.removeItem("category");
+    localStorage.removeItem("totalRounds");
+    localStorage.removeItem("countdownTime");
+    localStorage.removeItem("playerNum");
+    localStorage.removeItem("isServer");
   };
 
   const backToLobby = () => {
@@ -94,85 +114,94 @@ const CreatedGamePage = () => {
   };
 
   const startGameMultiplayer = async (gameId) => {
-    localStorage.setItem("score", 0);
+    localStorage.setItem("myScore", 0);
     localStorage.setItem("roundNumber", 1);
-    const response = await api.put(`games/${gameId}`);
-    console.log(response);
+    history.push(`/MultiGamePage/${gameId}/RoundCountPage/`);
   };
 
+  const Player = ({players}) => (
+    <div>
+    {players.map((player, index) => {
+      return (
+        <tr key={player.userId}>
+          <td>{player.userId}</td>
+          <td>{player.username}</td>
+        </tr>
+      );
+    })}
+    </div>
+  )
+  Player.propTypes = {
+    players: PropTypes.object,
+  };
+  let playerList = <Spinner />
+
+  if (gamePlayers !== null) {
+    playerList = (
+      <Player players={gamePlayers} />
+    );
+  }
+
   return (
-    <div className="lobby container">
-      <div className="lobby layout">
-        <InformationContainer
-          className="lobby container_left"
-          id="information-container"
-        >
-          <div style={{ fontSize: "40px", textAlign: "center" }}>
-            Game Settings
-          </div>
-          <div className="lobby category-select">
-            <InputLabel className="lobby label">Category</InputLabel>
-            <Select value={category} disabled
-              label="category"
-              inputProps={{
-                MenuProps: {
-                  sx: {borderRadius: "10px",},
-                  MenuListProps: {sx: { backgroundColor: "#1979b8",color: "white",},},
-                },
-              }}
-              className="lobby category"
-            >
-              <MenuItem value={"EUROPE"}>Europe</MenuItem>
-              <MenuItem value={"ASIA"}>Asia</MenuItem>
-              <MenuItem value={"NORTH_AMERICA"}>North America</MenuItem>
-              <MenuItem value={"SOUTH_AMERICA"}>South America</MenuItem>
-              <MenuItem value={"AFRICA"}>Africa</MenuItem>
-              <MenuItem value={"OCEANIA"}>Oceania</MenuItem>
-              <MenuItem value={"WORLD"}>World</MenuItem>
-            </Select>
-          </div>
-          <div className="lobby category-select">
-            <InputLabel className="lobby label">Rounds:</InputLabel>
-            <TextField className="lobby round"
-              inputProps={{ style: { textAlign: "center" },}}
-              value={totalRounds} disabled 
-            />
-          </div>
-          <div className="lobby category-select">
-            <InputLabel className="lobby label">Countdown Time:</InputLabel>
-            <TextField className="lobby player"
-              inputProps={{ style: { textAlign: "center" },}}
-              value={totalTime} disabled 
-            />
-          </div>
+    <div className="waiting-page layout">
+      <InformationContainer className="waiting-page container_left">
+        <div style={{ fontSize: "40px", textAlign: "center" }}>
+          Game Settings
+        </div>
+        <div className="waiting-page select">
+          <InputLabel className="waiting-page label">Category</InputLabel>
+          <Select value={category} disabled
+            inputProps={{
+              MenuProps: {
+                sx: {borderRadius: "10px",},
+                MenuListProps: {sx: { backgroundColor: "#1979b8",color: "white",},},
+              },
+            }}
+            className="waiting-page category"
+          >
+            <MenuItem value={"EUROPE"}>Europe</MenuItem>
+            <MenuItem value={"ASIA"}>Asia</MenuItem>
+            <MenuItem value={"NORTH_AMERICA"}>North America</MenuItem>
+            <MenuItem value={"SOUTH_AMERICA"}>South America</MenuItem>
+            <MenuItem value={"AFRICA"}>Africa</MenuItem>
+            <MenuItem value={"OCEANIA"}>Oceania</MenuItem>
+          </Select>
+        </div>
+        <div className="waiting-page select">
+          <InputLabel className="waiting-page label">Rounds:</InputLabel>
+          <TextField className="waiting-page text"
+            inputProps={{ style: { textAlign: "center" },}}
+            value={totalRounds} disabled 
+          />
+        </div>
+        <div className="waiting-page select">
+        <InputLabel className="waiting-page label">Countdown Time:</InputLabel>
+        <TextField className="waiting-page text"
+          inputProps={{ style: { textAlign: "center" },}}
+          value={totalTime} disabled 
+        />
+        </div>
 
-          <div className="lobby button-container">
-            {isServer === 1 ? (
-              <Button onClick={() => startGameMultiplayer(gameId)}>
-                Start Game
-              </Button>
-            ) : null}
+        <div className="waiting-page button-container">
+          <Button onClick={() => startGameMultiplayer(gameId)}
+            disabled={!isServer}>
+            Start Game
+          </Button>
+          <Button onClick={() => backToLobby()}>
+            Back to Lobby
+          </Button>
+          <Button onClick={() => backToHome()}>
+            Back to Home Page
+          </Button>
+        </div>
+      </InformationContainer>
 
-            <Button onClick={() => backToLobby()}>
-              Back to Lobby
-            </Button>
-            <Button onClick={() => backToHome()}>
-              Back to Home Page
-            </Button>
-          </div>
-        </InformationContainer>
-
-        <InformationContainer className="lobby container_right">
-          <p style={{ fontSize: "20px", marginBottom: "20px" }}>
-            Users in the lobby:
-          </p>
-          {gamePlayers.map((player, index) => (
-            <p className="lobby player-name" key={index}>
-              {player.username}
-            </p>
-          ))}
-        </InformationContainer>
-      </div>
+      <InformationContainer className="waiting-page container_right">
+        <p style={{ fontSize: "30px", marginBottom: "20px" }}>
+          {playerNumber} players in the lobby :
+        </p>
+        <div>{playerList}</div>
+      </InformationContainer>
     </div>
   );
 };
