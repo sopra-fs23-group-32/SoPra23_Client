@@ -2,6 +2,7 @@ import { useHistory } from "react-router-dom";
 import React, { useState, useEffect } from "react";
 import { Button } from "components/ui/Button";
 import { api, handleError } from "helpers/api";
+import { Spinner } from "components/ui/Spinner";
 import InformationContainer from "components/ui/BaseContainer";
 import PropTypes from "prop-types";
 import { CountdownCircleTimer } from 'react-countdown-circle-timer';
@@ -9,8 +10,6 @@ import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 
 import "styles/views/game/GamePrepare.scss";
-import { FALSE, TRUE } from "node-sass";
-
 
 const UrgeWithPleasureComponent = ({ duration }) => (
   <CountdownCircleTimer
@@ -34,13 +33,13 @@ const MultiModeRoundCountdown = () => {
   const [leaderboardData, setLeaderboardData] = useState([]);
   const [previousRoundData, setPreviousRoundData] = useState([]);
 
+  const gameId = localStorage.getItem("gameId");
+  const category = localStorage.getItem("category");
   const roundNumber = localStorage.getItem("roundNumber");
   const totalRounds = localStorage.getItem("totalRounds");
-  const category = localStorage.getItem("category");
-  const score = localStorage.getItem("myScore");
-  const username = localStorage.getItem("username")
-  const gameId = localStorage.getItem("gameId");
   const playerId = localStorage.getItem("userId");
+  const username = localStorage.getItem("username")
+  const score = localStorage.getItem("myScore");
 
   const history = useHistory();
 
@@ -72,38 +71,6 @@ const MultiModeRoundCountdown = () => {
     }
   }
 
-  // fetch question and save in localstorage
-  useEffect(() => {
-    if (localStorage.getItem("isServer") === 1) {
-      fetchQuestion(true);
-    }
-    // if game state == round_update, then fetch question using GET 
-  }, []);
-
-  // set a timer
-  useEffect(() => {
-    const intervalId = setInterval(() => {
-      setSecondsLeft((prevSecondsLeft) => prevSecondsLeft - 1);
-    }, 1000);
-    return () => clearInterval(intervalId);
-  }, []);
-
-  // go to next page when time out
-  useEffect(() => {
-    if (secondsLeft === 0) {
-      clearInterval(secondsLeft);
-      clearInterval(intervalId);
-      setTimeout(() => {
-        if(localStorage.getItem("isServer") === 0){
-          fetchQuestion(false);
-        }
-        history.push(`/MultiGamePage/${gameId}`);
-      }, 500);
-    }
-  }, [secondsLeft, intervalId]);
-
-
-  // get all players' ranking
   useEffect(() => {
     async function fetchRanking() {
       try {
@@ -119,9 +86,34 @@ const MultiModeRoundCountdown = () => {
         toast.error(`${error.response.data.message}`);
         console.log(handleError(error));
       }
+    };
+    // fetch question and save in localstorage
+    if (localStorage.getItem("isServer") === 1) {
+      fetchQuestion(true);
     }
+    // get all players' ranking
     fetchRanking();
+    // set a timer
+    const intervalId = setInterval(() => {
+      setSecondsLeft((prevSecondsLeft) => prevSecondsLeft - 1);
+    }, 1000);
+    return () => clearInterval(intervalId);
   }, []);
+
+
+  // go to next page when time out
+  useEffect(() => {
+    if (secondsLeft === 0) {
+      clearInterval(secondsLeft);
+      clearInterval(intervalId);
+      setTimeout(() => {
+        if(localStorage.getItem("isServer") === 0){
+          fetchQuestion(false);
+        }
+        history.push(`/MultiGamePage/${gameId}`);
+      }, 500);
+    }
+  }, [secondsLeft, intervalId]);
 
   const calculateRowPosition = (currentRank, previousRank) => {
     const position = currentRank - previousRank;

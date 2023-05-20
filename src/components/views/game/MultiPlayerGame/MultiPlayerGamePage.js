@@ -19,11 +19,12 @@ const MultiPlayerGamePage = () => {
   const [selectedCityName, setSelectedCityName] = useState(null);
   const [isWaiting, setIsWaiting] = useState(false);
 
-  const cityNames = JSON.parse(localStorage.getItem("citynames"));
-  const correctOption = localStorage.getItem("CorrectOption");
+  const gameId = localStorage.getItem("gameId");
   const roundNumber = localStorage.getItem("roundNumber");
   const totalTime = localStorage.getItem("countdownTime");
-  const gameId = localStorage.getItem("gameId");
+  const cityNames = JSON.parse(localStorage.getItem("citynames"));
+  const correctOption = localStorage.getItem("CorrectOption");
+  
   const playerId = localStorage.getItem("userId");
 
   const history = useHistory();
@@ -160,9 +161,7 @@ const MultiPlayerGamePage = () => {
           <Grid container spacing={4}>
             <Grid item md={6}>
               <div>
-                <img className="city-image" alt="City Image" 
-                  src={localStorage.getItem("PictureUrl")}
-                />
+                <img className="city-image" alt="GuessImg" src={localStorage.getItem("PictureUrl")}/>
               </div>
               <div style={{ textAlign: "center" }}>
                 <p>Your Score: {score}</p>
