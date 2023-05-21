@@ -44,6 +44,7 @@ The multiplayer game provides a battle mode for players. The main components of 
 ### [LeaderBoard](https://github.com/sopra-fs23-group-32/SoPra23_Client/blob/main/src/components/views/home/ScoreBoard.js)
 The player can check the player ranking. With a dropdown field, the player can choose the general or specific continent to access player ranking. Moreover, the profiles of other players can be accessed by clicking the corresponding player row.
 
+
 ## Launch & Deployment
 ### Prerequisites and Installation
 For your local development environment, you will need Node.js. You can download it [here](https://nodejs.org). All other dependencies, including React, get installed with:
@@ -112,6 +113,7 @@ See the section about [deployment](https://facebook.github.io/create-react-app/d
 - Social Integration - Allow players to connect their social media accounts to the game. This feature would require new developers to integrate social media sharing APIs.
 - Unlockable Content - Add a progressive map where players can unlock new cities. This feature involves tracking player achievements, integrating the global map and providing rewards for new milestones.
 
+
 ## Authors and Acknowledgment
 ### Authors
 - Said-Haji Abukar - [awhoa](https://github.com/awhoa)
@@ -125,6 +127,7 @@ See also the list of [contributors](https://github.com/sopra-fs23-group-32/SoPra
 ### Acknowledgement
 - The city images of this project are provided by [Unsplash API](https://unsplash.com/developers).
 - Thanks to Luis Torrejón Machado - [luis-tm](https://github.com/luis-tm) who supports this project as a tutor.
+
 
 ## License
 This project is licensed under the Apache License 2.0 - see the [LICENSE.md](https://github.com/sopra-fs23-group-32/SoPra23_Client/blob/main/LICENSE) file for details.

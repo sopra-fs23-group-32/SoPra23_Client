@@ -4,6 +4,9 @@ import { api, handleError } from "helpers/api";
 import { Spinner } from "components/ui/Spinner";
 import { Button } from "components/ui/Button";
 import PropTypes from "prop-types";
+import InformationContainer from "components/ui/BaseContainer";
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
 import "styles/views/home/Profile.scss";
 
@@ -21,21 +24,24 @@ const ProfileInfo = ({ user, setUsername, setBirthDay, setOldPwd, setPassword })
       </div>
       <div className="user-profile-field">
         <label>Status</label>
-        <div>{user.status}</div>
+        <value>{user.status}</value>
       </div>
       <div className="user-profile-field">
         <label>Created on</label>
-        <div>{new Date(user.createDay).toISOString().slice(0, 10)}</div>
+        <value>{new Date(user.createDay).toISOString().slice(0, 10)}</value>
       </div>
       <div className="user-profile-field">
         <label>Birthday</label>
         {localStorage.getItem("profileId") === localStorage.getItem("userId")? (
             <>
-             <div>{user.birthDay? new Date(user.birthDay).toISOString().slice(0, 10) : "N/A"}</div>
+            
+             <value>{user.birthDay? new Date(user.birthDay).toISOString().slice(0, 10) : "No Birthday set yet"}</value>
+             <div style={{flexBasis:'67%'}}>
              <input type="date" defaultValue={user.birthDay} onChange={e => setBirthDay(e.target.value)} />
+             </div>
             </>
         ) : (
-            <div>{user.birthDay? new Date(user.birthDay).toISOString().slice(0, 10) : "N/A"}</div>
+            <value>{user.birthDay? new Date(user.birthDay).toISOString().slice(0, 10) : "No Birthday set yet"}</value>
         )}
       </div>
       {localStorage.getItem("profileId") === localStorage.getItem("userId") ? (
@@ -75,24 +81,31 @@ const Profile = () => {
 
   const changeProfile = async () => {
       if(oldPwd !== null && oldPwd !== userProfile.password) {
-        alert(`Your old password is wrong, try again.\n`);
+//        alert(`Your old password is wrong, try again.\n`);
+        toast.error("Your old password is wrong, try again.")
       }
-      try {
-          let requestBody;
-          if(username === null) {
-            let username = localStorage.getItem("username");
-            requestBody = JSON.stringify({ username, password, birthDay });
-          }
-          else{
-            requestBody = JSON.stringify({ username, password, birthDay });
-          }
-          const userURL = "/users/" + localStorage.getItem("userId");
-          await api.put(userURL, requestBody);
-      } catch (error) {
-          alert(`Something went wrong while updating your profile.\n${handleError(error)}`);
+      else {
+        try {
+            let requestBody;
+            if(username === null) {
+              let username = localStorage.getItem("username");
+              requestBody = JSON.stringify({ username, password, birthDay });
+            }
+            else{
+              requestBody = JSON.stringify({ username, password, birthDay });
+            }
+            const userURL = "/users/" + localStorage.getItem("userId");
+            await api.put(userURL, requestBody);
+            window.location.reload();
+        } catch (error) {
+            toast.error(`${error.response.data.message}`);
+  //          alert(`Something went wrong while updating your profile.\n${handleError(error)}`);
+        }
       }
-      window.location.reload();
+
+
     };
+
 
 
   useEffect(() => {
@@ -130,7 +143,7 @@ const Profile = () => {
         <ProfileInfo user={userProfile} setUsername={setUsername} setBirthDay={setBirthDay} setOldPwd={setOldPwd} setPassword={setPassword} />
         <div className="profile button-container">
           {localStorage.getItem("profileId") === localStorage.getItem("userId") ?
-            <Button width="70%"
+            <Button width="50%"
               onClick={() => changeProfile()}
               disabled={!username && !birthDay && !password}
             >
@@ -145,11 +158,11 @@ const Profile = () => {
 
 
   return (
-    <div className="profile container">
-      <div className="headerrow" >
-          <div><h2>User Profile</h2></div>
-      </div>
-      <br></br>
+    <div className="Profile container" style={{flexDirection: "column"}}>
+      <InformationContainer className="profile container" style={{fontSize: '48px', width: "fit-content"}}>
+        Profile
+      </InformationContainer>
+    <InformationContainer className="profile container" style={{width: "fit-content"}}>
       {content}
       <div className="profile button-container">
         <Button width="100%"
@@ -161,6 +174,8 @@ const Profile = () => {
           Return to Home
         </Button>
       </div>
+      </InformationContainer>
+    <ToastContainer />
     </div>
   );
 };

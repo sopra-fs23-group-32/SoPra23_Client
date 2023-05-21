@@ -1,22 +1,41 @@
-@import url('https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&display=swap');
+@import 'styles/theme';
 
-.headerp1{
-  color:black;
+
+.login{
+  &.container {
+    background: #001F3F;
+    padding: 30px;
+    border-radius: $borderRadius;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    width: 30%;
+    margin: 50px auto 0;
 }
+  &.button-container {
+    display: flex;
+    justify-content: center;
+    margin-top: 2em;
+  }
 
-.container {
-  width: 100%;
-  height: 100%;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  position: relative;
-  opacity: 1;
-  background-repeat: no-repeat;
-  background-size: cover;
-}
+  &.input {
+    background: transparentize(rgb(253, 253, 253), 0.9);
+    height: 30px;
+    font-size: 18px;
+    font-weight: 400;
+    padding-left: 15px;
+    margin-left: -4px;
+    border: none;
+    border-radius: 0.5em;
+    margin-bottom: 5px; 
+    color: #D4D4D4;
+    background-color: #1979b8;
+  }
+  input::placeholder {
+    color: #D4D4D4;
+  }
 
-.content {
+&.content {
   opacity: 1;
   font-size: 15px;
   padding: 40px;
@@ -26,55 +45,31 @@
   background-color: transparent;
 }
 
-.title-container {
+&.title-container {
   opacity: 1;
   text-align: center;
   margin-bottom: 40px;
 }
 
-.field {
+&.field {
   display: flex;
   flex-direction: column;
   margin-bottom: 20px;
 }
 
-.label {
+&.label {
   font-family: "Roboto", sans-serif;
   font-weight: 500;
   font-size: 14px;
   margin-bottom: 5px;
 }
 
-.login .form {
+&.login .form {
   width: 100%;
 }
-
-.input {
- padding: 0px 10;
-  .MuiInputBase-input  {
-  font-family: "Roboto", sans-serif;
-  font-weight: 300;
-  font-size: 16px;
-  padding: 10px;
-  border: none;
-   border-radius: 10px;
-    background-color: #1979b8;
-    color: white;
-}
-.MuiFormControl-root {
-    width: 100%;
-  }
 }
 
-.register-button-container {
-  display: flex;
-  justify-content: space-around;
-  align-items: center;
-  margin-top: 20px;
-  &button {
-    width: 40%;
-  }
-}
+
 
 
 

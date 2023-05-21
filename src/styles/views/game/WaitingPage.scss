@@ -3,23 +3,14 @@
 /* The '&' is a shorthand for the containing element
   for more information visit https://sass-lang.com/guide
  */
-.lobby {
+.waiting-page {
     &.layout {
         padding: 1em;
         display: flex;
         flex-direction: row;
         align-items: center;
         border-radius: $borderRadius;
-        column-gap: 1em;
-    }
-    &.container {
-        border-radius: $borderRadius;
-        display: flex;
-        flex-direction: column;
-        align-items: center;
-        margin: 50px auto 0;
-        width: 30%;
-        padding: 30px;
+        column-gap: 0.5em;
     }
     &.container_left {
         background: transparentize(rgb(65, 64, 64), 0.7);
@@ -33,13 +24,14 @@
         row-gap: 2em;
     }
     &.container_right {
-        background: transparentize(rgb(65, 64, 64), 0.7);
+        background: transparentize(rgb(65, 64, 64), 0.4);
         padding: 2em;
         border-radius: $borderRadius;
         display: flex;
         flex-direction: column;
         align-items: left;
         box-shadow: $dropShadow;
+        border: 2px solid #000;
     }
     &.user-list {
         padding-left: 0;
@@ -50,7 +42,7 @@
         align-items: center;
         justify-content: center;
     }
-    &.category-select {
+    &.select {
         display: flex;
         align-items: baseline;
         justify-content: space-between;
@@ -58,7 +50,6 @@
     &.label {
         font-size: 20px;
         color: $textColor;
-               
     }
     &.category {
         margin-left: 20px;
@@ -70,24 +61,17 @@
             color: $textColor;
         }
     }
-    &.player {
-        margin-left: 30px;
-        width: 60%;
-        border-radius: 10px;
-        background-color: #1979b8;
-		color: $textColor;
-    }
-    &.round {
-        margin-left: 30px;
-        width: 60%;
+    &.text {
+        margin-left: 10px;
+        width: 50%;
         border-radius: $borderRadius;
         background-color: #1979b8;
 		color: $textColor;
         .MuiInputBase-input {
 			background-color: #1979b8;
             color: $textColor;
-            height: 30px;
-            font-size: 14px;
+            height: 20px;
+            font-size: 18px;
             font-weight: 400;
             border: none;
             border-radius: 0.5em;
@@ -113,66 +97,27 @@
         color: $textColor;
         margin: 0.5em 0;
     }
-}
 
-.user {
-    &.container {
-        background: lighten($background, 5);
-        margin: 0.2em 0;
-        width: 25em;
-        padding: 10px;
-        flex-direction: column;
-        border-radius: $borderRadius;
-        display: flex;
-        align-items: left;
+    .table-style {
+      width: 100%;
+      border-collapse: collapse;
+      border: 1px solid #000;
     }
-    &.user-info {
-        font-weight: 600;
-        margin-left: 5px;
-        margin-right: auto;
-        margin-top: 2px;
-        color: $accent;
+
+    .table-style thead {
+      background-color: rgba(23,73, 159, 0.5);
+      color: white;
     }
-}
 
-.player-name {
-    margin: auto;
-    margin-top: 20px;
-    background-color: #1979b8;
-    border-radius: 10px;
-    text-align: center;
-}
-
-.exit-button {
-    position: absolute;
-    background-color: #1979b8 !important;
-    top: 30px;
-    left: 30px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    background-color: transparent;
-    border: none;
-    cursor: pointer;
-    font-size: 2rem;
-    color: white;
-    text-transform: uppercase;
-    font-weight: bold;
-    padding: 1rem;
-    transition: all 0.3s;
-
-    &:hover {
-        background-color: #ccc;
+    .table-style tbody tr {
+      background-color: rgba(128, 128, 128, 0.5);
     }
-}
-.leader-board {
-    padding: 20px 40px;
-    & p{
-        text-align: center;
-        font-size: 28px;
-    }
-}
 
-.round-down-count {
-    border-radius: 40px !important;
+    .table-style th,
+    .table-style td {
+      padding: 8px;
+      border: 1px solid #000;
+      text-align: center;
+    }
+
 }

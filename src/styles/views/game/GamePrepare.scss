@@ -7,7 +7,7 @@
     &.layout {
         padding: 1em;
         display: flex;
-        flex-direction: row;
+        flex-direction: column;
         align-items: center;
         border-radius: $borderRadius;
         column-gap: 1em;
@@ -22,14 +22,15 @@
         background: rgba(25, 121, 184, 0.5);
         padding: 2em;
         border-radius: $borderRadius;
+        background: #001F3F;
         display: flex;
         flex-direction: column;
         align-items: center;
-        box-shadow: $dropShadow;
         row-gap: 2em;
         font-weight: bold;
     }
     &.container_right {
+        background: rgba(25, 121, 184, 0);
         padding: 2em;
         border-radius: $borderRadius;
         display: flex;
@@ -37,6 +38,7 @@
         align-items: left;
     }
     &.leaderboard-container {
+        background: rgba(25, 121, 184, 0);
         padding: 2em;
         border-radius: $borderRadius;
         display: flex;
@@ -109,6 +111,29 @@
             border-radius: 0.5em;
         }
     }
+    &.exit-button {
+        position: absolute;
+        background-color: #1979b8 !important;
+        top: 30px;
+        left: 30px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        background-color: transparent;
+        border: none;
+        cursor: pointer;
+        font-size: 2rem;
+        color: white;
+        text-transform: uppercase;
+        font-weight: bold;
+        padding: 1rem;
+        transition: all 0.3s;
+
+        &:hover {
+            background-color: #ccc;
+        }
+    }
+
     &.button-container {
         display: flex;
         flex-direction: row;

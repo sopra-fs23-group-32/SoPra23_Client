@@ -8,15 +8,15 @@ import Login from "components/views/Login";
 import Register from "components/views/Register";
 import Lobby from "components/views/home/Lobby";
 import JoinGame from "components/views/game/JoinGame";
-import RoundCountdown from "components/views/game/RoundCountdown";
 
 import SingleGamePreparePage from "components/views/game/SinglePlayerGame/SingleGamePreparePage";
 import SingleGamePage from "components/views/game/SinglePlayerGame/SingleGamePage";
+import SingleGameFinishPage from "components/views/game/SinglePlayerGame/GameFinishPage";
 
 import CreatedGamePage from "components/views/game/MultiPlayerGame/CreatedGamePage";
 import MutliPlayerGamePreparePage from "components/views/game/MultiPlayerGame/MultiPlayerGamePreparePage";
 import MultiPlayerGamePage from "components/views/game/MultiPlayerGame/MultiPlayerGamePage";
-import MultiPlayerGameFinishPage from "components/views/game/MultiPlayerGame/GameFinishPage";
+import MultiPlayerGameFinishPage from "components/views/game/MultiPlayerGame/MultiPlayerGameFinishPage";
 
 /**
  * Main router of your application.
@@ -57,12 +57,15 @@ const AppRouter = () => {
         <Route exact path={`/SingleGamePage/:gameId`}>
           <SingleGamePage />
         </Route>
+        <Route exact path={`/SingleGamePage/:gameId/GameFinishPage`}>
+          <SingleGameFinishPage />
+        </Route>
 
         <Route path="/StartGamePage">
           <CreatedGamePage />
         </Route>
         <Route path="/JoinGame">
-          <JoinGame base="/JoinGame" />
+          <JoinGame />
         </Route>
         <Route exact path={`/MultiGamePage/:gameId/RoundCountPage`}>
           <MutliPlayerGamePreparePage />
@@ -70,11 +73,8 @@ const AppRouter = () => {
         <Route exact path={`/MultiGamePage/:gameId`}>
           <MultiPlayerGamePage />
         </Route>
-
-        <Route path="/RoundCountdown">
-          <HomeGuard>
-            <HomeRouter base="/RoundCountdown" />
-          </HomeGuard>
+        <Route exact path={`/MultiGamePage/:gameId/GameFinish`}>
+          <MultiPlayerGameFinishPage />
         </Route>
 
       </Switch>
