@@ -193,7 +193,7 @@ const CreatedGamePage = () => {
 
         <div className="waiting-page button-container">
           <Button onClick={() => startGameMultiplayer(gameId)}
-            disabled={!isServer}>
+            disabled={!isServer||playerNumber<2}>
             Start Game
           </Button>
           <Button onClick={() => backToLobby()}>
@@ -207,7 +207,7 @@ const CreatedGamePage = () => {
 
       <InformationContainer className="waiting-page container_right">
         <p style={{ fontSize: "30px", marginBottom: "20px" }}>
-          {playerNumber} players in the lobby :
+          {playerNumber} player(s) are in the lobby :
         </p>
         <div>{playerList}</div>
       </InformationContainer>
