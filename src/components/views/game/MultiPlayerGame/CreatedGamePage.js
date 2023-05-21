@@ -120,14 +120,24 @@ const CreatedGamePage = () => {
 
   const Player = ({players}) => (
     <div>
-    {players.map((player, index) => {
-      return (
-        <tr key={player.userId}>
-          <td>{player.userId}</td>
-          <td>{player.username}</td>
-        </tr>
-      );
-    })}
+      <table className="WaitingPage table-style">
+        <thead>
+          <tr>
+            <th>UserID</th>
+            <th>Username</th>
+          </tr>
+        </thead>
+        <tbody>
+            {players.map((player, index) => {
+              return (
+                <tr key={player.userId}>
+                  <td>{player.userId}</td>
+                  <td>{player.username}</td>
+                </tr>
+              );
+            })}
+        </tbody>
+      </table>
     </div>
   )
   Player.propTypes = {

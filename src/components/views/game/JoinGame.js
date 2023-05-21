@@ -63,11 +63,11 @@ const JoinGame = () => {
             <Table className="score-table" sx={{ minWidth: 650 }}>
               <TableHead>
                 <TableRow>
-                  <TableCell></TableCell>
-                  <TableCell align="center">Category</TableCell>
-                  <TableCell align="center">Rounds</TableCell>
-                  <TableCell align="center">Player number</TableCell>
-                  <TableCell align="center">Join</TableCell>
+                  <TableCell align="center" style={{ fontSize: '18px', color: 'white' }}>Game ID</TableCell>
+                  <TableCell align="center" style={{ fontSize: '18px', color: 'white' }}>Category</TableCell>
+                  <TableCell align="center" style={{ fontSize: '18px', color: 'white' }}>Rounds</TableCell>
+                  <TableCell align="center" style={{ fontSize: '18px', color: 'white' }}>Player number</TableCell>
+                  <TableCell align="center" style={{ fontSize: '18px', color: 'white' }}>Join</TableCell>
                 </TableRow>
               </TableHead>
               <TableBody>
@@ -76,19 +76,19 @@ const JoinGame = () => {
                     <TableRow key={index}
                       sx={{ "&:last-child td, &:last-child th": {border: 0,},}}
                     >
-                      <TableCell component="th" scope="row">
-                        {openingGame.gameId}.
+                      <TableCell align="center" style={{ fontSize: '18px', color: 'white' }}>
+                        {openingGame.gameId}
                       </TableCell>
-                      <TableCell align="center">
+                      <TableCell align="center" style={{ fontSize: '18px', color: 'white' }}>
                         {openingGame.category}
                       </TableCell>
-                      <TableCell align="center">
+                      <TableCell align="center" style={{ fontSize: '18px', color: 'white' }}>
                         {openingGame.totalRounds}
                       </TableCell>
-                      <TableCell align="center">
+                      <TableCell align="center" style={{ fontSize: '18px', color: 'white' }}>
                         {openingGame.playerNum}
                       </TableCell>
-                      <TableCell align="center">
+                      <TableCell align="center" style={{ fontSize: '18px', color: 'white' }}>
                         <p onClick={() => joinServer(openingGame)}>
                           Join
                         </p>
