@@ -153,7 +153,7 @@ const MultiPlayerGameFinishPage = () => {
       </Table>
 
       <h2 style={{ font: "40px" }}>
-        You got {localStorage.getItem("score")} Pts
+        You got {localStorage.getItem("myScore")} Pts
       </h2>
       
       <div className="final button-container">

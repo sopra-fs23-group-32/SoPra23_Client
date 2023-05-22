@@ -86,12 +86,10 @@ const CreatedGamePage = () => {
 
   useEffect(() => {
     if (isServer === "false") {
-      const interval1 = setInterval(fetchGameStatus, 2000);
-      return () => {
-        clearInterval(interval1); // Clean up the interval on component unmount
-      };
+      const interval1 = setInterval(fetchGameStatus, 1000);
+      return () => clearInterval(interval1);
     }
-  }, [isServer === "false"]);
+  }, [isServer]);
 
   /*useEffect(() => {
     const Socket = new SockJS(getDomain() + "/socket");
@@ -253,12 +251,11 @@ const CreatedGamePage = () => {
           {playerNumber<2 && (
           <div style={{textAlign: "center"}}>
           You can't start a multiplayer game by yourself!
-            
           </div>
-)}
+          )}
+        </div>
         <div className="waiting-page button-container">
-          <Button
-            onClick={() => startGameMultiplayer(gameId)}
+          <Button onClick={() => startGameMultiplayer(gameId)}
             disabled={isServer === "false"}
           >
             Start Game

@@ -81,8 +81,6 @@ const MultiModeRoundCountdown = () => {
   }
 
   useEffect(() => {
-    // fetch question and save in localstorage
-    if (isServer==="true") {generateQuestion();}
     async function fetchRanking() {
       try {
         const response = await api.get(`/games/${gameId}/ranking`);
