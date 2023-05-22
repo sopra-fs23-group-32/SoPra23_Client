@@ -108,23 +108,15 @@ const MultiModeRoundCountdown = () => {
     return () => clearInterval(intervalId);
   }, []);
 
-  
-  useEffect(() => {
-    if (secondsLeft === 6) {
-      
-      if(isServer === "false"){
-        fetchQuestion();
-        
-    }
-  }}, [secondsLeft]);
-
   // go to next page when time out
   useEffect(() => {
     if (secondsLeft === 0) {
       clearInterval(secondsLeft);
       clearInterval(intervalId);
       setTimeout(() => {
-        
+        if(isServer === "false"){
+          fetchQuestion();
+        }
         history.push(`/MultiGamePage/${gameId}`);
       }, 500);
     }
