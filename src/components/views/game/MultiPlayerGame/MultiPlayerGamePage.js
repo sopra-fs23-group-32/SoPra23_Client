@@ -60,15 +60,31 @@ const MultiPlayerGamePage = () => {
   // keep fetching game status until not waiting
   useEffect(() => {
     if (isWaiting) {
-      const interval1 = setInterval(fetchGameStatus, 1000);
-      return () => clearInterval(interval1);
+      const interval = setInterval(fetchGameStatus, 1000);
+      return () => clearInterval(interval);
     }
   }, [isWaiting]);
+
+  useEffect(() => {
+    if (!isAnswerSubmitted) {
+      const interval = setInterval(() => {
+        setRoundTime((prevTimeLeft) => {
+          const newTimeLeft = prevTimeLeft - 1;
+          if (newTimeLeft <= 0) {
+            clearInterval(interval);
+            submitAnswer("no answer", totalTime);
+          }
+          return newTimeLeft;
+        });
+      }, 1000);
+      return () => clearInterval(interval);
+    }
+  }, [isAnswerSubmitted]);
 
   // when all answered(not waiting) count 3s and go to next page
   useEffect(() => {
     if(!isWaiting){
-      const interval2 = setInterval(() => {
+      const interval = setInterval(() => {
         setRoundTime2((prevTimeLeft) => {
           const newTimeLeft = prevTimeLeft - 1;
           if (newTimeLeft <= 0) {
@@ -77,10 +93,11 @@ const MultiPlayerGamePage = () => {
           return newTimeLeft;
         });
       }, 1000);
-      return () => clearInterval(interval2);
+      return () => clearInterval(interval);
     }
   }, [isWaiting]);
 
+  
   /*
   // handle msg from the web socket
   useEffect(() => {
@@ -130,24 +147,6 @@ const MultiPlayerGamePage = () => {
       console.log(handleError(error));
     }
   };
-
-  // submit "no answer" when times up
-  const intervalIdRef = useRef(null);
-  useEffect(() => {
-    intervalIdRef.current = setInterval(() => {
-      setRoundTime((prevTimeLeft) => {
-        const newTimeLeft = prevTimeLeft - 1;
-        if (newTimeLeft <= 0) {
-          clearInterval(intervalIdRef.current);
-          if (!isAnswerSubmitted) {
-            submitAnswer("no answer", totalTime);
-          }
-        }
-        return newTimeLeft;
-      });
-    }, 1000);
-    return () => {clearInterval(intervalIdRef.current);};
-  }, [isAnswerSubmitted]);
 
   const handleSubmit = async (e) => {
     e.preventDefault();

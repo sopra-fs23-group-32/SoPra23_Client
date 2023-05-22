@@ -196,7 +196,7 @@ const CreatedGamePage = () => {
     </div>
   );
   Player.propTypes = {
-    players: PropTypes.object,
+    players: PropTypes.arrayOf(PropTypes.object),
   };
   let playerList = <Spinner />;
 

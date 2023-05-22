@@ -26,7 +26,7 @@ const UrgeWithPleasureComponent = ({ duration }) => (
 
 const MultiModeRoundCountdown = () => {
   // use react-router-dom's hook to access the history
-  const duration = 15;
+  const duration = 12;
   const [secondsLeft, setSecondsLeft] = useState(duration);
   const [intervalId, setIntervalId] = useState(null);
 
