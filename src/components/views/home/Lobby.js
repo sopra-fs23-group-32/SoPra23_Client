@@ -130,7 +130,7 @@ const Lobby = () => {
               id="demo-simple-select"
               value={selectedCategory}
               label="category"
-              style={{ height: '45px', marginBottom: '16px', marginLeft: '5px' }}
+              style={{ height: '45px', marginLeft: '5px',width:"150px"}}
               onChange={(e) => setSelectedCategory(e.target.value)}
               inputProps={{
                 MenuProps: {
@@ -152,15 +152,37 @@ const Lobby = () => {
           <div className="lobby category-select">
             <InputLabel className="lobby label" style={{paddingLeft:"1px"}}>Rounds:</InputLabel>
             <TextField
+              style={{width:"150px"}}
               className="lobby round"
               inputProps={{
                 style: { textAlign: "center", height: "10px"},
               }}
-              placeholder="enter number of rounds..."
+              placeholder="enter number..."
               value={gameRounds}
               onChange={(e) => setGameRounds(e.target.value)}
             />
+            </div>
+          <div className="lobby category-select">
+        <InputLabel className="lobby label" style={{paddingLeft:"1px"}}>Countdown Time:</InputLabel>
+        <TextField className="lobby round"
+          style={{width:"150px"}}
+          inputProps={{
+            style: { textAlign: "center", height: "10px"},
+          }}
+          placeholder="enter number..."
+          value={countdownTime} 
+          onChange={(e) => setCountdownTime(e.target.value)}
+        />
           </div>
+          {isMultiplayer && (
+          <div style={{textAlign: "center"}}>
+          Careful: <br/>
+          After creating the multiplayer lobby you won't <br />
+          be able to change the 
+          game settings anymore! 
+            
+          </div>
+)}
         </InformationContainer>
       </div>
 

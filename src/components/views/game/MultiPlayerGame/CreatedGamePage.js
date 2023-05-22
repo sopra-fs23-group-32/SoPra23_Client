@@ -158,11 +158,13 @@ const CreatedGamePage = () => {
           Game Settings
         </div>
         <div className="waiting-page select">
-          <InputLabel className="waiting-page label">Category</InputLabel>
+          
+          <InputLabel className="waiting-page label">Category:</InputLabel>
           <Select value={category} disabled
+          style={{ height: '45px', marginLeft: '5px', width:"200px" }}
             inputProps={{
               MenuProps: {
-                sx: {borderRadius: "10px",},
+                sx: {borderRadius: "10px", },
                 MenuListProps: {sx: { backgroundColor: "#1979b8",color: "white",},},
               },
             }}
@@ -174,28 +176,44 @@ const CreatedGamePage = () => {
             <MenuItem value={"SOUTH_AMERICA"}>South America</MenuItem>
             <MenuItem value={"AFRICA"}>Africa</MenuItem>
             <MenuItem value={"OCEANIA"}>Oceania</MenuItem>
+            <MenuItem value={"WORLD"}>World</MenuItem>
           </Select>
         </div>
         <div className="waiting-page select">
           <InputLabel className="waiting-page label">Rounds:</InputLabel>
           <TextField className="waiting-page text"
-            inputProps={{ style: { textAlign: "center" },}}
+            inputProps={{
+              style: { textAlign: "center", height: "10px"}
+            }}
             value={totalRounds} disabled 
           />
         </div>
         <div className="waiting-page select">
         <InputLabel className="waiting-page label">Countdown Time:</InputLabel>
         <TextField className="waiting-page text"
-          inputProps={{ style: { textAlign: "center" },}}
+          inputProps={{
+            style: { textAlign: "center", height: "10px"},
+          }}
           value={totalTime} disabled 
         />
         </div>
+        <div style={{flexDirection:"column"}}>
+          {playerNumber<2 && (
+          <div style={{textAlign: "center"}}>
+          You can't start a multiplayer game by yourself!
+            
+          </div>
+)}
 
-        <div className="waiting-page button-container">
+
+        <div className="waiting-page button-container" style={{marginTop: "10px"}}>
           <Button onClick={() => startGameMultiplayer(gameId)}
             disabled={!isServer||playerNumber<2}>
             Start Game
           </Button>
+        </div>
+        </div>
+        <div className="waiting-page button-container">
           <Button onClick={() => backToLobby()}>
             Back to Lobby
           </Button>
@@ -207,7 +225,7 @@ const CreatedGamePage = () => {
 
       <InformationContainer className="waiting-page container_right">
         <p style={{ fontSize: "30px", marginBottom: "20px" }}>
-          {playerNumber} player(s) are in the lobby :
+            {playerNumber} {playerNumber === 1 ? "player is" : "players are"} in the lobby:
         </p>
         <div>{playerList}</div>
       </InformationContainer>
