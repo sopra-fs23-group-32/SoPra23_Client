@@ -158,6 +158,8 @@ const Lobby = () => {
               className="lobby round"
               inputProps={{
                 style: { textAlign: "center", height: "10px"},
+                min:1,
+                type:"number",
               }}
               placeholder="enter number..."
               value={gameRounds}
@@ -170,6 +172,8 @@ const Lobby = () => {
           style={{width:"150px"}}
           inputProps={{
             style: { textAlign: "center", height: "10px"},
+            min:15,
+            type:"number",
           }}
           placeholder="enter number..."
           value={countdownTime} 
