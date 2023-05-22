@@ -33,8 +33,6 @@ const CreatedGamePage = () => {
 
   const fetchPlayer = async () => {
     try{
-      const myValue = localStorage.getItem("isServer");
-      console.log(isServer);
       const response = await api.get(`/games/${localStorage.getItem("gameId")}/players`);
       console.log("Players", response.data);
       setGamePlayers(response.data);
@@ -49,15 +47,23 @@ const CreatedGamePage = () => {
 
   const fetchGameStatus = async () =>{
     try{
-      
-      const response = await api.get(`/games/${localStorage.getItem("gameId")}/status`);
+      const response = await api.get(`/games/${gameId}/status`);
       console.log("GameStatus", response.data);
-      if(response.data==="ANSWERING"){
+      if(response.data==="WAITING" || response.data==="ANSWERING"){
         localStorage.setItem("myScore", 0);
-              localStorage.setItem("roundNumber", 1);
-              history.push(`/MultiGamePage/${gameId}/RoundCountPage/`);
+        localStorage.setItem("roundNumber", 1);
+        history.push(`/MultiGamePage/${gameId}/RoundCountPage/`);
       }
-      
+      else if (response.data==="DELETED") {
+        localStorage.removeItem("gameId");
+        localStorage.removeItem("category");
+        localStorage.removeItem("totalRounds");
+        localStorage.removeItem("countdownTime");
+        localStorage.removeItem("playerNum");
+        localStorage.removeItem("isServer");
+        toast.warning("The host player has deleted this game.")
+        history.push(`/home`);
+      }
     }
     catch (error) {
       toast.error(`Failed to fetch player in game(ID ${gameId})\n //change this
@@ -68,7 +74,6 @@ const CreatedGamePage = () => {
 
   // automatically fetch player list
   useEffect(() => {
-
     toast.info(`Successfully add player '${username}'(ID ${userId}) to game(ID ${gameId})!`)
     const interval = setInterval(fetchPlayer, 3000);
     return () => {
@@ -78,7 +83,7 @@ const CreatedGamePage = () => {
   
   useEffect(() => {
     if(isServer==="false"){
-    const interval1 = setInterval(fetchGameStatus, 3000);
+    const interval1 = setInterval(fetchGameStatus, 2000);
     return () => {
       clearInterval(interval1); // Clean up the interval on component unmount
     };
