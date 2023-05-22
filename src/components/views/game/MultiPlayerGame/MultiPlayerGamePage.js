@@ -9,14 +9,16 @@ import Stomp from "stompjs";
 import { getDomain } from "helpers/getDomain";
 import WebSocketType from "models/WebSocketType";
 
-import { ToastContainer, toast } from 'react-toastify';
-import 'react-toastify/dist/ReactToastify.css';
+import { ToastContainer, toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 import "styles/views/game/GamePage.scss";
 
 const MultiPlayerGamePage = () => {
   const [isAnswerSubmitted, setIsAnswerSubmitted] = useState(false);
   const [score, setScore] = useState(localStorage.getItem("myScore"));
-  const [roundTime, setRoundTime] = useState(localStorage.getItem("countdownTime"));
+  const [roundTime, setRoundTime] = useState(
+    localStorage.getItem("countdownTime")
+  );
   const [selectedCityName, setSelectedCityName] = useState(null);
   // control the flow
   const [isWaiting, setIsWaiting] = useState(true);
@@ -37,15 +39,17 @@ const MultiPlayerGamePage = () => {
     localStorage.removeItem("PictureUrl");
     localStorage.removeItem("CorrectOption");
     // go to next page
-    if (localStorage.getItem("roundNumber") === localStorage.getItem("totalRounds")) {
+    if (
+      localStorage.getItem("roundNumber") ===
+      localStorage.getItem("totalRounds")
+    ) {
       history.push(`/MultiGamePage/${gameId}/GameFinish`);
-    }
-    else {
+    } else {
       localStorage.setItem("roundNumber", Number(roundNumber) + 1);
       history.push(`/MultiGamePage/${gameId}/RoundCountPage`);
     }
   };
-
+  /*
   // handle msg from the web socket
   useEffect(() => {
     let subscription;
@@ -79,23 +83,60 @@ const MultiPlayerGamePage = () => {
       (err) => console.log(err)
     );
     return () => {subscription.unsubscribe();};
-  }, []);
+  }, []); */
 
-  const submitAnswer = async(cityName, time) => {
+  const submitAnswer = async (cityName, time) => {
     setIsAnswerSubmitted(true);
     try {
       const response = await api.post(
         `/games/${gameId}/players/${playerId}/answers`,
-        {answer: cityName, timeTaken: time,}
+        { answer: cityName, timeTaken: time }
       );
       const score_new = parseInt(score) + response.data;
       setScore(score_new);
       localStorage.setItem("myScore", score_new);
     } catch (error) {
-      toast.error(`Failed in submitting answer: \n${error.respond.data.message}`);
+      toast.error(
+        `Failed in submitting answer: \n${error.respond.data.message}`
+      );
       console.log(handleError(error));
     }
-  }
+  };
+
+  const fetchGameStatus = async () => {
+    try {
+      const response = await api.get(
+        `/games/${localStorage.getItem("gameId")}/status`
+      );
+      console.log("GameStatus", response.data);
+      if(response.data=== "WAITING" && isServer==="true"){
+        setIsWaiting(false);
+        endRound();
+      }
+      if(response.data=== "WAITING" && isServer==="false"){
+        endRound();
+      }
+      if(response.data=== "ENDED" && isServer==="false"){
+        endRound();
+      }
+      if(response.data=== "ENDED" && isServer==="true"){
+        endRound();
+      }
+
+
+
+    } catch (error) {
+      toast.error(`Failed to fetch player in game(ID ${gameId})\n //change this
+        ${error.response.data.message}`);
+      console.log(handleError(error));
+    }
+  };
+  useEffect(() => {
+    const interval1 = setInterval(fetchGameStatus, 3000);
+    return () => {
+      clearInterval(interval1); // Clean up the interval on component unmount
+    };
+  }, []);
 
   // submit "no answer" when times up
   useEffect(() => {
@@ -104,7 +145,7 @@ const MultiPlayerGamePage = () => {
         const newTimeLeft = prevTimeLeft - 1;
         if (newTimeLeft <= 0) {
           clearInterval(intervalId);
-          if(!isAnswerSubmitted) {
+          if (!isAnswerSubmitted) {
             submitAnswer("no answer", totalTime);
           }
         }
@@ -118,26 +159,25 @@ const MultiPlayerGamePage = () => {
     e.preventDefault();
     if (!isAnswerSubmitted) {
       submitAnswer(selectedCityName, totalTime - roundTime);
-    }
-    else {
+    } else {
       setIsContinue(true);
-      if(isWaiting) {
+      if (isWaiting) {
         // press but not ok yet
-        toast.info(`Waiting for other players to answer...`)
-      }
-      else {
+        toast.info(`Waiting for other players to answer...`);
+      } else {
         // you are the last one
-        endRound(); 
+        endRound();
       }
     }
   };
 
   const handleCityNameButtonClick = (cityName) => {
     setSelectedCityName(cityName);
-  }; 
+  };
 
   const cityNameButtons = cityNames.map((cityName) => (
-    <button key={cityName}
+    <button
+      key={cityName}
       className={`city-name-button ${
         isAnswerSubmitted
           ? cityName === correctOption
@@ -174,13 +214,13 @@ const MultiPlayerGamePage = () => {
   return (
     <div className="guess-the-city">
       <div className="guess-the-city header">
-        <Button className="exit-button"
-        onClick={handleExitButtonClick}
-        disabled={isServer===true}
+        <Button
+          className="exit-button"
+          onClick={handleExitButtonClick}
+          disabled={isServer === "true"}
         >
           Exit Game
         </Button>
-        
       </div>
 
       <div className="guess-the-city main">
@@ -188,7 +228,11 @@ const MultiPlayerGamePage = () => {
           <Grid container spacing={4}>
             <Grid item md={6}>
               <div>
-                <img className="city-image" alt="GuessImg" src={localStorage.getItem("PictureUrl")}/>
+                <img
+                  className="city-image"
+                  alt="GuessImg"
+                  src={localStorage.getItem("PictureUrl")}
+                />
               </div>
               <div style={{ textAlign: "center" }}>
                 <p>Your Score: {score}</p>
@@ -217,7 +261,7 @@ const MultiPlayerGamePage = () => {
           <span className="round-number">Round {roundNumber}</span>
           <span className="score">Score: {score}</span>
           <span className="score">
-            {isWaiting&&isAnswerSubmitted ? "Waiting for other players" : ""}
+            {isWaiting && isAnswerSubmitted ? "Waiting for other players" : ""}
           </span>
         </div>
       </div>
