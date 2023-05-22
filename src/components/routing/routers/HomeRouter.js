@@ -1,10 +1,10 @@
 import {Redirect, Route} from "react-router-dom";
 import PropTypes from 'prop-types';
 import Home from "components/views/home/Home";
-import Profile from "components/views/home/Profile"
-import About from "components/views/home/About"
-import ScoreBoard from "components/views/home/ScoreBoard"
-import HistoryPage from '../../views/home/History';
+import Profile from "components/views/userinfo/Profile"
+import About from "components/views/game/About"
+import ScoreBoard from "components/views/userinfo/ScoreBoard"
+import HistoryPage from '../../views/userinfo/History';
 
 const HomeRouter = props => {
   /**

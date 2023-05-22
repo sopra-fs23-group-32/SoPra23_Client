@@ -2,40 +2,34 @@ import { useHistory } from "react-router-dom";
 import React, { useState, useEffect } from "react";
 import { Button } from "components/ui/Button";
 import { api, handleError } from "helpers/api";
+import InformationContainer from "components/ui/BaseContainer";
 import { Table, TableBody, TableCell, TableHead, TableRow,} from "@mui/material";
-
-import SockJS from "sockjs-client";
-import Stomp from "stompjs";
-import { getDomain } from "helpers/getDomain";
-import WebSocketType from "models/WebSocketType";
-
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
+
 import "styles/views/game/FinalPage.scss";
 
 const MultiPlayerGameFinishPage = () => {
+<<<<<<< HEAD
+=======
   const [playerRanking, setPlayerRanking] = useState([]);
   const [isEnded, setIsEnded] = useState(false);
   const playerId = localStorage.getItem("userId");
   const gameId = localStorage.getItem("gameId");
   const isServer = localStorage.getItem("isServer");
+>>>>>>> main
   const history = useHistory();
+  const [playerRanking, setPlayerRanking] = useState([]);
 
-  const saveGameHistory = async () => {
-    const response = await api.post(`/users/${playerId}/gameHistories/${gameId}`);
-    console.log("Game History: ", response.data);
-    toast.info(`Player's game history saved.`);
-    await new Promise((resolve) => setTimeout(resolve, 500));
-  }
-
-  async function fetchRanking() {
-    try{
-      // get the final ranking
-      const responseRanking = await api.get(`/games/${gameId}/ranking`);
-      setPlayerRanking(responseRanking.data);
-      console.log("Ranking: ", responseRanking.data);
-      await new Promise((resolve) => setTimeout(resolve, 1000));
+  const endGame = async () => {
+    if (localStorage.getItem("isServer") === 1){
+      // games/${localStorage.getItem("gameId")}
+      await api.delete(`games/${localStorage.getItem("gameId")}`);
     }
+<<<<<<< HEAD
+    history.push("/home");
+  };
+=======
     catch (error) {
       toast.error("Something went wrong while fetching the ranking!");
       console.log(handleError(error));
@@ -65,25 +59,54 @@ const MultiPlayerGameFinishPage = () => {
       clearInterval(interval1); // Clean up the interval on component unmount
     };
   }, [isEnded===false && isServer==="false"]);
+>>>>>>> main
 
   useEffect(() => {
-    async function saveGameInfo() {
+    // effect callbacks are synchronous to prevent race conditions. So we put the async function inside:
+    const saveGameHistory = async () => {
+      // ${localStorage.getItem("gameId")}
+      const response = await api.post(`/gameInfo/${localStorage.getItem("gameId")}`);
+      console.log(response.data);
+    };
+
+    const fetchData = async () => {
       try {
-        const responseGameInfo = await api.post(`/gameInfo/${gameId}`);
-        console.log("Game Info: ", responseGameInfo.data);
-        toast.info(`Game's information saved.`);
-        await new Promise((resolve) => setTimeout(resolve, 500));
+        if (localStorage.getItem("isServer") === 1) {
+          saveGameHistory();
+        }
+        // /users/${localStorage.getItem("userId")}/gameHistories/${localStorage.getItem("gameId")}
+        const responseGameInfo = await api.post(
+          `/users/${localStorage.getItem("userId")}/gameHistories/${localStorage.getItem("gameId")}`
+        );
+        console.log("gamehistory", responseGameInfo.data);
+        // get the final ranking
+        // /games/${localStorage.getItem("gameId")}/ranking
+        const responseRanking = await api.get(
+          `/games/${localStorage.getItem("gameId")}/ranking`
+        );
+        await new Promise((resolve) => setTimeout(resolve, 1000));
+        // Get the returned users and update the state.
+        setPlayerRanking(responseRanking.data);
+        console.log("player", responseRanking.data);
       }
       catch (error) {
-        toast.error("Something went wrong while fetching the ranking!");
+//        console.error(`An error occurs while saving the game history:\n${handleError(error)}`);
+//        console.error("Details:", error);
+//        alert("Something went wrong while saving the game history!");
+        toast.error("Something went wrong while saving the game history!");
         console.log(handleError(error));
       }
+<<<<<<< HEAD
+    };
+    fetchData();
+=======
     }
     if (isServer==="true") {
       saveGameInfo();
       saveGameHistory();
     }
     fetchRanking();
+>>>>>>> main
   }, []);
 
   const groupedPlayers = playerRanking.reduce((groups, player) => {
@@ -93,6 +116,8 @@ const MultiPlayerGameFinishPage = () => {
     return groups;
   }, {});
 
+<<<<<<< HEAD
+=======
   const endGame = async() => {
     if (isServer==="true"){
       await api.delete(`games/${gameId}`);
@@ -110,12 +135,14 @@ const MultiPlayerGameFinishPage = () => {
     localStorage.removeItem("CorrectOption");
     history.push("/home");
   };
+>>>>>>> main
 
   return (
     <div className="finalpage container">
       <h2 style={{ font: "40px" }}>
         -- Game Ended --
       </h2>
+
       <div className="podium">
         <div className="third-place">
           <div>3rd</div>
