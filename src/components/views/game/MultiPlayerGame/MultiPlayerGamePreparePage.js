@@ -81,8 +81,6 @@ const MultiModeRoundCountdown = () => {
   }
 
   useEffect(() => {
-    // fetch question and save in localstorage
-    if (isServer==="true") {generateQuestion();}
     async function fetchRanking() {
       try {
         const response = await api.get(`/games/${gameId}/ranking`);
@@ -98,7 +96,12 @@ const MultiModeRoundCountdown = () => {
         console.log(handleError(error));
       }
     }
-    
+    // remove all local storage of previous question
+    localStorage.removeItem("citynames");
+    localStorage.removeItem("PictureUrl");
+    localStorage.removeItem("CorrectOption");
+    // fetch question and save in localstorage
+    if (isServer==="true") {generateQuestion();}
     // get all players' ranking
     fetchRanking();
     // set a timer
@@ -186,7 +189,7 @@ const MultiModeRoundCountdown = () => {
     <div className="round countdown container">
       <div >
         <Button className="round countdown exit-button"
-        onClick={handleExitButtonClick}
+          onClick={handleExitButtonClick}
         
         >
           Exit Game
