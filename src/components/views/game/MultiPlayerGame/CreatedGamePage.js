@@ -193,6 +193,7 @@ const CreatedGamePage = () => {
       </table>
     </div>
   );
+
   Player.propTypes = {
     players: PropTypes.arrayOf(PropTypes.object),
   };
@@ -260,6 +261,7 @@ const CreatedGamePage = () => {
           >
             Start Game
           </Button>
+          </div>
           <Button onClick={() => backToLobby()}>Back to Lobby</Button>
           <Button onClick={() => backToHome()}>Back to Home Page</Button>
         </div>
@@ -272,7 +274,9 @@ const CreatedGamePage = () => {
         <div>{playerList}</div>
       </InformationContainer>
     </div>
+  
   );
 };
+
 
 export default CreatedGamePage;
