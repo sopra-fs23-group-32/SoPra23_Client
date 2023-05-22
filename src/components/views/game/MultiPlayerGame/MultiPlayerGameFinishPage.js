@@ -15,6 +15,7 @@ import "styles/views/game/FinalPage.scss";
 
 const MultiPlayerGameFinishPage = () => {
   const [playerRanking, setPlayerRanking] = useState([]);
+  const [isEnded, setIsEnded] = useState(false);
   const playerId = localStorage.getItem("userId");
   const gameId = localStorage.getItem("gameId");
   const isServer = localStorage.getItem("isServer");
@@ -41,13 +42,29 @@ const MultiPlayerGameFinishPage = () => {
     }
   }
   
-  useEffect(() => {
-
-    if(isServer === "false"){
-      //saveGameHistory();
+  const fetchGameStatus = async () => {
+    try {
+      const response = await api.get(
+        `/games/${localStorage.getItem("gameId")}/status`
+      );
+      console.log("GameStatus: ", response.data);
+      if(response.data=== "ENDED" && isServer==="false"){
+        saveGameHistory();
+        setIsEnded(true);
+      }
+    } catch (error) {
+      toast.error(`Failed to fetch player in game(ID ${gameId})\n //change this
+        ${error.response.data.message}`);
+      console.log(handleError(error));
     }
-    
-  }, []);
+  };
+
+  useEffect(() => {
+    const interval1 = setInterval(fetchGameStatus, 2000);
+    return () => {
+      clearInterval(interval1); // Clean up the interval on component unmount
+    };
+  }, [isEnded===false && isServer==="false"]);
 
   useEffect(() => {
     async function saveGameInfo() {

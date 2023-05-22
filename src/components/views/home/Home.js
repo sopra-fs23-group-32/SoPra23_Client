@@ -17,8 +17,7 @@ const Home = () => {
       const requestBody = JSON.stringify({ username });
       await api.put("/logout", requestBody);
     } catch (error) {
-//      alert(`An error occurs during the login: \n${handleError(error)}`);
-        toast.error(`${error.response.data.message}`);
+        toast.error(`An error occurs during the login: ${error.response.data.message}`);
         console.log(handleError(error));
     }
 

@@ -36,9 +36,9 @@ const ScoreBoard = () => {
         await new Promise((resolve) => setTimeout(resolve, 1000));
         // Get the returned users and update the state.
         setUserRanking(response.data);
-        console.log(response);
+        console.log("Get Ranking: ", response.data);
       } catch (error) {
-        toast.error(`${error.response.data.message}`);
+        toast.error(`Something went wrong when fetching the ranking.${error.response.data.message}`);
         console.log(handleError(error));
       }
     }

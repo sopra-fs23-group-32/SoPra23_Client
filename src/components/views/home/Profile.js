@@ -81,7 +81,6 @@ const Profile = () => {
 
   const changeProfile = async () => {
       if(oldPwd !== null && oldPwd !== userProfile.password) {
-//        alert(`Your old password is wrong, try again.\n`);
         toast.error("Your old password is wrong, try again.")
       }
       else {
@@ -99,7 +98,9 @@ const Profile = () => {
             window.location.reload();
         } catch (error) {
             toast.error(`${error.response.data.message}`);
-  //          alert(`Something went wrong while updating your profile.\n${handleError(error)}`);
+            console.error(
+              `Something went wrong while updating your profile.\n${handleError(error)}`
+            );
         }
       }
 
@@ -114,20 +115,15 @@ const Profile = () => {
       try {
         const userURL = "/users/" + localStorage.getItem("profileId");
         const response = await api.get(userURL);
-
         // delays continuous execution of an async operation for 1 s
         await new Promise((resolve) => setTimeout(resolve, 1000));
-
         // Get the returned users and update the state.
         setUserProfile(response.data);
+        console.log("User Profile:", response.data);
 
-        console.log(response);
       } catch (error) {
         console.error(
           `An error occurs while fetching the user: \n${handleError(error)}`
-        );
-        alert(
-          `Something went wrong while fetching the user: \n${handleError(error)}`
         );
       }
     }

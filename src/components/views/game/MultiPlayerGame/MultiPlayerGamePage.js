@@ -70,10 +70,6 @@ const MultiPlayerGamePage = () => {
                 endRound();
               }
             }
-            // else if (messagBody.type === WebSocketType.PLAYER_ADD 
-            //   || messagBody.type === WebSocketType.PLAYRE_REMOVE) {
-            //   //update userlist
-            // }
             // else if (messagBody.type === WebSocketType.GAME_END) {
             //   history.push("/lobby");
             // }
@@ -109,34 +105,26 @@ const MultiPlayerGamePage = () => {
         `/games/${localStorage.getItem("gameId")}/status`
       );
       console.log("GameStatus", response.data);
-      if(response.data=== "WAITING" && isServer==="true"){
+      if(response.data=== "WAITING"){
         setIsWaiting(false);
-        endRound();
+        // have pressed the button
+        if(isContinue){
+          endRound();
+        }
       }
-      if(response.data=== "WAITING" && isServer==="false"){
-        endRound();
-      }
-      if(response.data=== "ENDED" && isServer==="false"){
-        endRound();
-      }
-      if(response.data=== "ENDED" && isServer==="true"){
-        endRound();
-      }
-
-
-
     } catch (error) {
       toast.error(`Failed to fetch player in game(ID ${gameId})\n //change this
         ${error.response.data.message}`);
       console.log(handleError(error));
     }
   };
+
   useEffect(() => {
-    const interval1 = setInterval(fetchGameStatus, 3000);
+    const interval1 = setInterval(fetchGameStatus, 2000);
     return () => {
       clearInterval(interval1); // Clean up the interval on component unmount
     };
-  }, []);
+  }, [isWaiting===true]);
 
   // submit "no answer" when times up
   useEffect(() => {

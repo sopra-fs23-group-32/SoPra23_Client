@@ -64,11 +64,13 @@ const Login = (props) => {
     try {
       const requestBody = JSON.stringify({ username, password });
       const response = await api.put("/login", requestBody);
+      await new Promise((resolve) => setTimeout(resolve, 500));
       // Get the returned user and update a new object.
       const user = new User(response.data);
       // Store the token into the local storage.
       localStorage.setItem("userId", user.userId);
       localStorage.setItem("username", user.username);
+      console.log("User Login: ", response.data)
       // Login successfully worked --> navigate to the route /home in the HomeRouter
       history.push("/home");
     } catch (error) {
