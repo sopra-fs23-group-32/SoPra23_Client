@@ -78,7 +78,7 @@ const CreatedGamePage = () => {
     toast.info(
       `Successfully add player '${username}'(ID ${userId}) to game(ID ${gameId})!`
     );
-    const interval = setInterval(fetchPlayer, 3000);
+    const interval = setInterval(fetchPlayer, 2000);
     return () => {
       clearInterval(interval); // Clean up the interval on component unmount
     };
@@ -268,7 +268,7 @@ const CreatedGamePage = () => {
 
       <InformationContainer className="waiting-page container_right">
         <p style={{ fontSize: "30px", marginBottom: "20px" }}>
-          {playerNumber} playersare in the lobby :
+          {playerNumber} players are in the lobby :
         </p>
         <div>{playerList}</div>
       </InformationContainer>
