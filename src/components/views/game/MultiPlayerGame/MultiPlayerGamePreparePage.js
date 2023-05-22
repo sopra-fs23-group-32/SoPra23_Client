@@ -81,6 +81,8 @@ const MultiModeRoundCountdown = () => {
   }
 
   useEffect(() => {
+    // fetch question and save in localstorage
+    if (isServer==="true") {generateQuestion();}
     async function fetchRanking() {
       try {
         const response = await api.get(`/games/${gameId}/ranking`);
@@ -96,8 +98,7 @@ const MultiModeRoundCountdown = () => {
         console.log(handleError(error));
       }
     }
-    // fetch question and save in localstorage
-    if (isServer) {generateQuestion();}
+    
     // get all players' ranking
     fetchRanking();
     // set a timer
@@ -107,6 +108,15 @@ const MultiModeRoundCountdown = () => {
     return () => clearInterval(intervalId);
   }, []);
 
+  
+  useEffect(() => {
+    if (secondsLeft === 6) {
+      
+      if(isServer === "false"){
+        fetchQuestion();
+        
+    }
+  }}, [secondsLeft]);
 
   // go to next page when time out
   useEffect(() => {
@@ -114,9 +124,7 @@ const MultiModeRoundCountdown = () => {
       clearInterval(secondsLeft);
       clearInterval(intervalId);
       setTimeout(() => {
-        if(isServer === false){
-          fetchQuestion();
-        }
+        
         history.push(`/MultiGamePage/${gameId}`);
       }, 500);
     }

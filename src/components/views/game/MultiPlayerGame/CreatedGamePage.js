@@ -29,8 +29,12 @@ const CreatedGamePage = () => {
   const username = localStorage.getItem("username");
   const history = useHistory();
 
-  async function fetchPlayer() {
+  
+
+  const fetchPlayer = async () => {
     try{
+      const myValue = localStorage.getItem("isServer");
+      console.log(isServer);
       const response = await api.get(`/games/${localStorage.getItem("gameId")}/players`);
       console.log("Players", response.data);
       setGamePlayers(response.data);
@@ -43,13 +47,46 @@ const CreatedGamePage = () => {
     }
   };
 
+  const fetchGameStatus = async () =>{
+    try{
+      
+      const response = await api.get(`/games/${localStorage.getItem("gameId")}/status`);
+      console.log("GameStatus", response.data);
+      if(response.data==="ANSWERING"){
+        localStorage.setItem("myScore", 0);
+              localStorage.setItem("roundNumber", 1);
+              history.push(`/MultiGamePage/${gameId}/RoundCountPage/`);
+      }
+      
+    }
+    catch (error) {
+      toast.error(`Failed to fetch player in game(ID ${gameId})\n //change this
+        ${error.response.data.message}`);
+      console.log(handleError(error));
+    }
+  };
+
   // automatically fetch player list
   useEffect(() => {
-    toast.info(`Successfully add player '${username}'(ID ${userId}) to game(ID ${gameId})!`)
-    fetchPlayer();
-  }, []);
 
+    toast.info(`Successfully add player '${username}'(ID ${userId}) to game(ID ${gameId})!`)
+    const interval = setInterval(fetchPlayer, 3000);
+    return () => {
+      clearInterval(interval); // Clean up the interval on component unmount
+    };
+  }, []); 
+  
   useEffect(() => {
+    if(isServer==="false"){
+    const interval1 = setInterval(fetchGameStatus, 3000);
+    return () => {
+      clearInterval(interval1); // Clean up the interval on component unmount
+    };
+  }}, [isServer==="false"]); 
+
+  
+
+  /*useEffect(() => {
     const Socket = new SockJS(getDomain() + "/socket");
     const stompClient = Stomp.over(Socket);
     let subscription;
@@ -86,10 +123,11 @@ const CreatedGamePage = () => {
       (err) => console.log(err)
     );
     return () => { subscription.unsubscribe();};
-  }, []);
+  }, []); */
 
   const leaveGame = async () => {
-    if (isServer === 1) {
+    const myValue = localStorage.getItem("isServer");
+    if (myValue === "true") {
       const response = await api.delete(`/games/${gameId}`);
       console.log("Delete game:", response.data);
     }
@@ -106,6 +144,8 @@ const CreatedGamePage = () => {
   };
 
   const backToLobby = () => {
+    const myValue = localStorage.getItem("isServer");
+    console.log(myValue);
     leaveGame(); history.push("/JoinGame");
   };
   const backToHome = () => {
@@ -193,7 +233,7 @@ const CreatedGamePage = () => {
 
         <div className="waiting-page button-container">
           <Button onClick={() => startGameMultiplayer(gameId)}
-            disabled={!isServer||playerNumber<2}>
+            disabled={isServer==="false"}>
             Start Game
           </Button>
           <Button onClick={() => backToLobby()}>
@@ -207,7 +247,7 @@ const CreatedGamePage = () => {
 
       <InformationContainer className="waiting-page container_right">
         <p style={{ fontSize: "30px", marginBottom: "20px" }}>
-          {playerNumber} player(s) are in the lobby :
+          {playerNumber} playersare in the lobby :
         </p>
         <div>{playerList}</div>
       </InformationContainer>

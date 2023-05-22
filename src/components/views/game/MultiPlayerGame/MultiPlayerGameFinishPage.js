@@ -42,26 +42,11 @@ const MultiPlayerGameFinishPage = () => {
   }
   
   useEffect(() => {
-    const Socket = new SockJS(getDomain() + "/socket");
-    const stompClient = Stomp.over(Socket);
-    let subscription;
-    stompClient.connect(
-      {},
-      (frame) => {
-        subscription = stompClient.subscribe(
-          `/instance/games/${gameId}`,
-          (message) => {
-            const messagBody = JSON.parse(message.body);
-            console.log("Socket receive msg: ", messagBody);
-            if (!isServer && messagBody.type===WebSocketType.GAME_END) {
-              saveGameHistory();
-            }
-          }
-        );
-      },
-      (err) => console.log(err)
-    );
-    return () => { subscription.unsubscribe();};
+
+    if(isServer === "false"){
+      //saveGameHistory();
+    }
+    
   }, []);
 
   useEffect(() => {
@@ -77,7 +62,7 @@ const MultiPlayerGameFinishPage = () => {
         console.log(handleError(error));
       }
     }
-    if (isServer) {
+    if (isServer==="true") {
       saveGameInfo();
       saveGameHistory();
     }
@@ -92,7 +77,7 @@ const MultiPlayerGameFinishPage = () => {
   }, {});
 
   const endGame = async() => {
-    if (isServer){
+    if (isServer==="true"){
       await api.delete(`games/${gameId}`);
       await new Promise((resolve) => setTimeout(resolve, 500));
     }
