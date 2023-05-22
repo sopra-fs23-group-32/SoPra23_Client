@@ -187,7 +187,7 @@ const MultiModeRoundCountdown = () => {
       <div >
         <Button className="round countdown exit-button"
         onClick={handleExitButtonClick}
-        disabled={isServer===true}
+        
         >
           Exit Game
         </Button>

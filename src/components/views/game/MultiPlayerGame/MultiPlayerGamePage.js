@@ -205,7 +205,7 @@ const MultiPlayerGamePage = () => {
         <Button
           className="exit-button"
           onClick={handleExitButtonClick}
-          disabled={isServer === "true"}
+          
         >
           Exit Game
         </Button>
