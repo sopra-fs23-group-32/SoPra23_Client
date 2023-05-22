@@ -34,7 +34,7 @@ const CreatedGamePage = () => {
   const fetchPlayer = async () => {
     try{
       const response = await api.get(`/games/${localStorage.getItem("gameId")}/players`);
-      console.log("Players", response.data);
+      console.log("Players List: ", response.data);
       setGamePlayers(response.data);
       setPlayerNumber(response.data.length);
     } catch (error) {
@@ -49,11 +49,9 @@ const CreatedGamePage = () => {
       const response = await api.get(
         `/games/${localStorage.getItem("gameId")}/status`
       );
-      console.log("GameStatus", response.data);
+      console.log("GameStatus: ", response.data);
       if(response.data==="WAITING" || response.data==="ANSWERING"){
         localStorage.setItem("myScore", 0);
-        localStorage.setItem("roundNumber", 1);
-        history.push(`/MultiGamePage/${gameId}/RoundCountPage/`);
         localStorage.setItem("roundNumber", 1);
         history.push(`/MultiGamePage/${gameId}/RoundCountPage/`);
       }
@@ -64,7 +62,6 @@ const CreatedGamePage = () => {
         localStorage.removeItem("countdownTime");
         localStorage.removeItem("playerNum");
         localStorage.removeItem("isServer");
-        toast.warning("The host player has deleted this game.")
         history.push(`/home`);
       }
     }
@@ -136,13 +133,18 @@ const CreatedGamePage = () => {
   }, []); */
 
   const leaveGame = async () => {
-    try{if (isServer === "true") {
-      const response = await api.delete(`/games/${gameId}`);
-      console.log("Delete game:", response.data);
-    } else {
-      const response = await api.delete(`/games/${gameId}/players/${userId}`);
-      console.log("Delete player:", response.data);
-    }}catch (error) {
+    try{
+      if (isServer === "true") {
+      await api.delete(`/games/${gameId}`);
+      await new Promise((resolve) => setTimeout(resolve, 500));
+      console.log(`Game ${gameId} deleted.`);
+      }
+      else {
+      await api.delete(`/games/${gameId}/players/${userId}`);
+      await new Promise((resolve) => setTimeout(resolve, 500));
+      console.log(`Player ${userId} deleted from Game ${gameId}`);
+      }
+    } catch (error) {
       toast.error(`Failed to fetch player in game(ID ${gameId})\n
         ${error.response.data.message}`);
       console.log(handleError(error));

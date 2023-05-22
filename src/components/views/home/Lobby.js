@@ -36,7 +36,7 @@ const Lobby = () => {
   const handleAddPlayer = async (gameId) => {
     try {
       const response = await api.post(`/games/${gameId}/players/${userId}`);
-      console.log(response);
+      console.log("Player added for Single Mode:", response.data);
     }
     catch (error) {
       toast.error(`${error.response.data.message}`);
@@ -61,6 +61,7 @@ const Lobby = () => {
       const response = (await api.post("/games", requestBody)).data;
       const gameId = response.gameId;
       localStorage.setItem("gameId", gameId);
+      console.log("Multiplayer Game created: ", response.data)
 
       handleAddPlayer(gameId);
       localStorage.setItem("isServer", true);
@@ -86,6 +87,7 @@ const Lobby = () => {
       const gameId = response.gameId;
       localStorage.setItem("gameId", gameId);
       handleAddPlayer(gameId);
+      console.log("SinglePlayer Game created: ", response.data)
 
       localStorage.setItem("roundNumber", 1);
       localStorage.setItem("score", 0);

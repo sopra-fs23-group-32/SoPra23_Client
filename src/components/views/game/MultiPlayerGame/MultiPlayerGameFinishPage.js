@@ -47,7 +47,7 @@ const MultiPlayerGameFinishPage = () => {
       const response = await api.get(
         `/games/${localStorage.getItem("gameId")}/status`
       );
-      console.log("GameStatus", response.data);
+      console.log("GameStatus: ", response.data);
       if(response.data=== "ENDED" && isServer==="false"){
         saveGameHistory();
         setIsEnded(true);

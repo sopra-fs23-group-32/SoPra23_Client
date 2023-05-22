@@ -55,7 +55,7 @@ const HistoryPage = () => {
         await new Promise((resolve) => setTimeout(resolve, 1000));
         // Get the returned users and update the state.
         setUserGameInfo(response.data);
-        console.log(response);
+        console.log("Get All Game Infos: ", response.data);
       } catch (error) {
         toast.error(`${error.response.data.message}`);
         console.log(handleError(error));
@@ -69,10 +69,10 @@ const HistoryPage = () => {
       const url = "/users/"+localStorage.getItem("userId") + "/gameHistories/"+gameId;
       const responseStats = await api.get(url + "/stats");
       setUserGameHistoryStats(responseStats.data);
-      console.log(responseStats);
+      console.log("Get Game Stats: ", responseStats.data);
       const responseAnswer = await api.get(url + "/answer");
       setUserGameHistoryAnswer(responseAnswer.data);
-      console.log(responseAnswer);
+      console.log("Get answer pairs: ", responseAnswer.data);
       // delays continuous execution of an async operation for 1 second.
       // This is just a fake async call, so that the spinner can be displayed
       await new Promise((resolve) => setTimeout(resolve, 1000));

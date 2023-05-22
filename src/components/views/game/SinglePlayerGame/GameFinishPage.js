@@ -27,11 +27,11 @@ const GameFinishPage = () => {
         const responseGameInfo = await api.post(
           `/gameInfo/${localStorage.getItem("gameId")}`
         );
-        console.log(responseGameInfo.data);
+        console.log("Game Info saved: ", responseGameInfo.data);
         const responseGameHistory = await api.post(
           `/users/${localStorage.getItem("userId")}/gameHistories/${localStorage.getItem("gameId")}`
         );
-        console.log("gamehistory", responseGameHistory.data);
+        console.log("Game history saved: ", responseGameHistory.data);
         await new Promise((resolve) => setTimeout(resolve, 1000));
       }
       catch (error) {
