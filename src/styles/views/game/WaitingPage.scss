@@ -13,25 +13,24 @@
         column-gap: 0.5em;
     }
     &.container_left {
-        background: transparentize(rgb(65, 64, 64), 0.7);
+        background: #001F3F;
         padding: 2em;
         background: #001F3F;
         border-radius: $borderRadius;
         display: flex;
         flex-direction: column;
         align-items: left;
-        box-shadow: $dropShadow;
         row-gap: 2em;
+        margin-right: 20px;
     }
     &.container_right {
-        background: transparentize(rgb(65, 64, 64), 0.4);
+        background: #001F3F;
         padding: 2em;
         border-radius: $borderRadius;
         display: flex;
         flex-direction: column;
         align-items: left;
-        box-shadow: $dropShadow;
-        border: 2px solid #000;
+        margin-left: 20px;
     }
     &.user-list {
         padding-left: 0;

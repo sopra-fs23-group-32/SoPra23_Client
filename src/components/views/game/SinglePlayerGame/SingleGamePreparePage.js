@@ -23,6 +23,7 @@ const UrgeWithPleasureComponent = ({ duration }) => (
   </CountdownCircleTimer>
 );
 
+
 const RoundCountdown = () => {
   // use react-router-dom's hook to access the history
   const duration = 8;
@@ -79,6 +80,19 @@ const RoundCountdown = () => {
     }
   }, [secondsLeft, intervalId]);
 
+  const convertCityCategory = (category) => {
+    // Split the category by underscores
+    const words = category.split('_');
+  
+    // Capitalize each word
+    const capitalizedWords = words.map(word => word.charAt(0).toUpperCase() + word.slice(1).toLowerCase());
+  
+    // Join the words with spaces
+    const convertedCategory = capitalizedWords.join(' ');
+  
+    return convertedCategory;
+  }
+
   const handleExitButtonClick = async() => {
     localStorage.removeItem("category");
     localStorage.removeItem("totalRounds");
@@ -91,6 +105,8 @@ const RoundCountdown = () => {
     await api.delete(`games/${gameId}`);
     history.push("/home");
   };
+
+
 
   return (
     <div className="round countdown container">
@@ -108,7 +124,7 @@ const RoundCountdown = () => {
             Round {roundNumber} of {totalRounds} is starting soon...
           </div>
           <div style={{ fontSize: "30px" }}>
-            City Category: {category}, Your Score: {score}
+            City Category: {convertCityCategory(category)}, Your Score: {score}
           </div>
         </InformationContainer>
         <div className="roundcountdown layout" style={{ flexDirection: "row" }}>

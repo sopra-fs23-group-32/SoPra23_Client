@@ -19,7 +19,7 @@ const ProfileInfo = ({ user, setUsername, setBirthDay, setOldPwd, setPassword })
              <input type="text" defaultValue={user.username} onChange={e => setUsername(e.target.value)} />
           </>
         ) : (
-            <div>{user.username}</div>
+            <value>{user.username}</value>
         )}
       </div>
       <div className="user-profile-field">
@@ -34,11 +34,8 @@ const ProfileInfo = ({ user, setUsername, setBirthDay, setOldPwd, setPassword })
         <label>Birthday</label>
         {localStorage.getItem("profileId") === localStorage.getItem("userId")? (
             <>
-            
              <value>{user.birthDay? new Date(user.birthDay).toISOString().slice(0, 10) : "No Birthday set yet"}</value>
-             <div style={{flexBasis:'67%'}}>
              <input type="date" defaultValue={user.birthDay} onChange={e => setBirthDay(e.target.value)} />
-             </div>
             </>
         ) : (
             <value>{user.birthDay? new Date(user.birthDay).toISOString().slice(0, 10) : "No Birthday set yet"}</value>
