@@ -1,4 +1,4 @@
-impor { useHistory } from "react-router-dom";
+import { useHistory } from "react-router-dom";
 import React, { useState, useEffect } from "react";
 import { Button } from "components/ui/Button";
 import { api } from "helpers/api";

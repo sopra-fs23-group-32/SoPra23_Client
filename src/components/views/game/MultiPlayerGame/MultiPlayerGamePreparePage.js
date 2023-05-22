@@ -21,13 +21,131 @@ const MultiPlayerGamePreparePage = () => {
     const [players, setPlayers] = useState([
         { playerName: "123", score: 256, rank: 1 },
     ]);
-    const [secondsLeft, setSecondsLeft] = useState(10);
-    const [intervalId, setIntervalId] = useState(null);
-    const [totalRounds, setTotalRounds] = useState(
-        localStorage.getItem("totalRounds")
-    );
-    const [isSurvivalMode, setIsSurvivalMode] = useState(
-        localStorage.getItem("survival")
+    localStorage.setItem("citynames", cityNamesString);
+    localStorage.setItem("PictureUrl", question.pictureUrl);
+    localStorage.setItem("CorrectOption", question.correctOption);
+  };
+
+  async function generateQuestion() {
+    try {
+      const response = await api.put(`games/${gameId}`);
+      setLocalStorageItems(response.data);
+      console.log("Generate question: ", response.data);
+      await new Promise((resolve) => setTimeout(resolve, 1000));
+      toast.info(`Question for next round created.`);
+    }
+    catch (error) {
+      toast.error(`${error.response.data.message}`);
+      console.log(handleError(error));
+    }
+  }
+
+  async function fetchQuestion() {
+    try {
+      const response = await api.get(`games/${gameId}/questions`);
+      setLocalStorageItems(response.data);
+      console.log("Fetch question: ", response.data);
+      await new Promise((resolve) => setTimeout(resolve, 1000));
+      toast.info(`Got question for next round.`);
+    }
+    catch (error) {
+      toast.error(`${error.response.data.message}`);
+      console.log(handleError(error));
+    }
+  }
+
+  useEffect(() => {
+    // fetch question and save in localstorage
+    if (isServer==="true") {generateQuestion();}
+    async function fetchRanking() {
+      try {
+        const response = await api.get(`/games/${gameId}/ranking`);
+        // if (roundNumber === 1) {
+        //   setPreviousRoundData(leaderboardData);
+        //   console.log("Previous round data", leaderboardData)
+        // }
+        setLeaderboardData(response.data);
+        console.log("Ranking: ", response.data);
+        await new Promise((resolve) => setTimeout(resolve, 1000));
+      } catch (error) {
+        toast.error(`${error.response.data.message}`);
+        console.log(handleError(error));
+      }
+    }
+    
+    // get all players' ranking
+    fetchRanking();
+    // set a timer
+    const intervalId = setInterval(() => {
+      setSecondsLeft((prevSecondsLeft) => prevSecondsLeft - 1);
+    }, 1000);
+    return () => clearInterval(intervalId);
+  }, []);
+
+  
+  useEffect(() => {
+    if (secondsLeft === 6) {
+      
+      if(isServer === "false"){
+        fetchQuestion();
+        
+    }
+  }}, [secondsLeft]);
+
+  // go to next page when time out
+  useEffect(() => {
+    if (secondsLeft === 0) {
+      clearInterval(secondsLeft);
+      clearInterval(intervalId);
+      setTimeout(() => {
+        
+        history.push(`/MultiGamePage/${gameId}`);
+      }, 500);
+    }
+  }, [secondsLeft, intervalId]);
+
+  const calculateRowPosition = (currentRank, previousRank) => {
+    const position = currentRank - previousRank;
+    return position * 100 + '%';
+  };
+
+  const PlayerRanking = ({leaderboardData}) => (
+    <table className="leaderboard">
+      <thead>
+        <tr>
+          <th>Rank</th>
+          <th>Player Name</th>
+          <th>Score</th>
+        </tr>
+      </thead>
+      <tbody>
+        {leaderboardData.map((rankEntry, index) => {
+          const previousRank = roundNumber > 1 ? 
+            previousRoundData.find((data) => data.playerName === rankEntry.playerName)?.rank
+             : rankEntry.rank;
+          const position = calculateRowPosition(rankEntry.rank, previousRank);
+
+          <tr key={rankEntry.playerName}
+            style={{ transform: `translateY(${position})`,
+              backgroundColor: rankEntry.playerName === username ? 'rgba(200, 0, 0, 0.5)' : 'rgba(128, 128, 128, 0.5)',}}
+          >
+            <td>{rankEntry.rank}</td>
+            <td>{rankEntry.playerName}</td>
+            <td>{rankEntry.score}</td>
+          </tr>
+        })}
+      </tbody>
+    </table>
+  )
+  PlayerRanking.propTypes = {
+    rankEntry: PropTypes.object,
+  };
+
+  let playerRankingList = <Spinner />
+
+  if (leaderboardData !== null) {
+    playerRankingList = (
+      <PlayerRanking leaderboardData={leaderboardData} />
     );
 
     const history = useHistory();

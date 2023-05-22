@@ -10,6 +10,14 @@ import 'react-toastify/dist/ReactToastify.css';
 import "styles/views/game/FinalPage.scss";
 
 const MultiPlayerGameFinishPage = () => {
+<<<<<<< HEAD
+=======
+  const [playerRanking, setPlayerRanking] = useState([]);
+  const [isEnded, setIsEnded] = useState(false);
+  const playerId = localStorage.getItem("userId");
+  const gameId = localStorage.getItem("gameId");
+  const isServer = localStorage.getItem("isServer");
+>>>>>>> main
   const history = useHistory();
   const [playerRanking, setPlayerRanking] = useState([]);
 
@@ -18,8 +26,40 @@ const MultiPlayerGameFinishPage = () => {
       // games/${localStorage.getItem("gameId")}
       await api.delete(`games/${localStorage.getItem("gameId")}`);
     }
+<<<<<<< HEAD
     history.push("/home");
   };
+=======
+    catch (error) {
+      toast.error("Something went wrong while fetching the ranking!");
+      console.log(handleError(error));
+    }
+  }
+  
+  const fetchGameStatus = async () => {
+    try {
+      const response = await api.get(
+        `/games/${localStorage.getItem("gameId")}/status`
+      );
+      console.log("GameStatus", response.data);
+      if(response.data=== "ENDED" && isServer==="false"){
+        saveGameHistory();
+        setIsEnded(true);
+      }
+    } catch (error) {
+      toast.error(`Failed to fetch player in game(ID ${gameId})\n //change this
+        ${error.response.data.message}`);
+      console.log(handleError(error));
+    }
+  };
+
+  useEffect(() => {
+    const interval1 = setInterval(fetchGameStatus, 2000);
+    return () => {
+      clearInterval(interval1); // Clean up the interval on component unmount
+    };
+  }, [isEnded===false && isServer==="false"]);
+>>>>>>> main
 
   useEffect(() => {
     // effect callbacks are synchronous to prevent race conditions. So we put the async function inside:
@@ -56,8 +96,17 @@ const MultiPlayerGameFinishPage = () => {
         toast.error("Something went wrong while saving the game history!");
         console.log(handleError(error));
       }
+<<<<<<< HEAD
     };
     fetchData();
+=======
+    }
+    if (isServer==="true") {
+      saveGameInfo();
+      saveGameHistory();
+    }
+    fetchRanking();
+>>>>>>> main
   }, []);
 
   const groupedPlayers = playerRanking.reduce((groups, player) => {
@@ -67,6 +116,26 @@ const MultiPlayerGameFinishPage = () => {
     return groups;
   }, {});
 
+<<<<<<< HEAD
+=======
+  const endGame = async() => {
+    if (isServer==="true"){
+      await api.delete(`games/${gameId}`);
+      await new Promise((resolve) => setTimeout(resolve, 500));
+    }
+    localStorage.removeItem("gameId");
+    localStorage.removeItem("category");
+    localStorage.removeItem("totalRounds");
+    localStorage.removeItem("countdownTime");
+    localStorage.removeItem("isServer");
+    localStorage.removeItem("roundNumber");
+    localStorage.removeItem("myScore");
+    localStorage.removeItem("citynames");
+    localStorage.removeItem("PictureUrl");
+    localStorage.removeItem("CorrectOption");
+    history.push("/home");
+  };
+>>>>>>> main
 
   return (
     <div className="finalpage container">
