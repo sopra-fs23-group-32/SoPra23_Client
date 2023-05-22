@@ -27,7 +27,7 @@ const MultiPlayerGameFinishPage = () => {
     toast.info(`Player's game history saved.`);}
     //await new Promise((resolve) => setTimeout(resolve, 500));}
     catch (error) {
-      toast.error(`Failed to fetch player in gamexxxx(ID ${gameId})\n //change this
+      toast.error(`Failed to fetch player in gamexx(ID ${gameId})\n //change this
         ${error.response.data.message}`);
       console.log(handleError(error));
     }
@@ -54,8 +54,8 @@ const MultiPlayerGameFinishPage = () => {
       );
       console.log("GameStatus: ", response.data);
       if(response.data=== "ENDED" && isServer==="false"){
-        saveGameHistory();
-        setIsEnded(true);
+        //saveGameHistory(); here somethibng is not working -jano
+        //setIsEnded(true);
       }
     } catch (error) {
       toast.error(`Failed to fetch player in game(ID ${gameId})\n //change this
@@ -63,6 +63,14 @@ const MultiPlayerGameFinishPage = () => {
       console.log(handleError(error));
     }
   };
+  useEffect(() => {
+    if (!isEnded && isServer === "false"){
+      const interval = setInterval(fetchGameStatus,1000);
+      return ()=>clearInterval(interval)
+        
+      }
+    }, [isEnded]);
+    
 
 
 
