@@ -22,10 +22,15 @@ const MultiPlayerGameFinishPage = () => {
   const history = useHistory();
 
   const saveGameHistory = async () => {
-    const response = await api.post(`/users/${playerId}/gameHistories/${gameId}`);
+    try{const response = await api.post(`/users/${playerId}/gameHistories/${gameId}`);
     console.log("Game History: ", response.data);
-    toast.info(`Player's game history saved.`);
-    //await new Promise((resolve) => setTimeout(resolve, 500));
+    toast.info(`Player's game history saved.`);}
+    //await new Promise((resolve) => setTimeout(resolve, 500));}
+    catch (error) {
+      toast.error(`Failed to fetch player in game(ID ${gameId})\n //change this
+        ${error.response.data.message}`);
+      console.log(handleError(error));
+    }
   }
 
   async function fetchRanking() {
@@ -60,12 +65,11 @@ const MultiPlayerGameFinishPage = () => {
   };
 
   useEffect(() => {
-    // stop the timer if game ended or is host
-    if (!isEnded && isServer==="false") {
-      const interval = setInterval(fetchGameStatus, 1000);
-      return () => clearInterval(interval);
-    }
-  }, [isEnded]);
+    const interval1 = setInterval(fetchGameStatus, 2000);
+    return () => {
+      clearInterval(interval1); // Clean up the interval on component unmount
+    };
+  }, [isEnded===false && isServer==="false"]);
 
   useEffect(() => {
     async function saveGameInfo() {
@@ -153,7 +157,7 @@ const MultiPlayerGameFinishPage = () => {
       </Table>
 
       <h2 style={{ font: "40px" }}>
-        You got {localStorage.getItem("myScore")} Pts
+        You got {localStorage.getItem("score")} Pts
       </h2>
       
       <div className="final button-container">
