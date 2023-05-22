@@ -189,7 +189,7 @@ const CreatedGamePage = () => {
           />
         </div>
         <div className="waiting-page select">
-        <InputLabel className="waiting-page label">Countdown Time:</InputLabel>
+        <InputLabel className="waiting-page label">Time Limit:</InputLabel>
         <TextField className="waiting-page text"
           inputProps={{
             style: { textAlign: "center", height: "10px"},

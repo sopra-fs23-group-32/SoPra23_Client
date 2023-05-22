@@ -163,7 +163,7 @@ const Lobby = () => {
             />
             </div>
           <div className="lobby category-select">
-        <InputLabel className="lobby label" style={{paddingLeft:"1px"}}>Countdown Time:</InputLabel>
+        <InputLabel className="lobby label" style={{paddingLeft:"1px"}}>Time Limit:</InputLabel>
         <TextField className="lobby round"
           style={{width:"150px"}}
           inputProps={{
