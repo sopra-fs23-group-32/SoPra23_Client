@@ -40,7 +40,7 @@
 .user-profile-field label {
   font-weight: bold;
   justify-content: flex-start; 
-  flex-basis: 30%;
+  width: 60%;
   padding: 8px;
 }
 
@@ -50,7 +50,7 @@
   font-size: 16px;
   background-color: #d2d9df;
   border-radius: $borderRadius;
-  flex-basis: 67%;
+  width: 80%;
 }
 
 .user-profile-field input:focus {
@@ -58,7 +58,7 @@
 }
 
 .user-profile-field value {
-  flex-basis: 70%;
+  width: 85%;
   padding: 8px;
 }
 

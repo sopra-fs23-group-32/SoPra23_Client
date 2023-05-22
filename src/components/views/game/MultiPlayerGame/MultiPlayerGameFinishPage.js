@@ -60,14 +60,11 @@ const MultiPlayerGameFinishPage = () => {
   };
 
   useEffect(() => {
-    const interval1 = setInterval(fetchGameStatus, 2000);
     // stop the timer if game ended or is host
-    if (isEnded || isServer==="true") {
-      clearInterval(interval1);
+    if (!isEnded && isServer==="false") {
+      const interval = setInterval(fetchGameStatus, 1000);
+      return () => clearInterval(interval);
     }
-    return () => {
-      clearInterval(interval1);
-    };
   }, [isEnded]);
 
   useEffect(() => {
