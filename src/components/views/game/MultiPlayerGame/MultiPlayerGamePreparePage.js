@@ -81,6 +81,8 @@ const MultiModeRoundCountdown = () => {
   }
 
   useEffect(() => {
+    // fetch question and save in localstorage
+    if (isServer==="true") {generateQuestion();}
     async function fetchRanking() {
       try {
         const response = await api.get(`/games/${gameId}/ranking`);
@@ -113,16 +115,20 @@ const MultiModeRoundCountdown = () => {
 
   // go to next page when time out
   useEffect(() => {
-    if (secondsLeft === 0) {
-      clearInterval(secondsLeft);
-      clearInterval(intervalId);
-      setTimeout(() => {
-        if(isServer === "false"){
-          fetchQuestion();
+    const fetchData = async () => {
+      if (secondsLeft === 0) {
+        clearInterval(secondsLeft);
+        clearInterval(intervalId);
+        
+        if (isServer === "false") {
+          await fetchQuestion();
         }
+        
         history.push(`/MultiGamePage/${gameId}`);
-      }, 500);
-    }
+      }
+    };
+    
+    fetchData();
   }, [secondsLeft, intervalId]);
 
   const calculateRowPosition = (currentRank, previousRank) => {

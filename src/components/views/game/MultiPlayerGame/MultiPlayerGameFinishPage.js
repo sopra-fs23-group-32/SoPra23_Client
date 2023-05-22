@@ -25,7 +25,7 @@ const MultiPlayerGameFinishPage = () => {
     const response = await api.post(`/users/${playerId}/gameHistories/${gameId}`);
     console.log("Game History: ", response.data);
     toast.info(`Player's game history saved.`);
-    await new Promise((resolve) => setTimeout(resolve, 500));
+    //await new Promise((resolve) => setTimeout(resolve, 500));
   }
 
   async function fetchRanking() {
@@ -34,7 +34,7 @@ const MultiPlayerGameFinishPage = () => {
       const responseRanking = await api.get(`/games/${gameId}/ranking`);
       setPlayerRanking(responseRanking.data);
       console.log("Ranking: ", responseRanking.data);
-      await new Promise((resolve) => setTimeout(resolve, 1000));
+      //await new Promise((resolve) => setTimeout(resolve, 1000));
     }
     catch (error) {
       toast.error("Something went wrong while fetching the ranking!");
@@ -76,7 +76,7 @@ const MultiPlayerGameFinishPage = () => {
         const responseGameInfo = await api.post(`/gameInfo/${gameId}`);
         console.log("Game Info: ", responseGameInfo.data);
         toast.info(`Game's information saved.`);
-        await new Promise((resolve) => setTimeout(resolve, 500));
+        //await new Promise((resolve) => setTimeout(resolve, 500));
       }
       catch (error) {
         toast.error("Something went wrong while fetching the ranking!");
@@ -100,7 +100,7 @@ const MultiPlayerGameFinishPage = () => {
   const endGame = async() => {
     if (isServer==="true"){
       await api.delete(`games/${gameId}`);
-      await new Promise((resolve) => setTimeout(resolve, 500));
+      //await new Promise((resolve) => setTimeout(resolve, 500));
       console.log(`Game ${gameId} deleted.`)
     }
     localStorage.removeItem("gameId");
