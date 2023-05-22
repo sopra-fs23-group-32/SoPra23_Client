@@ -26,7 +26,7 @@ const UrgeWithPleasureComponent = ({ duration }) => (
 
 const MultiModeRoundCountdown = () => {
   // use react-router-dom's hook to access the history
-  const duration = 15;
+  const duration = 12;
   const [secondsLeft, setSecondsLeft] = useState(duration);
   const [intervalId, setIntervalId] = useState(null);
 
@@ -96,8 +96,12 @@ const MultiModeRoundCountdown = () => {
         console.log(handleError(error));
       }
     }
+    // remove all local storage of previous question
+    localStorage.removeItem("citynames");
+    localStorage.removeItem("PictureUrl");
+    localStorage.removeItem("CorrectOption");
     // fetch question and save in localstorage
-    if (isServer) {generateQuestion();}
+    if (isServer==="true") {generateQuestion();}
     // get all players' ranking
     fetchRanking();
     // set a timer
@@ -107,14 +111,13 @@ const MultiModeRoundCountdown = () => {
     return () => clearInterval(intervalId);
   }, []);
 
-
   // go to next page when time out
   useEffect(() => {
     if (secondsLeft === 0) {
       clearInterval(secondsLeft);
       clearInterval(intervalId);
       setTimeout(() => {
-        if(isServer === false){
+        if(isServer === "false"){
           fetchQuestion();
         }
         history.push(`/MultiGamePage/${gameId}`);
@@ -186,8 +189,8 @@ const MultiModeRoundCountdown = () => {
     <div className="round countdown container">
       <div >
         <Button className="round countdown exit-button"
-        onClick={handleExitButtonClick}
-        disabled={isServer===true}
+          onClick={handleExitButtonClick}
+        
         >
           Exit Game
         </Button>

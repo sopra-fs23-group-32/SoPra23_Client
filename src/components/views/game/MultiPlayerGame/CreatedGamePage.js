@@ -5,20 +5,22 @@ import PropTypes from "prop-types";
 import { api, handleError } from "helpers/api";
 import { Spinner } from "components/ui/Spinner";
 import InformationContainer from "components/ui/BaseContainer";
-import { InputLabel, Select, MenuItem, TextField,} from "@mui/material";
+import { InputLabel, Select, MenuItem, TextField } from "@mui/material";
 
 import SockJS from "sockjs-client";
 import Stomp from "stompjs";
 import { getDomain } from "helpers/getDomain";
 import WebSocketType from "models/WebSocketType";
 
-import { ToastContainer, toast } from 'react-toastify';
+import { ToastContainer, toast } from "react-toastify";
 import "styles/views/game/WaitingPage.scss";
 
 const CreatedGamePage = () => {
   const [gamePlayers, setGamePlayers] = useState([]);
-  const [playerNumber, setPlayerNumber] = useState(localStorage.getItem("playerNum"));
-  // 
+  const [playerNumber, setPlayerNumber] = useState(
+    localStorage.getItem("playerNum")
+  );
+  //
   const gameId = localStorage.getItem("gameId");
   const category = localStorage.getItem("category");
   const totalRounds = localStorage.getItem("totalRounds");
@@ -29,27 +31,69 @@ const CreatedGamePage = () => {
   const username = localStorage.getItem("username");
   const history = useHistory();
 
-  async function fetchPlayer() {
+  const fetchPlayer = async () => {
     try{
       const response = await api.get(`/games/${localStorage.getItem("gameId")}/players`);
-      console.log("Players", response.data);
+      console.log("Players List: ", response.data);
       setGamePlayers(response.data);
       setPlayerNumber(response.data.length);
-    }
-    catch (error) {
+    } catch (error) {
       toast.error(`Failed to fetch player in game(ID ${gameId})\n
         ${error.response.data.message}`);
       console.log(handleError(error));
     }
   };
 
+  const fetchGameStatus = async () => {
+    try {
+      const response = await api.get(
+        `/games/${localStorage.getItem("gameId")}/status`
+      );
+      console.log("GameStatus: ", response.data);
+      if(response.data==="WAITING" || response.data==="ANSWERING"){
+        localStorage.setItem("myScore", 0);
+        localStorage.setItem("roundNumber", 1);
+        history.push(`/MultiGamePage/${gameId}/RoundCountPage/`);
+      }
+      else if (response.data==="DELETED") {
+        localStorage.removeItem("gameId");
+        localStorage.removeItem("category");
+        localStorage.removeItem("totalRounds");
+        localStorage.removeItem("countdownTime");
+        localStorage.removeItem("playerNum");
+        localStorage.removeItem("isServer");
+        history.push(`/home`);
+      }
+    }
+    catch (error) {
+      toast.error(`Failed to fetch player in game(ID ${gameId})\n //change this
+        ${error.response.data.message}`);
+      console.log(handleError(error));
+      backToLobby();
+    }
+  };
+
   // automatically fetch player list
   useEffect(() => {
-    toast.info(`Successfully add player '${username}'(ID ${userId}) to game(ID ${gameId})!`)
-    fetchPlayer();
+    toast.info(
+      `Successfully add player '${username}'(ID ${userId}) to game(ID ${gameId})!`
+    );
+    const interval = setInterval(fetchPlayer, 2000);
+    return () => {
+      clearInterval(interval); // Clean up the interval on component unmount
+    };
   }, []);
 
   useEffect(() => {
+    if (isServer === "false") {
+      const interval1 = setInterval(fetchGameStatus, 2000);
+      return () => {
+        clearInterval(interval1); // Clean up the interval on component unmount
+      };
+    }
+  }, [isServer === "false"]);
+
+  /*useEffect(() => {
     const Socket = new SockJS(getDomain() + "/socket");
     const stompClient = Stomp.over(Socket);
     let subscription;
@@ -86,16 +130,24 @@ const CreatedGamePage = () => {
       (err) => console.log(err)
     );
     return () => { subscription.unsubscribe();};
-  }, []);
+  }, []); */
 
   const leaveGame = async () => {
-    if (isServer === 1) {
-      const response = await api.delete(`/games/${gameId}`);
-      console.log("Delete game:", response.data);
-    }
-    else {
-      const response = await api.delete(`/games/${gameId}/players/${userId}`);
-      console.log("Delete player:", response.data);
+    try{
+      if (isServer === "true") {
+      await api.delete(`/games/${gameId}`);
+      await new Promise((resolve) => setTimeout(resolve, 500));
+      console.log(`Game ${gameId} deleted.`);
+      }
+      else {
+      await api.delete(`/games/${gameId}/players/${userId}`);
+      await new Promise((resolve) => setTimeout(resolve, 500));
+      console.log(`Player ${userId} deleted from Game ${gameId}`);
+      }
+    } catch (error) {
+      toast.error(`Failed to fetch player in game(ID ${gameId})\n
+        ${error.response.data.message}`);
+      console.log(handleError(error));
     }
     localStorage.removeItem("gameId");
     localStorage.removeItem("category");
@@ -103,13 +155,16 @@ const CreatedGamePage = () => {
     localStorage.removeItem("countdownTime");
     localStorage.removeItem("playerNum");
     localStorage.removeItem("isServer");
+
   };
 
   const backToLobby = () => {
-    leaveGame(); history.push("/JoinGame");
+    leaveGame();
+    history.push("/JoinGame");
   };
   const backToHome = () => {
-    leaveGame(); history.push("/home");
+    leaveGame();
+    history.push("/home");
   };
 
   const startGameMultiplayer = async (gameId) => {
@@ -118,7 +173,7 @@ const CreatedGamePage = () => {
     history.push(`/MultiGamePage/${gameId}/RoundCountPage/`);
   };
 
-  const Player = ({players}) => (
+  const Player = ({ players }) => (
     <div>
       <table className="WaitingPage table-style">
         <thead>
@@ -128,27 +183,25 @@ const CreatedGamePage = () => {
           </tr>
         </thead>
         <tbody>
-            {players.map((player, index) => {
-              return (
-                <tr key={player.userId}>
-                  <td>{player.userId}</td>
-                  <td>{player.username}</td>
-                </tr>
-              );
-            })}
+          {players.map((player, index) => {
+            return (
+              <tr key={player.userId}>
+                <td>{player.userId}</td>
+                <td>{player.username}</td>
+              </tr>
+            );
+          })}
         </tbody>
       </table>
     </div>
-  )
+  );
   Player.propTypes = {
-    players: PropTypes.object,
+    players: PropTypes.arrayOf(PropTypes.object),
   };
-  let playerList = <Spinner />
+  let playerList = <Spinner />;
 
   if (gamePlayers !== null) {
-    playerList = (
-      <Player players={gamePlayers} />
-    );
+    playerList = <Player players={gamePlayers} />;
   }
 
   return (
@@ -157,8 +210,7 @@ const CreatedGamePage = () => {
         <div style={{ fontSize: "40px", textAlign: "center" }}>
           Game Settings
         </div>
-        <div className="waiting-page select">
-          
+        <div className="waiting-page select">          
           <InputLabel className="waiting-page label">Category:</InputLabel>
           <Select value={category} disabled
           style={{ height: '45px', marginLeft: '5px', width:"200px" }}
@@ -204,22 +256,15 @@ const CreatedGamePage = () => {
             
           </div>
 )}
-
-
-        <div className="waiting-page button-container" style={{marginTop: "10px"}}>
-          <Button onClick={() => startGameMultiplayer(gameId)}
-            disabled={!isServer||playerNumber<2}>
+        <div className="waiting-page button-container">
+          <Button
+            onClick={() => startGameMultiplayer(gameId)}
+            disabled={isServer === "false"}
+          >
             Start Game
           </Button>
-        </div>
-        </div>
-        <div className="waiting-page button-container">
-          <Button onClick={() => backToLobby()}>
-            Back to Lobby
-          </Button>
-          <Button onClick={() => backToHome()}>
-            Back to Home Page
-          </Button>
+          <Button onClick={() => backToLobby()}>Back to Lobby</Button>
+          <Button onClick={() => backToHome()}>Back to Home Page</Button>
         </div>
       </InformationContainer>
 

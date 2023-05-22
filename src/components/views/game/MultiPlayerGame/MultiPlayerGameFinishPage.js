@@ -15,6 +15,7 @@ import "styles/views/game/FinalPage.scss";
 
 const MultiPlayerGameFinishPage = () => {
   const [playerRanking, setPlayerRanking] = useState([]);
+  const [isEnded, setIsEnded] = useState(false);
   const playerId = localStorage.getItem("userId");
   const gameId = localStorage.getItem("gameId");
   const isServer = localStorage.getItem("isServer");
@@ -41,28 +42,30 @@ const MultiPlayerGameFinishPage = () => {
     }
   }
   
+  const fetchGameStatus = async () => {
+    try {
+      const response = await api.get(
+        `/games/${localStorage.getItem("gameId")}/status`
+      );
+      console.log("GameStatus: ", response.data);
+      if(response.data=== "ENDED" && isServer==="false"){
+        saveGameHistory();
+        setIsEnded(true);
+      }
+    } catch (error) {
+      toast.error(`Failed to fetch player in game(ID ${gameId})\n //change this
+        ${error.response.data.message}`);
+      console.log(handleError(error));
+    }
+  };
+
   useEffect(() => {
-    const Socket = new SockJS(getDomain() + "/socket");
-    const stompClient = Stomp.over(Socket);
-    let subscription;
-    stompClient.connect(
-      {},
-      (frame) => {
-        subscription = stompClient.subscribe(
-          `/instance/games/${gameId}`,
-          (message) => {
-            const messagBody = JSON.parse(message.body);
-            console.log("Socket receive msg: ", messagBody);
-            if (!isServer && messagBody.type===WebSocketType.GAME_END) {
-              saveGameHistory();
-            }
-          }
-        );
-      },
-      (err) => console.log(err)
-    );
-    return () => { subscription.unsubscribe();};
-  }, []);
+    // stop the timer if game ended or is host
+    if (!isEnded && isServer==="false") {
+      const interval = setInterval(fetchGameStatus, 1000);
+      return () => clearInterval(interval);
+    }
+  }, [isEnded]);
 
   useEffect(() => {
     async function saveGameInfo() {
@@ -77,7 +80,7 @@ const MultiPlayerGameFinishPage = () => {
         console.log(handleError(error));
       }
     }
-    if (isServer) {
+    if (isServer==="true") {
       saveGameInfo();
       saveGameHistory();
     }
@@ -92,9 +95,10 @@ const MultiPlayerGameFinishPage = () => {
   }, {});
 
   const endGame = async() => {
-    if (isServer){
+    if (isServer==="true"){
       await api.delete(`games/${gameId}`);
       await new Promise((resolve) => setTimeout(resolve, 500));
+      console.log(`Game ${gameId} deleted.`)
     }
     localStorage.removeItem("gameId");
     localStorage.removeItem("category");

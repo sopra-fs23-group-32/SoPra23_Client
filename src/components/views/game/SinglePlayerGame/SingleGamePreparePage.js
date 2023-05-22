@@ -52,7 +52,7 @@ const RoundCountdown = () => {
       try {
         const response = await api.put(`games/${gameId}`);
         setLocalStorageItems(response.data);
-        console.log(response);
+        console.log("Questions: ", response.data);
         await new Promise((resolve) => setTimeout(resolve, 1000));
       }
       catch (error) {

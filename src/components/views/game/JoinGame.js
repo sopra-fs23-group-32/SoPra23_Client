@@ -21,7 +21,7 @@ const JoinGame = () => {
     const fetchGamedata = async () => {
       const response = await api.get("/games/");
       setOpeningGames(response.data);
-      console.log(response)
+      console.log("All games in SET_UP", response.data)
       await new Promise((resolve) => setTimeout(resolve, 1000));
     };
     fetchGamedata();
