@@ -5,20 +5,22 @@ import PropTypes from "prop-types";
 import { api, handleError } from "helpers/api";
 import { Spinner } from "components/ui/Spinner";
 import InformationContainer from "components/ui/BaseContainer";
-import { InputLabel, Select, MenuItem, TextField,} from "@mui/material";
+import { InputLabel, Select, MenuItem, TextField } from "@mui/material";
 
 import SockJS from "sockjs-client";
 import Stomp from "stompjs";
 import { getDomain } from "helpers/getDomain";
 import WebSocketType from "models/WebSocketType";
 
-import { ToastContainer, toast } from 'react-toastify';
+import { ToastContainer, toast } from "react-toastify";
 import "styles/views/game/WaitingPage.scss";
 
 const CreatedGamePage = () => {
   const [gamePlayers, setGamePlayers] = useState([]);
-  const [playerNumber, setPlayerNumber] = useState(localStorage.getItem("playerNum"));
-  // 
+  const [playerNumber, setPlayerNumber] = useState(
+    localStorage.getItem("playerNum")
+  );
+  //
   const gameId = localStorage.getItem("gameId");
   const category = localStorage.getItem("category");
   const totalRounds = localStorage.getItem("totalRounds");
@@ -29,62 +31,64 @@ const CreatedGamePage = () => {
   const username = localStorage.getItem("username");
   const history = useHistory();
 
-  
-
   const fetchPlayer = async () => {
-    try{
+    try {
       const myValue = localStorage.getItem("isServer");
       console.log(isServer);
-      const response = await api.get(`/games/${localStorage.getItem("gameId")}/players`);
+      const response = await api.get(
+        `/games/${localStorage.getItem("gameId")}/players`
+      );
       console.log("Players", response.data);
       setGamePlayers(response.data);
       setPlayerNumber(response.data.length);
-    }
-    catch (error) {
+    } catch (error) {
       toast.error(`Failed to fetch player in game(ID ${gameId})\n
         ${error.response.data.message}`);
       console.log(handleError(error));
     }
   };
 
-  const fetchGameStatus = async () =>{
-    try{
-      
-      const response = await api.get(`/games/${localStorage.getItem("gameId")}/status`);
+  const fetchGameStatus = async () => {
+    try {
+      const response = await api.get(
+        `/games/${localStorage.getItem("gameId")}/status`
+      );
       console.log("GameStatus", response.data);
-      if(response.data==="ANSWERING"){
+      if (response.data === "ANSWERING") {
         localStorage.setItem("myScore", 0);
-              localStorage.setItem("roundNumber", 1);
-              history.push(`/MultiGamePage/${gameId}/RoundCountPage/`);
+        localStorage.setItem("roundNumber", 1);
+        history.push(`/MultiGamePage/${gameId}/RoundCountPage/`);
       }
-      
-    }
-    catch (error) {
+      if (response.data === "DELETED" || response.data === "ENDED") {
+        backToLobby();
+      }
+    } catch (error) {
       toast.error(`Failed to fetch player in game(ID ${gameId})\n //change this
         ${error.response.data.message}`);
       console.log(handleError(error));
+      backToLobby();
     }
   };
 
   // automatically fetch player list
   useEffect(() => {
-
-    toast.info(`Successfully add player '${username}'(ID ${userId}) to game(ID ${gameId})!`)
+    toast.info(
+      `Successfully add player '${username}'(ID ${userId}) to game(ID ${gameId})!`
+    );
     const interval = setInterval(fetchPlayer, 3000);
     return () => {
       clearInterval(interval); // Clean up the interval on component unmount
     };
-  }, []); 
-  
-  useEffect(() => {
-    if(isServer==="false"){
-    const interval1 = setInterval(fetchGameStatus, 3000);
-    return () => {
-      clearInterval(interval1); // Clean up the interval on component unmount
-    };
-  }}, [isServer==="false"]); 
+  }, []);
 
-  
+  useEffect(() => {
+    if (isServer === "false") {
+      const interval1 = setInterval(fetchGameStatus, 3000);
+      return () => {
+        clearInterval(interval1); // Clean up the interval on component unmount
+      };
+    }
+  }, [isServer === "false"]);
 
   /*useEffect(() => {
     const Socket = new SockJS(getDomain() + "/socket");
@@ -126,14 +130,16 @@ const CreatedGamePage = () => {
   }, []); */
 
   const leaveGame = async () => {
-    const myValue = localStorage.getItem("isServer");
-    if (myValue === "true") {
+    try{if (isServer === "true") {
       const response = await api.delete(`/games/${gameId}`);
       console.log("Delete game:", response.data);
-    }
-    else {
+    } else {
       const response = await api.delete(`/games/${gameId}/players/${userId}`);
       console.log("Delete player:", response.data);
+    }}catch (error) {
+      toast.error(`Failed to fetch player in game(ID ${gameId})\n
+        ${error.response.data.message}`);
+      console.log(handleError(error));
     }
     localStorage.removeItem("gameId");
     localStorage.removeItem("category");
@@ -141,15 +147,16 @@ const CreatedGamePage = () => {
     localStorage.removeItem("countdownTime");
     localStorage.removeItem("playerNum");
     localStorage.removeItem("isServer");
+
   };
 
   const backToLobby = () => {
-    const myValue = localStorage.getItem("isServer");
-    console.log(myValue);
-    leaveGame(); history.push("/JoinGame");
+    leaveGame();
+    history.push("/JoinGame");
   };
   const backToHome = () => {
-    leaveGame(); history.push("/home");
+    leaveGame();
+    history.push("/home");
   };
 
   const startGameMultiplayer = async (gameId) => {
@@ -158,7 +165,7 @@ const CreatedGamePage = () => {
     history.push(`/MultiGamePage/${gameId}/RoundCountPage/`);
   };
 
-  const Player = ({players}) => (
+  const Player = ({ players }) => (
     <div>
       <table className="WaitingPage table-style">
         <thead>
@@ -168,27 +175,25 @@ const CreatedGamePage = () => {
           </tr>
         </thead>
         <tbody>
-            {players.map((player, index) => {
-              return (
-                <tr key={player.userId}>
-                  <td>{player.userId}</td>
-                  <td>{player.username}</td>
-                </tr>
-              );
-            })}
+          {players.map((player, index) => {
+            return (
+              <tr key={player.userId}>
+                <td>{player.userId}</td>
+                <td>{player.username}</td>
+              </tr>
+            );
+          })}
         </tbody>
       </table>
     </div>
-  )
+  );
   Player.propTypes = {
     players: PropTypes.object,
   };
-  let playerList = <Spinner />
+  let playerList = <Spinner />;
 
   if (gamePlayers !== null) {
-    playerList = (
-      <Player players={gamePlayers} />
-    );
+    playerList = <Player players={gamePlayers} />;
   }
 
   return (
@@ -199,11 +204,15 @@ const CreatedGamePage = () => {
         </div>
         <div className="waiting-page select">
           <InputLabel className="waiting-page label">Category</InputLabel>
-          <Select value={category} disabled
+          <Select
+            value={category}
+            disabled
             inputProps={{
               MenuProps: {
-                sx: {borderRadius: "10px",},
-                MenuListProps: {sx: { backgroundColor: "#1979b8",color: "white",},},
+                sx: { borderRadius: "10px" },
+                MenuListProps: {
+                  sx: { backgroundColor: "#1979b8", color: "white" },
+                },
               },
             }}
             className="waiting-page category"
@@ -218,30 +227,34 @@ const CreatedGamePage = () => {
         </div>
         <div className="waiting-page select">
           <InputLabel className="waiting-page label">Rounds:</InputLabel>
-          <TextField className="waiting-page text"
-            inputProps={{ style: { textAlign: "center" },}}
-            value={totalRounds} disabled 
+          <TextField
+            className="waiting-page text"
+            inputProps={{ style: { textAlign: "center" } }}
+            value={totalRounds}
+            disabled
           />
         </div>
         <div className="waiting-page select">
-        <InputLabel className="waiting-page label">Countdown Time:</InputLabel>
-        <TextField className="waiting-page text"
-          inputProps={{ style: { textAlign: "center" },}}
-          value={totalTime} disabled 
-        />
+          <InputLabel className="waiting-page label">
+            Countdown Time:
+          </InputLabel>
+          <TextField
+            className="waiting-page text"
+            inputProps={{ style: { textAlign: "center" } }}
+            value={totalTime}
+            disabled
+          />
         </div>
 
         <div className="waiting-page button-container">
-          <Button onClick={() => startGameMultiplayer(gameId)}
-            disabled={isServer==="false"}>
+          <Button
+            onClick={() => startGameMultiplayer(gameId)}
+            disabled={isServer === "false"}
+          >
             Start Game
           </Button>
-          <Button onClick={() => backToLobby()}>
-            Back to Lobby
-          </Button>
-          <Button onClick={() => backToHome()}>
-            Back to Home Page
-          </Button>
+          <Button onClick={() => backToLobby()}>Back to Lobby</Button>
+          <Button onClick={() => backToHome()}>Back to Home Page</Button>
         </div>
       </InformationContainer>
 
