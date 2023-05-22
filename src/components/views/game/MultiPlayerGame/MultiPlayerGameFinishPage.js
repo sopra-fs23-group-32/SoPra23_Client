@@ -27,7 +27,7 @@ const MultiPlayerGameFinishPage = () => {
     toast.info(`Player's game history saved.`);}
     //await new Promise((resolve) => setTimeout(resolve, 500));}
     catch (error) {
-      toast.error(`Failed to fetch player in game(ID ${gameId})\n //change this
+      toast.error(`Failed to fetch player in gamexxxx(ID ${gameId})\n //change this
         ${error.response.data.message}`);
       console.log(handleError(error));
     }
@@ -64,12 +64,7 @@ const MultiPlayerGameFinishPage = () => {
     }
   };
 
-  useEffect(() => {
-    const interval1 = setInterval(fetchGameStatus, 2000);
-    return () => {
-      clearInterval(interval1); // Clean up the interval on component unmount
-    };
-  }, [isEnded===false && isServer==="false"]);
+
 
   useEffect(() => {
     async function saveGameInfo() {

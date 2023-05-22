@@ -163,7 +163,16 @@ const Lobby = () => {
               }}
               placeholder="enter number..."
               value={gameRounds}
-              onChange={(e) => setGameRounds(e.target.value)}
+              onChange={(e) => {
+                const value = e.target.value;
+                if (value > 0 && /^\d+$/.test(value)) {
+                  setGameRounds(value);
+                } else if (value === "0") {
+                  // Handle the case when "0" is entered, you can display an error or show a message
+                  // Here, we are resetting the value to an empty string
+                  setGameRounds(1);
+                }
+              }}
             />
             </div>
           <div className="lobby category-select">
@@ -177,7 +186,16 @@ const Lobby = () => {
           }}
           placeholder="enter number..."
           value={countdownTime} 
-          onChange={(e) => setCountdownTime(e.target.value)}
+          onChange={(e) => {
+            const value = e.target.value;
+            if (value > 14 && /^\d+$/.test(value)) {
+              setCountdownTime(value);
+            } else if (value === "0") {
+              // Handle the case when "0" is entered, you can display an error or show a message
+              // Here, we are resetting the value to an empty string
+              setCountdownTime(15);
+            }
+          }}
         />
           </div>
           {isMultiplayer && (
@@ -219,7 +237,7 @@ const Lobby = () => {
               </Button>
             )}
           </div>
-        )};
+        )}
       </div>
 
       <div className="lobby button-container">
