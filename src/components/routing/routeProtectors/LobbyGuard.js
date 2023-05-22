@@ -14,7 +14,7 @@ export const LobbyGuard = (props) => {
   if (localStorage.getItem("userId")) {
     return props.children;
   }
-  return <Redirect to="/lobby" />;
+  return <Redirect to="/login" />;
 };
 
 LobbyGuard.propTypes = {
