@@ -61,10 +61,14 @@ const MultiPlayerGameFinishPage = () => {
 
   useEffect(() => {
     const interval1 = setInterval(fetchGameStatus, 2000);
+    // stop the timer if game ended or is host
+    if (isEnded || isServer==="true") {
+      clearInterval(interval1);
+    }
     return () => {
-      clearInterval(interval1); // Clean up the interval on component unmount
+      clearInterval(interval1);
     };
-  }, [isEnded===false && isServer==="false"]);
+  }, [isEnded]);
 
   useEffect(() => {
     async function saveGameInfo() {
@@ -97,6 +101,7 @@ const MultiPlayerGameFinishPage = () => {
     if (isServer==="true"){
       await api.delete(`games/${gameId}`);
       await new Promise((resolve) => setTimeout(resolve, 500));
+      console.log(`Game ${gameId} deleted.`)
     }
     localStorage.removeItem("gameId");
     localStorage.removeItem("category");

@@ -1,5 +1,5 @@
 import { useHistory } from "react-router-dom";
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import { Button } from "components/ui/Button";
 import { api, handleError } from "helpers/api";
 import { Grid, Container } from "@mui/material";
@@ -19,13 +19,14 @@ const MultiPlayerGamePage = () => {
   const [roundTime, setRoundTime] = useState(
     localStorage.getItem("countdownTime")
   );
+  const [roundTime2, setRoundTime2] = useState(4);
   const [selectedCityName, setSelectedCityName] = useState(null);
   // control the flow
   const [isWaiting, setIsWaiting] = useState(true);
-  const [isContinue, setIsContinue] = useState(false);
 
   const gameId = localStorage.getItem("gameId");
   const roundNumber = localStorage.getItem("roundNumber");
+  const totalRounds = localStorage.getItem("totalRounds");
   const totalTime = localStorage.getItem("countdownTime");
   const cityNames = JSON.parse(localStorage.getItem("citynames"));
   const correctOption = localStorage.getItem("CorrectOption");
@@ -34,21 +35,52 @@ const MultiPlayerGamePage = () => {
   const history = useHistory();
 
   const endRound = () => {
-    // remove all local storage of previous question
-    localStorage.removeItem("citynames");
-    localStorage.removeItem("PictureUrl");
-    localStorage.removeItem("CorrectOption");
-    // go to next page
-    if (
-      localStorage.getItem("roundNumber") ===
-      localStorage.getItem("totalRounds")
-    ) {
+    if (roundNumber === totalRounds) {
       history.push(`/MultiGamePage/${gameId}/GameFinish`);
-    } else {
+    }
+    else {
       localStorage.setItem("roundNumber", Number(roundNumber) + 1);
       history.push(`/MultiGamePage/${gameId}/RoundCountPage`);
     }
   };
+
+  const fetchGameStatus = async () => {
+    try {
+      const response = await api.get(`/games/${gameId}/status`);
+      console.log("GameStatus: ", response.data);
+      if(response.data==="WAITING"){
+        setIsWaiting(false);
+      }
+    } catch (error) {
+      toast.error(`${error.response.data.message}`);
+      console.log(handleError(error));
+    }
+  };
+
+  // keep fetching game status until not waiting
+  useEffect(() => {
+    if (isWaiting) {
+      const interval1 = setInterval(fetchGameStatus, 1000);
+      return () => clearInterval(interval1);
+    }
+  }, [isWaiting]);
+
+  // when all answered(not waiting) count 3s and go to next page
+  useEffect(() => {
+    if(!isWaiting){
+      const interval2 = setInterval(() => {
+        setRoundTime2((prevTimeLeft) => {
+          const newTimeLeft = prevTimeLeft - 1;
+          if (newTimeLeft <= 0) {
+            endRound();
+          }
+          return newTimeLeft;
+        });
+      }, 1000);
+      return () => clearInterval(interval2);
+    }
+  }, [isWaiting]);
+
   /*
   // handle msg from the web socket
   useEffect(() => {
@@ -99,40 +131,14 @@ const MultiPlayerGamePage = () => {
     }
   };
 
-  const fetchGameStatus = async () => {
-    try {
-      const response = await api.get(
-        `/games/${localStorage.getItem("gameId")}/status`
-      );
-      console.log("GameStatus", response.data);
-      if(response.data=== "WAITING"){
-        setIsWaiting(false);
-        // have pressed the button
-        if(isContinue){
-          endRound();
-        }
-      }
-    } catch (error) {
-      toast.error(`Failed to fetch player in game(ID ${gameId})\n //change this
-        ${error.response.data.message}`);
-      console.log(handleError(error));
-    }
-  };
-
-  useEffect(() => {
-    const interval1 = setInterval(fetchGameStatus, 2000);
-    return () => {
-      clearInterval(interval1); // Clean up the interval on component unmount
-    };
-  }, [isWaiting===true]);
-
   // submit "no answer" when times up
+  const intervalIdRef = useRef(null);
   useEffect(() => {
-    const intervalId = setInterval(() => {
+    intervalIdRef.current = setInterval(() => {
       setRoundTime((prevTimeLeft) => {
         const newTimeLeft = prevTimeLeft - 1;
         if (newTimeLeft <= 0) {
-          clearInterval(intervalId);
+          clearInterval(intervalIdRef.current);
           if (!isAnswerSubmitted) {
             submitAnswer("no answer", totalTime);
           }
@@ -140,22 +146,16 @@ const MultiPlayerGamePage = () => {
         return newTimeLeft;
       });
     }, 1000);
-    return () => clearInterval(intervalId);
+    return () => {clearInterval(intervalIdRef.current);};
   }, [isAnswerSubmitted]);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     if (!isAnswerSubmitted) {
       submitAnswer(selectedCityName, totalTime - roundTime);
-    } else {
-      setIsContinue(true);
       if (isWaiting) {
-        // press but not ok yet
         toast.info(`Waiting for other players to answer...`);
-      } else {
-        // you are the last one
-        endRound();
-      }
+      } 
     }
   };
 
@@ -177,7 +177,7 @@ const MultiPlayerGamePage = () => {
           ? "dark-button"
           : "blue-button"
       }`}
-      disabled={isAnswerSubmitted === true}
+      disabled={isAnswerSubmitted===true}
       onClick={() => handleCityNameButtonClick(cityName)}
     >
       {cityName}
@@ -234,8 +234,13 @@ const MultiPlayerGamePage = () => {
               <div className="city-button-container">
                 {cityNameButtons}
                 <form onSubmit={handleSubmit} className="submit-form">
-                  <button type="submit" className="submit-button">
-                    {isAnswerSubmitted ? "Next" : "Submit Answer"}
+                  <button type="submit" className="submit-button"
+                    disabled={isAnswerSubmitted}>
+                    {isAnswerSubmitted ? 
+                      isWaiting ? 
+                        `Waiting for others`
+                         : `Wait ${roundTime2} sec`
+                       : "Submit Answer"}
                   </button>
                 </form>
               </div>
@@ -248,9 +253,6 @@ const MultiPlayerGamePage = () => {
         <div className="info-container">
           <span className="round-number">Round {roundNumber}</span>
           <span className="score">Score: {score}</span>
-          <span className="score">
-            {isWaiting && isAnswerSubmitted ? "Waiting for other players" : ""}
-          </span>
         </div>
       </div>
       <ToastContainer />
