@@ -22,10 +22,15 @@ const MultiPlayerGameFinishPage = () => {
   const history = useHistory();
 
   const saveGameHistory = async () => {
-    const response = await api.post(`/users/${playerId}/gameHistories/${gameId}`);
+    try{const response = await api.post(`/users/${playerId}/gameHistories/${gameId}`);
     console.log("Game History: ", response.data);
-    toast.info(`Player's game history saved.`);
-    await new Promise((resolve) => setTimeout(resolve, 500));
+    toast.info(`Player's game history saved.`);}
+    //await new Promise((resolve) => setTimeout(resolve, 500));}
+    catch (error) {
+      toast.error(`Failed to fetch player in gamexx(ID ${gameId})\n //change this
+        ${error.response.data.message}`);
+      console.log(handleError(error));
+    }
   }
 
   async function fetchRanking() {
@@ -34,7 +39,7 @@ const MultiPlayerGameFinishPage = () => {
       const responseRanking = await api.get(`/games/${gameId}/ranking`);
       setPlayerRanking(responseRanking.data);
       console.log("Ranking: ", responseRanking.data);
-      await new Promise((resolve) => setTimeout(resolve, 1000));
+      //await new Promise((resolve) => setTimeout(resolve, 1000));
     }
     catch (error) {
       toast.error("Something went wrong while fetching the ranking!");
@@ -49,8 +54,8 @@ const MultiPlayerGameFinishPage = () => {
       );
       console.log("GameStatus: ", response.data);
       if(response.data=== "ENDED" && isServer==="false"){
-        saveGameHistory();
-        setIsEnded(true);
+        //saveGameHistory(); here somethibng is not working -jano
+        //setIsEnded(true);
       }
     } catch (error) {
       toast.error(`Failed to fetch player in game(ID ${gameId})\n //change this
@@ -58,13 +63,16 @@ const MultiPlayerGameFinishPage = () => {
       console.log(handleError(error));
     }
   };
-
   useEffect(() => {
-    const interval1 = setInterval(fetchGameStatus, 2000);
-    return () => {
-      clearInterval(interval1); // Clean up the interval on component unmount
-    };
-  }, [isEnded===false && isServer==="false"]);
+    if (!isEnded && isServer === "false"){
+      const interval = setInterval(fetchGameStatus,1000);
+      return ()=>clearInterval(interval)
+        
+      }
+    }, [isEnded]);
+    
+
+
 
   useEffect(() => {
     async function saveGameInfo() {
@@ -72,7 +80,7 @@ const MultiPlayerGameFinishPage = () => {
         const responseGameInfo = await api.post(`/gameInfo/${gameId}`);
         console.log("Game Info: ", responseGameInfo.data);
         toast.info(`Game's information saved.`);
-        await new Promise((resolve) => setTimeout(resolve, 500));
+        //await new Promise((resolve) => setTimeout(resolve, 500));
       }
       catch (error) {
         toast.error("Something went wrong while fetching the ranking!");
@@ -96,7 +104,8 @@ const MultiPlayerGameFinishPage = () => {
   const endGame = async() => {
     if (isServer==="true"){
       await api.delete(`games/${gameId}`);
-      await new Promise((resolve) => setTimeout(resolve, 500));
+      //await new Promise((resolve) => setTimeout(resolve, 500));
+      console.log(`Game ${gameId} deleted.`)
     }
     localStorage.removeItem("gameId");
     localStorage.removeItem("category");

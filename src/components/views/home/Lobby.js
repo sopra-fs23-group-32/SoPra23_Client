@@ -132,7 +132,7 @@ const Lobby = () => {
               id="demo-simple-select"
               value={selectedCategory}
               label="category"
-              style={{ height: '45px', marginBottom: '16px', marginLeft: '5px' }}
+              style={{ height: '45px', marginLeft: '5px',width:"150px"}}
               onChange={(e) => setSelectedCategory(e.target.value)}
               inputProps={{
                 MenuProps: {
@@ -154,15 +154,59 @@ const Lobby = () => {
           <div className="lobby category-select">
             <InputLabel className="lobby label" style={{paddingLeft:"1px"}}>Rounds:</InputLabel>
             <TextField
+              style={{width:"150px"}}
               className="lobby round"
               inputProps={{
                 style: { textAlign: "center", height: "10px"},
+                min:1,
+                type:"number",
               }}
-              placeholder="enter number of rounds..."
+              placeholder="enter number..."
               value={gameRounds}
-              onChange={(e) => setGameRounds(e.target.value)}
+              onChange={(e) => {
+                const value = e.target.value;
+                if (value > 0 && /^\d+$/.test(value)) {
+                  setGameRounds(value);
+                } else if (value === "0") {
+                  // Handle the case when "0" is entered, you can display an error or show a message
+                  // Here, we are resetting the value to an empty string
+                  setGameRounds(1);
+                }
+              }}
             />
+            </div>
+          <div className="lobby category-select">
+        <InputLabel className="lobby label" style={{paddingLeft:"1px"}}>Time Limit:</InputLabel>
+        <TextField className="lobby round"
+          style={{width:"150px"}}
+          inputProps={{
+            style: { textAlign: "center", height: "10px"},
+            min:15,
+            type:"number",
+          }}
+          placeholder="enter number..."
+          value={countdownTime} 
+          onChange={(e) => {
+            const value = e.target.value;
+            if (value > 14 && /^\d+$/.test(value)) {
+              setCountdownTime(value);
+            } else if (value === "0") {
+              // Handle the case when "0" is entered, you can display an error or show a message
+              // Here, we are resetting the value to an empty string
+              setCountdownTime(15);
+            }
+          }}
+        />
           </div>
+          {isMultiplayer && (
+          <div style={{textAlign: "center"}}>
+          Careful: <br/>
+          After creating the multiplayer lobby you won't <br />
+          be able to change the 
+          game settings anymore! 
+            
+          </div>
+)}
         </InformationContainer>
       </div>
 
@@ -193,7 +237,7 @@ const Lobby = () => {
               </Button>
             )}
           </div>
-        )};
+        )}
       </div>
 
       <div className="lobby button-container">

@@ -4,7 +4,7 @@ import { api, handleError } from "helpers/api";
 import { Grid, Container } from "@mui/material";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
-
+import { Button } from "components/ui/Button";
 import "styles/views/game/GamePage.scss";
 
 const SingleGamePage = () => {
@@ -119,10 +119,11 @@ const SingleGamePage = () => {
 
   return (
     <div className="guess-the-city">
-      <div className="guess-the-city header">
-        <button className="exit-button" onClick={handleExitButtonClick}>
+      <div style={{ position: "fixed", top: 75, left: 75 }}>
+        <Button  style={{ fontSize: "45px", height: "100px", width: "100%" }}
+         onClick={handleExitButtonClick}>
           Exit Game
-        </button>
+        </Button>
       </div>
 
       <div className="guess-the-city main">
