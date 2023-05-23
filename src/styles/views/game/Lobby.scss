@@ -63,7 +63,7 @@
         margin-left: 20px;
         width: 60%;
         border-radius: $borderRadius;
-        background-color: #1979b8;
+        background-color: rgba(65, 63, 240, 0.7);
 		color: $textColor;
         &.Mui-disabled {
             color: $textColor;
@@ -73,17 +73,17 @@
         margin-left: 30px;
         width: 60%;
         border-radius: 10px;
-        background-color: #1979b8;
+        background-color: rgba(65, 63, 240, 0.7);
 		color: $textColor;
     }
     &.round {
         margin-left: 30px;
         width: 60%;
         border-radius: $borderRadius;
-        background-color: #1979b8;
+        background-color: rgba(94, 93, 240, 0.8);
 		color: $textColor;
         .MuiInputBase-input {
-			background-color: #1979b8;
+			background-color: rgba(65, 63, 240, 0.3);
             color: $textColor;
             height: 30px;
             font-size: 14px;
@@ -147,7 +147,7 @@
 .exit-button {
     position: absolute;
     background-color: #1979b8 !important;
-    top: 30px;
+    top: -100px;
     left: 30px;
     display: flex;
     align-items: center;

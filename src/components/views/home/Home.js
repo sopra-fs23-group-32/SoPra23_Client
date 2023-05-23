@@ -35,52 +35,52 @@ const Home = () => {
   return (
     <div className="home button-container">
       <Button
-                style={{ fontSize: "3rem", width: "40rem", height: "auto" }}
+                style={{ fontSize: "2.5rem", width: "40rem", height: "auto" }}
                 onClick={() => history.push("/lobby/singleplayer")}
             >
                 Start Singleplayer Game
             </Button>
 
             <Button
-                style={{ fontSize: "3rem", width: "40rem", height: "auto" }}
+                style={{ fontSize: "2.5rem", width: "40rem", height: "auto" }}
                 onClick={() => history.push("/lobby/multiplayer")}
             >
                 Create Multiplayer Game
             </Button>
 
             <Button
-                style={{ fontSize: "3rem", width: "40rem", height: "auto" }}
+                style={{ fontSize: "2.5rem", width: "40rem", height: "auto" }}
                 onClick={() => history.push("/JoinGame")}
             >
                 Join Multiplayer Game
             </Button>
 
       <Button
-      style={{ fontSize: "3rem", width: "40rem", height: "auto" }}
+      style={{ fontSize: "2.5rem", width: "40rem", height: "auto" }}
         onClick={() => history.push("/home/scoreboard")}
       >
         Leaderboard
       </Button>
       <Button
-      style={{ fontSize: "3rem", width: "40rem", height: "auto" }}
+      style={{ fontSize: "2.5rem", width: "40rem", height: "auto" }}
         onClick={() => history.push("/userinfo/history")}
       >
         Game History
       </Button>
       <Button
-         style={{ fontSize: "3rem", width: "40rem", height: "auto" }}
+         style={{ fontSize: "2.5rem", width: "40rem", height: "auto" }}
         onClick={() => goProfile(localStorage.getItem("userId"))}
       >
         My Profile
       </Button>
       <Button
-        style={{ fontSize: "3rem", width: "40rem", height: "auto" }}
+        style={{ fontSize: "2.5rem", width: "40rem", height: "auto" }}
         onClick={() => history.push("/home/about")}
       >
         About
       </Button>
       <Button
-         style={{ fontSize: "3rem", width: "40rem", height: "auto" }}
+         style={{ fontSize: "2.5rem", width: "40rem", height: "auto" }}
         onClick={() => doLogout()}
       >
         Logout

@@ -39,6 +39,7 @@ const JoinGame = () => {
         localStorage.setItem("totalRounds", serverInfo.gameRounds);
         if(serverInfo.gameRounds === 999999)
             localStorage.setItem("survival", true);
+        else localStorage.setItem("survival", false);
         localStorage.setItem("roundNumber", 0);
         localStorage.setItem("category", serverInfo.category);
         localStorage.setItem("gamePlayer", serverInfo.playerNum)
@@ -54,10 +55,10 @@ const JoinGame = () => {
             </div>
             <div className="joinboard field">
                 <div className="sever-field">
-                    <TableContainer
-                        component={Paper}
-                        sx={{ backgroundColor: "transparent" }}
-                    >
+                        <TableContainer
+                            component={Paper}
+                            sx={{ backgroundColor: "#413ff088" }}
+                        >
                         <Table
                             sx={{ minWidth: 650 }}
                             aria-label="simple table"
@@ -66,13 +67,13 @@ const JoinGame = () => {
                             <TableHead>
                                 <TableRow>
                                     <TableCell></TableCell>
-                                    <TableCell align="center">
+                                    <TableCell align="center" sx={{color: "#ffffff"}}>
                                         Region
                                     </TableCell>
-                                    <TableCell align="center">
+                                    <TableCell align="center" sx={{color: "#ffffff"}}>
                                         Number of Rounds
                                     </TableCell>
-                                    <TableCell align="center">Join</TableCell>
+                                    <TableCell align="center" sx={{color: "#ffffff"}}>Join</TableCell>
                                 </TableRow>
                             </TableHead>
                             <TableBody>
@@ -87,19 +88,19 @@ const JoinGame = () => {
                                                     },
                                             }}
                                         >
-                                            <TableCell
+                                            <TableCell align="center" sx={{color: "#ffffff"}}
                                                 component="th"
                                                 scope="row"
                                             >
                                                 {index + 1}.
                                             </TableCell>
-                                            <TableCell align="center">
+                                            <TableCell align="center" sx={{color: "#ffffff"}}>
                                                 {openServer.category}
                                             </TableCell>
-                                            <TableCell align="center">
+                                            <TableCell align="center" sx={{color: "#ffffff"}}>
                                                 {openServer.gameRounds}
                                             </TableCell>
-                                            <TableCell align="center">
+                                            <TableCell align="center" sx={{color: "#ffffff"}}>
                                                 <p onClick={() => joinServer(openServer)}>Join</p>
                                             </TableCell>
                                         </TableRow>

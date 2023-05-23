@@ -23,7 +23,7 @@ const UrgeWithPleasureComponent = ({ duration }) => (
 );
 
 const SinglePlayerGamePreparePage = () => {
-    const duration = 8;
+    const duration = 4;
 
     // use react-router-dom's hook to access the history
     const [roundNumber, setRoundNumber] = useState(1);

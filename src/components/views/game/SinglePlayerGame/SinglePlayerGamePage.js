@@ -28,24 +28,25 @@ const SinglePlayerGamePage = () => {
     const [imageUrl, setImageUrl] = useState(localStorage.getItem("PictureUrl"));
 
     const history = useHistory();
-    let intervalId = null;
 
     useEffect(() => {
-        intervalId = setInterval(() => {
+        const intervalId = setInterval(() => {
             setRoundTime((prevTimeLeft) => {
                 const newTimeLeft = prevTimeLeft - 1;
-                if (newTimeLeft <= 0) {
+                if (newTimeLeft <= 1) {
                     clearInterval(intervalId);
                     setIsAnswerSubmitted(true);
+                } else if (isAnswerSubmitted) {
+                    clearInterval(intervalId);
+                    return newTimeLeft;
                 }
                 return newTimeLeft;
             });
         }, 1000);
         return () => clearInterval(intervalId);
-    }, [history]);
+    }, [isAnswerSubmitted]);
 
     const endGame = async (gameId) => {
-        clearInterval(intervalId);
         history.push(`/GameFinish/`);
     };
 
@@ -97,8 +98,8 @@ const SinglePlayerGamePage = () => {
         e.preventDefault();
         if (!isAnswerSubmitted) {
             const playerId = localStorage.getItem("userId");
+            setIsAnswerSubmitted(true);
             try {
-                setIsAnswerSubmitted(true);
 
                 const response = await api.post(
                     `/games/${gameId}/players/${playerId}/answers`,
@@ -205,13 +206,6 @@ const SinglePlayerGamePage = () => {
                         </Grid>
                     </Grid>
                 </Container>
-            </div>
-
-            <div className="main">
-                <div className="info-container">
-                    <span className="round-number">Round {roundNumber}</span>
-                    <span className="score">Score: {score}</span>
-                </div>
             </div>
         </div>
     );

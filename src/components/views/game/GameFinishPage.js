@@ -87,14 +87,14 @@ const GameFinishPage = () => {
                         The last round has been played
                     </div>
                 </InformationContainer>
-                <div>
+                <div >
                     <InformationContainer
                         className="lobby container_left"
                         id="information-container"
                     >
                         <TableContainer
                             component={Paper}
-                            sx={{ backgroundColor: "transparent" }}
+                            sx={{ backgroundColor: "#413ff0aa" }}
                         >
                             <Table
                                 sx={{ minWidth: 650 }}
@@ -104,10 +104,10 @@ const GameFinishPage = () => {
                                 <TableHead>
                                     <TableRow>
                                         <TableCell></TableCell>
-                                        <TableCell align="center">
+                                        <TableCell align="center" sx={{color: "#ffffff"}}>
                                             UserName
                                         </TableCell>
-                                        <TableCell align="center">
+                                        <TableCell align="center" sx={{color: "#ffffff"}}>
                                             Score
                                         </TableCell>
                                     </TableRow>
@@ -123,7 +123,7 @@ const GameFinishPage = () => {
                                                     },
                                             }}
                                         >
-                                            <TableCell
+                                            <TableCell align="center" sx={{color: "#ffffff"}}
                                                 component="th"
                                                 scope="row"
                                             >
@@ -132,7 +132,7 @@ const GameFinishPage = () => {
                                             <TableCell align="center">
                                                 <p>{player.playerName}</p>
                                             </TableCell>
-                                            <TableCell align="center">
+                                            <TableCell align="center" sx={{color: "#ffffff"}}>
                                                 {player.score} Points
                                             </TableCell>
                                         </TableRow>

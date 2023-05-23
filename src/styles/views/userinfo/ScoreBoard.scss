@@ -46,7 +46,6 @@
   font-weight: bold;
   width: 800px;
   border-radius: 5px;
-  overflow: hidden;
 }
 .table tr:nth-child(odd) {
   border-bottom: 1px solid #ccc;
@@ -58,11 +57,10 @@
 }
 .table tbody tr:hover {
   cursor: pointer;
-  transform: translateY(-10px);
 }
 .table th {
   padding: 8px;
-  background-color: #01010195;
+  background-color: #413ff0b3;
 }
 .table td {
   padding: 8px;
