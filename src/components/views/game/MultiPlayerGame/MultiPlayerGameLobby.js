@@ -148,8 +148,8 @@ const MultiPlayerGameLobby = () => {
                             <Switch
                                 checked={isSurvivalMode}
                                 onChange={handleSurvivalToggle}
-                                  offColor="#1979b8"
-                                onColor="#1979b8"
+                                  offColor="#aaaacd"
+                                onColor="#413fdc"
                                 checkedIcon={false}
                                 uncheckedIcon={false}
                             />

@@ -1,9 +1,7 @@
 @import 'styles/theme';
-body{  background-image: url('/img/background_authentication.jpg');}
 
 
 .registration{
-
   &.container {
     background: #001F3F;
     padding: 30px;
@@ -31,10 +29,10 @@ body{  background-image: url('/img/background_authentication.jpg');}
     border-radius: 0.5em;
     margin-bottom: 5px; 
     color: #D4D4D4;
-    background-color: #1979b8;
+    background-color: rgb(65, 63, 240);
   }
   input::placeholder {
-    color: #D4D4D4;
+    color: #909090;
   }
 
 &.content {

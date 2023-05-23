@@ -1,5 +1,4 @@
 @import "styles/theme";
-body{  background-image: url('/img/background_game.jpg');}
 
 /* The '&' is a shorthand for the containing element
   for more information visit https://sass-lang.com/guide
@@ -112,29 +111,6 @@ body{  background-image: url('/img/background_game.jpg');}
             border-radius: 0.5em;
         }
     }
-    &.exit-button {
-        position: absolute;
-        background-color: #1979b8 !important;
-        top: 30px;
-        left: 30px;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        background-color: transparent;
-        border: none;
-        cursor: pointer;
-        font-size: 2rem;
-        color: white;
-        text-transform: uppercase;
-        font-weight: bold;
-        padding: 1rem;
-        transition: all 0.3s;
-
-        &:hover {
-            background-color: #ccc;
-        }
-    }
-
     &.button-container {
         display: flex;
         flex-direction: row;
@@ -161,7 +137,7 @@ body{  background-image: url('/img/background_game.jpg');}
 .exit-button {
     position: absolute;
     background-color: #1979b8 !important;
-    top: 30px;
+    top: -100px;
     left: 30px;
     display: flex;
     align-items: center;

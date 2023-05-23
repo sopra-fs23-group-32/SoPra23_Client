@@ -1,8 +1,7 @@
 @import 'styles/theme';
-body{  background-image: url('/img/background_authentication.jpg');}
+
 
 .login{
-
   &.container {
     background: #001F3F;
     padding: 30px;
@@ -20,7 +19,6 @@ body{  background-image: url('/img/background_authentication.jpg');}
   }
 
   &.input {
-    background: transparentize(rgb(253, 253, 253), 0.9);
     height: 30px;
     font-size: 18px;
     font-weight: 400;
@@ -28,12 +26,13 @@ body{  background-image: url('/img/background_authentication.jpg');}
     margin-left: -4px;
     border: none;
     border-radius: 0.5em;
-    margin-bottom: 5px; 
+    margin-top:3px;
+    margin-bottom: 3px;
     color: #D4D4D4;
-    background-color: #1979b8;
+    background-color: rgb(65, 63, 240);
   }
   input::placeholder {
-    color: #D4D4D4;
+    color: #909090;
   }
 
 &.content {

@@ -1,15 +1,15 @@
 @import 'styles/theme';
-body{  background-image: url('/img/background_game.jpg');}
+
 .history {
   &.container {
-    background: #001F3F;;
+    background-color: rgb(65, 63, 240);
     color: white;
-    padding: 30px;
+    padding: 30px 50px;
     border-radius: $borderRadius;
     display: flex;
     flex-direction: column;
     align-items: center;
-    width: auto;
+    width: max-content;
     margin: 2em auto 0;
     row-gap: 0.5em;
   }
@@ -52,11 +52,11 @@ body{  background-image: url('/img/background_game.jpg');}
 }
 .table tbody tr:hover {
   cursor: pointer;
-  transform: translateY(-10px);
+  transform: translateY(-2px);
 }
 .table th {
   padding: 8px;
-  background-color: #01010195;
+  background-color: rgba(65, 63, 240, 0.8);
 }
 .table td {
   padding: 8px;
