@@ -2,7 +2,6 @@ import { useHistory } from "react-router-dom";
 import React, { useState, useEffect } from "react";
 import { Button } from "components/ui/Button";
 import { api } from "helpers/api";
-import { Spinner } from "components/ui/Spinner";
 import InformationContainer from "components/ui/BaseContainer";
 import {
     FormControl,
@@ -30,12 +29,15 @@ const CreatedGamePage = () => {
         localStorage.getItem("totalRounds")
     );
     const [targetPlayerNumber, setTargetPlayerNumber] = useState(
-        localStorage.getItem("gamePlayer") 
+        localStorage.getItem("gamePlayer")
     );
     const [countdownTime, setCountdownTime] = useState(10);
     const [isServer, setIsServer] = useState(localStorage.getItem("isServer"));
 
     const history = useHistory();
+    useEffect(() => {
+        handleSub();
+    }, [])
 
     const handleSub = async () => {
         const response = await api.get(
@@ -46,34 +48,38 @@ const CreatedGamePage = () => {
     };
 
     const addUser = async () => {
-        if(localStorage.isServer == 0) {
-            const response = await api.post(`/games/${localStorage.getItem("gameId")}/players/${localStorage.getItem("userId")}`);
+        if (localStorage.isServer == 0) {
+            const response = await api.post(
+                `/games/${localStorage.getItem(
+                    "gameId"
+                )}/players/${localStorage.getItem("userId")}`
+            );
             console.log("You Joined the game", response.data);
         }
-    }
+    };
 
     const leaveGame = async () => {
-        if(localStorage.isServer == 1) {
-            const response = await api.delete(`/games/${gameId}/players/${userId}`);
+        if (localStorage.isServer == 1) {
+            const response = await api.delete(
+                `/games/${gameId}/players/${userId}`
+            );
             const response1 = await api.delete(`/games/${gameId}`);
         } else {
-            const response = await api.delete(`/games/${gameId}/players/${userId}`);
+            const response = await api.delete(
+                `/games/${gameId}/players/${userId}`
+            );
         }
-    }
+    };
 
     const backToHome = () => {
         leaveGame();
-        history.push('/home');
-    }
+        history.push("/home");
+    };
 
     const joinOther = () => {
         leaveGame();
-        history.push('/JoinGame')
-    }
-   console.log("players: ",gamePlayers);
-    {gamePlayers.map((player, index) => <p className="lobby player-name" key={index}>
-    {console.log("Players",player.username)}
-</p>)}
+        history.push("/JoinGame");
+    };
 
     useEffect(() => {
         addUser();
@@ -86,25 +92,44 @@ const CreatedGamePage = () => {
             (frame) => {
                 console.log("Socket connected!");
                 console.log(frame);
-                subscription = stompClient.subscribe(`/instance/games/${gameId}`, (message) => {                    
-                    const messagBody = JSON.parse(message.body);
-                    if(messagBody.type == WebSocketType.GAME_END && localStorage.getItem("roundNumber") == localStorage.getItem("totalRounds")) {
-                        history.push('/lobby');
+                subscription = stompClient.subscribe(
+                    `/instance/games/${gameId}`,
+                    (message) => {
+                        const messagBody = JSON.parse(message.body);
+                        if (
+                            messagBody.type == WebSocketType.GAME_END &&
+                            localStorage.getItem("roundNumber") ==
+                                localStorage.getItem("totalRounds")
+                        ) {
+                            history.push("/lobby");
+                        } else if (
+                            messagBody.type == WebSocketType.PLAYER_ADD ||
+                            messagBody.type == WebSocketType.PLAYER_REMOVE
+                        ) {
+                            console.log("added or removed");
+                            handleSub();
+                        } else if (
+                            messagBody.type == WebSocketType.ROUND_UPDATE
+                        ) {
+                            const currentRound = Number(
+                                localStorage.getItem("roundNumber")
+                            );
+                            localStorage.setItem(
+                                "roundNumber",
+                                currentRound + 1
+                            );
+                            history.push(
+                                `/MultiPlayerGamePage/${gameId}/RoundCountPage/`
+                            );
+                        }
                     }
-                    else if(messagBody.type == WebSocketType.PLAYER_ADD || messagBody.type == WebSocketType.PLAYER_REMOVE) {
-                        handleSub();
-                    } else if(messagBody.type == WebSocketType.ROUND_UPDATE) {
-                        const currentRound = Number(localStorage.getItem("roundNumber"));
-                        localStorage.setItem("roundNumber", currentRound + 1);
-                        history.push(`/MultiPlayerGamePage/${gameId}/RoundCountPage/`);
-                    }
-                });
+                );
             },
             (err) => console.log(err)
         );
         return () => {
             subscription.unsubscribe();
-        }
+        };
     }, []);
 
     const startGameMultiplayer = async (gameId) => {
@@ -141,7 +166,8 @@ const CreatedGamePage = () => {
                                     },
                                     MenuListProps: {
                                         sx: {
-                                            backgroundColor: "#1979b8",
+                                            backgroundColor:
+                                                "rgba(65, 63, 240, 0.7)",
                                             color: "white",
                                         },
                                     },
@@ -191,7 +217,8 @@ const CreatedGamePage = () => {
                                     },
                                     MenuListProps: {
                                         sx: {
-                                            backgroundColor: "#1979b8",
+                                            backgroundColor:
+                                                "rgba(65, 63, 240, 0.7)",
                                             color: "white",
                                         },
                                     },
@@ -210,38 +237,42 @@ const CreatedGamePage = () => {
 
                     <div></div>
                     <div className="lobby label">
-  {isLoading ? (
-    <Spinner />
-  ) : (
-    <>
-      {isServer == 1 && (
-        <Button
-          style={{ display: "inline-block", margin: "0 10px" }}
-          onClick={() => {
-            setIsLoading(true);
-            startGameMultiplayer(localStorage.getItem("gameId"));
-          }}
-        >
-          Start Game
-        </Button>
-      )}
+                        {isServer == 1 ? (
+                            <Button
+                                style={{
+                                    display: "inline-block",
+                                    margin: "0 10px",
+                                }}
+                                onClick={() =>
+                                    startGameMultiplayer(
+                                        localStorage.getItem("gameId")
+                                    )
+                                }
+                            >
+                                Start Game
+                            </Button>
+                        ) : null}
 
-      <Button
-        style={{ display: isLoading ? "none" : "inline-block", margin: "0 10px" }}
-        onClick={() => joinOther()}
-      >
-        Join Other Game
-      </Button>
+                        <Button
+                            style={{
+                                display: "inline-block",
+                                margin: "0 10px",
+                            }}
+                            onClick={() => joinOther()}
+                        >
+                            Join Other Game
+                        </Button>
 
-      <Button
-        style={{ display: isLoading ? "none" : "inline-block", margin: "0 10px" }}
-        onClick={() => backToHome()}
-      >
-        Back to Home Page
-      </Button>
-    </>
-  )}
-</div>
+                        <Button
+                            style={{
+                                display: "inline-block",
+                                margin: "0 10px",
+                            }}
+                            onClick={() => backToHome()}
+                        >
+                            Back to Home Page
+                        </Button>
+                    </div>
                 </InformationContainer>
                 <InformationContainer
                     className="lobby container_right"
@@ -250,9 +281,14 @@ const CreatedGamePage = () => {
                     <p style={{ fontSize: "20px", marginBottom: "20px" }}>
                         Users in the lobby:
                     </p>
-                    {gamePlayers.map((player, index) => <p className="lobby player-name" key={index}>
-                        {player.username}
-                    </p>)}
+                    {gamePlayers.map((player, index) => {
+                        console.log(player);
+                        return (
+                            <p className="lobby player-name" key={index}>
+                                {player.username}
+                            </p>
+                        );
+                    })}
                 </InformationContainer>
             </div>
         </div>

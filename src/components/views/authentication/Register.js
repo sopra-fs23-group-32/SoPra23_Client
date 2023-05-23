@@ -3,7 +3,7 @@ import {api, handleError} from 'helpers/api';
 import User from 'models/User';
 import {useHistory} from 'react-router-dom';
 import {Button} from 'components/ui/Button';
-import 'styles/views/Register.scss';
+import 'styles/views/authentication/Register.scss';
 import { TextField } from "@mui/material";
 import BaseContainer from "components/ui/BaseContainer";
 import PropTypes from "prop-types";
@@ -69,13 +69,14 @@ const Register = () => {
       // Get the returned user and update a new object.
       const user = new User(response.data);
       // Store the token into the local storage.
-      // localStorage.setItem("token", user.token);
+      localStorage.setItem("token", user.token);
       localStorage.setItem("userId", user.userId);
       localStorage.setItem("username", user.username);
+
       // Login successfully worked --> navigate to the route /game in the GameRouter
       history.push(`/home`);
-    }
-    catch (error) {
+    } catch (error) {
+//      alert(`Something went wrong during the login: \n${handleError(error)}`);
         toast.error(`${error.response.data.message}`);
         console.log(handleError(error));
     }
@@ -88,12 +89,10 @@ const Register = () => {
   };
 
 
-  return (
+return (
     <div className="Registration container" style={{flexDirection: "column"}}>
-      <InformationContainer className="registration container" style={{fontSize: '48px', width: "fit-content"}}>
-        Registration
-      </InformationContainer>
-    <InformationContainer className="registration container" style={{flexDirection: "column"}}>
+      <InformationContainer className="registration container"style={{fontSize:"2rem",flexDirection: "column"}}>
+      <div className="registration-heading">Register a new account</div>
       <div className="registration form">
         <FormField
           value={username}
@@ -106,10 +105,12 @@ const Register = () => {
           onChange={n => setPassword(n)}
           onKeyDown = {handleKeyDown}
         />
-        <div style={{fontSize:"16px", marginBottom:"20px"}}>
+        <div style={{fontSize:"14px", marginBottom:"20px"}}>
           <div>The password has to contain one of the following:</div>
           <div>An uppercase letter, a lowercase letter and a number</div>
         </div>
+
+    
 
         <div className="registration-button-container" style={{display: "flex",justifyContent: 'space-between'}} >
         <Button style={{flex:1, marginRight:"40px"}} disabled={!username || !password} onClick={() => doRegister()}>
@@ -125,6 +126,7 @@ const Register = () => {
   </div>
 
 );
+
 };
 
 

@@ -21,11 +21,9 @@ import MultiPlayerGameFinishPage from "components/views/game/MultiPlayerGame/Mul
 
 import GameFinishPage from "components/views/game/GameFinishPage";
 
-import SinglePlayerGameLobby from "components/views/game/SinglePlayerGame/SinglePlayerGameLobby"
-import MultiPlayerGameLobby from "components/views/game/MultiPlayerGame/MultiPlayerGameLobby"
-import HistoryPage from '../../views/userinfo/History';
-
-
+import SinglePlayerGameLobby from "components/views/game/SinglePlayerGame/SinglePlayerGameLobby";
+import MultiPlayerGameLobby from "components/views/game/MultiPlayerGame/MultiPlayerGameLobby";
+import HistoryPage from "../../views/userinfo/History";
 
 const AppRouter = () => {
     return (
@@ -42,8 +40,8 @@ const AppRouter = () => {
                     </LoginGuard>
                 </Route>
                 <Route exact path={`/userinfo/history`}>
-        <HistoryPage/>
-      </Route>
+                    <HistoryPage />
+                </Route>
                 <Route exact path="/register">
                     <Register />
                 </Route>
@@ -57,14 +55,17 @@ const AppRouter = () => {
                 </Route>
 
                 <Route exact path={`/MultiPlayerGamePage/:gameId`}>
-                    <MultiPlayerGamePage />                    
+                    <MultiPlayerGamePage />
                 </Route>
 
                 <Route exact path={`/MultiGamePage/:gameId/GameFinish`}>
                     <MultiPlayerGameFinishPage />
                 </Route>
 
-                <Route exact path={`/MultiPlayerGamePage/:gameId/RoundCountPage`}>
+                <Route
+                    exact
+                    path={`/MultiPlayerGamePage/:gameId/RoundCountPage`}
+                >
                     <MultiPlayerGamePreparePage />
                 </Route>
 
@@ -79,8 +80,6 @@ const AppRouter = () => {
                         <HomeRouter base="/home" />
                     </GameFinishPage>
                 </Route>
-
-               
 
                 <Route path="/StartGamePage">
                     <CreatedGamePage />
@@ -97,8 +96,6 @@ const AppRouter = () => {
                 <Route path="/lobby/multiplayer">
                     <MultiPlayerGameLobby base="/lobby/multiplayer" />
                 </Route>
-               
-
             </Switch>
         </BrowserRouter>
     );

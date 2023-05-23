@@ -71,7 +71,7 @@ const SinglePlayerLobby = () => {
             await fetchQuestion(gameId);
             await handleAddPlayer(localStorage.getItem("userId"));
             setTimeout(() => {
-                history.push(`/gamePage/${gameId}/RounddownCountdown`);
+                history.push(`/gamePage/${gameId}`);
             }, 1000);
         } catch (error) {
             alert(
@@ -130,7 +130,7 @@ const SinglePlayerLobby = () => {
                                     },
                                     MenuListProps: {
                                         sx: {
-                                            backgroundColor: "#1979b8",
+                                            backgroundColor: "rgba(65, 63, 240, 0.7)",
                                             color: "white",
                                         },
                                     },
@@ -159,8 +159,8 @@ const SinglePlayerLobby = () => {
                             <Switch
                                 checked={isSurvivalMode}
                                 onChange={handleSurvivalToggle}
-                                offColor="#1979b8"
-                                onColor="#1979b8"
+                                offColor="#aaaacd"
+                                onColor="#413fdc"
                                 checkedIcon={false}
                                 uncheckedIcon={false}
                             />
@@ -176,7 +176,7 @@ const SinglePlayerLobby = () => {
                                     textAlign: "center",
                                 },
                             }}
-                            disabled={isSurvivalMode?"disabled":""}
+                            disabled={isSurvivalMode?true:false}
                             placeholder="enter number of rounds..."
                             value={gameRounds}
                             onChange={(e) => setGameRounds(e.target.value)}

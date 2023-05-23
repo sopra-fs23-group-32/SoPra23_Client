@@ -119,7 +119,7 @@ const MultiPlayerGameLobby = () => {
                                     },
                                     MenuListProps: {
                                         sx: {
-                                            backgroundColor: "#1979b8",
+                                            backgroundColor: "rgba(65, 63, 240, 0.7)",
                                             color: "white",
                                         },
                                     },
@@ -148,7 +148,7 @@ const MultiPlayerGameLobby = () => {
                             <Switch
                                 checked={isSurvivalMode}
                                 onChange={handleSurvivalToggle}
-                                offColor="#1979b8"
+                                  offColor="#1979b8"
                                 onColor="#1979b8"
                                 checkedIcon={false}
                                 uncheckedIcon={false}
@@ -165,7 +165,7 @@ const MultiPlayerGameLobby = () => {
                                     textAlign: "center",
                                 },
                             }}
-                            disabled={isSurvivalMode?"disabled":""}
+                            disabled={isSurvivalMode?true:false}
                             placeholder="enter number of rounds..."
                             value={gameRounds}
                             onChange={(e) => setGameRounds(e.target.value)}

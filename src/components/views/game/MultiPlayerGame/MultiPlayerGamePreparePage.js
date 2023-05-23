@@ -43,7 +43,7 @@ const MultiPlayerGamePreparePage = () => {
     }, []);
 
     useEffect(() => {
-        if (secondsLeft == 9) {
+        if (secondsLeft === 9) {
             getGameDetails(gameId);
         }
 
@@ -65,7 +65,6 @@ const MultiPlayerGamePreparePage = () => {
                 );
                 // Get the returned users and update the state.
                 setPlayers(response.data);
-                console.log(response.data);
             } catch (error) {
                 console.error(
                     `An error occurs while fetching the users: \n${handleError(
@@ -93,19 +92,14 @@ const MultiPlayerGamePreparePage = () => {
             localStorage.setItem("citynames", cityNamesString);
             localStorage.setItem("PictureUrl", question.pictureUrl);
             localStorage.setItem("CorrectOption", question.correctOption);
+            localStorage.setItem("answerSubmited", false);
+            localStorage.setItem("nextAvailable", true);
         } catch (error) {
             throw error;
         }
     };
     const handleExitButtonClick = () => {
         history.push("/Home");
-    };
-    const handleSub = async () => {
-        console.log(localStorage.getItem("gameId"));
-        const response2 = await api.get(
-            `/games/${localStorage.getItem("gameId")}/players`
-        );
-        console.log("this is what i want", response2);
     };
 
     return (
@@ -139,7 +133,7 @@ const MultiPlayerGamePreparePage = () => {
                             <p>Leaderboard:</p>
                             <TableContainer
                                 component={Paper}
-                                sx={{ backgroundColor: "transparent" }}
+                                sx={{ backgroundColor: "#413ff0aa" }}
                             >
                                 <Table
                                     sx={{ minWidth: 650 }}
@@ -149,10 +143,10 @@ const MultiPlayerGamePreparePage = () => {
                                     <TableHead>
                                         <TableRow>
                                             <TableCell></TableCell>
-                                            <TableCell align="center">
+                                            <TableCell align="center" sx={{color: "#ffffff"}}>
                                                 UserName
                                             </TableCell>
-                                            <TableCell align="center">
+                                            <TableCell align="center" sx={{color: "#ffffff"}}>
                                                 Score
                                             </TableCell>
                                         </TableRow>
@@ -168,16 +162,16 @@ const MultiPlayerGamePreparePage = () => {
                                                         },
                                                 }}
                                             >
-                                                <TableCell
+                                                <TableCell align="center" sx={{color: "#ffffff"}}
                                                     component="th"
                                                     scope="row"
                                                 >
                                                     {player.rank}.
                                                 </TableCell>
-                                                <TableCell align="center">
+                                                <TableCell align="center" sx={{color: "#ffffff"}}>
                                                     <p>{player.playerName}</p>
                                                 </TableCell>
-                                                <TableCell align="center">
+                                                <TableCell align="center" sx={{color: "#ffffff"}}>
                                                     {player.score} Points
                                                 </TableCell>
                                             </TableRow>

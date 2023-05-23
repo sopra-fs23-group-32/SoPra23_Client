@@ -1,7 +1,9 @@
 @import 'styles/theme';
+body{  background-image: url('/img/background_authentication.jpg');}
 
 
-.login{
+.registration{
+
   &.container {
     background: #001F3F;
     padding: 30px;
@@ -64,7 +66,7 @@
   margin-bottom: 5px;
 }
 
-&.login .form {
+&.registration .form {
   width: 100%;
 }
 }

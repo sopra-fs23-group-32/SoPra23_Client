@@ -28,10 +28,12 @@ const MultiPlayerGamePage = () => {
     const [imageUrl, setImageUrl] = useState(
         localStorage.getItem("PictureUrl")
     );
+    const [nextAvailable, setNextAvailable] = useState(true);
 
     const roundNumber = localStorage.getItem("roundNumber");
     const history = useHistory();
     const gameId = localStorage.getItem("gameId");
+    let answerSubmit = false;
 
     useEffect(() => {
         const intervalId = setInterval(() => {
@@ -70,16 +72,28 @@ const MultiPlayerGamePage = () => {
                             //update userlist
                         } else if (
                             messagBody.type == WebSocketType.ANSWER_UPDATE &&
+                            messagBody.load == GameStatus.ANSWERING
+                        ) {
+                            const submited = localStorage.getItem("answerSubmited");
+                            console.log("submited", submited, typeof(submited));
+                            if(submited === "true") {
+                                console.log("hello");
+                                localStorage.setItem("nextAvailable", false);
+                            }
+                        } else if (
+                            messagBody.type == WebSocketType.ANSWER_UPDATE &&
                             messagBody.load == GameStatus.WAITING
                         ) {
-                            console.log("AnswerUpdate");
+                            console.log("nextAvailable", localStorage.getItem("nextAvailable"));
                             if (
                                 localStorage.getItem("roundNumber") ==
                                 localStorage.getItem("totalRounds")
                             ) {
                                 endGame();
                             }
-                            nextGame();
+                            if (localStorage.getItem("nextAvailable") === "true") {
+                                nextGame();
+                            }
                         } else if (
                             messagBody.type == WebSocketType.ROUND_UPDATE
                         ) {
@@ -114,7 +128,7 @@ const MultiPlayerGamePage = () => {
     const finishGame = () => {
         localStorage.setItem("gameFinished", true);
         history.push(`/GameFinish/`);
-    }
+    };
 
     const endGame = () => {
         localStorage.setItem("gameEnded", true);
@@ -132,8 +146,9 @@ const MultiPlayerGamePage = () => {
     const handleSubmit = async (e) => {
         e.preventDefault();
         const playerId = localStorage.getItem("userId");
+        localStorage.setItem("answerSubmited", true);
+        setIsAnswerSubmitted(true);
         try {
-            setIsAnswerSubmitted(true);
 
             const response = await api.post(
                 `/games/${gameId}/players/${playerId}/answers`,
