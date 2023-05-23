@@ -9,9 +9,9 @@ import Register from "components/views/authentication/Register";
 import HistoryPage from "../../views/userinfo/History";
 
 import SinglePlayerGameLobby from "components/views/game/SinglePlayerGame/SinglePlayerGameLobby";
-import SingleGamePreparePage from "components/views/game/SinglePlayerGame/SingleGamePreparePage";
-import SingleGamePage from "components/views/game/SinglePlayerGame/SingleGamePage";
-import SingleGameFinishPage from "components/views/game/SinglePlayerGame/GameFinishPage";
+import SingleGamePreparePage from "components/views/game/SinglePlayerGame/SinglePlayerGamePreparePage";
+import SingleGamePage from "components/views/game/SinglePlayerGame/SinglePlayerGamePage";
+import SingleGameFinishPage from "components/views/game/SinglePlayerGame/SinglePlayerGameFinishPage";
 
 import MultiPlayerGameLobby from "components/views/game/MultiPlayerGame/MultiPlayerGameLobby";
 import JoinGame from "components/views/game/JoinGame";
