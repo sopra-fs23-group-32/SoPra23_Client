@@ -1,0 +1,52 @@
+@import "styles/theme";
+
+.joinboard {
+    &.container {
+        background-color: #5e5df0;
+        padding: 1em;
+        border-radius: $borderRadius;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        box-shadow: $dropShadow;
+        width: 60%;
+        margin: 50px auto 0;
+    }
+    & .headerrow {
+        display: flex;
+        justify-content: center;
+        & h2 {
+            margin: 0.5em 0;
+            color: white;
+            background-color: rgba(65, 63, 240, 0.7);
+            text-align: center;
+            font-size: 48px;
+            border-radius: 0.5em;
+            padding: 0 30px;
+        }
+    }
+
+    & .joinboard {
+        width: 100%;
+    }
+
+    & .button-container {
+        display: flex;
+        width: 100%;
+        justify-content: space-around;
+    }
+    & p {
+        margin: 0.5em 0;
+        color: white;
+        box-shadow: 1px 1px 5px white;
+        background: #5E5DF0;
+        text-align: center;
+        border-radius: 0.5em;
+        padding: 0 30px;
+        &:hover {
+            transform: translateY(-2px);
+            cursor: pointer;
+        }
+        transition: all 0.3s ease;
+    }
+}

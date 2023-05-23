@@ -2,8 +2,8 @@ import { useHistory } from "react-router-dom";
 import { api, handleError } from "helpers/api";
 import { Button } from "components/ui/Button";
 // import { moment } from "moment";
-import { ToastContainer, toast } from "react-toastify";
-import "react-toastify/dist/ReactToastify.css";
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
 import "styles/views/home/Home.scss";
 
@@ -17,10 +17,9 @@ const Home = () => {
       const requestBody = JSON.stringify({ username });
       await api.put("/logout", requestBody);
     } catch (error) {
-      toast.error(
-        `An error occurs during the login: ${error.response.data.message}`
-      );
-      console.log(handleError(error));
+//      alert(`An error occurs during the login: \n${handleError(error)}`);
+        toast.error(`${error.response.data.message}`);
+        console.log(handleError(error));
     }
 
     localStorage.removeItem("userId");
@@ -36,31 +35,40 @@ const Home = () => {
   return (
     <div className="home button-container">
       <Button
-        style={{ fontSize: "2.5rem", width: "40rem", height: "auto" }}
-        onClick={() => history.push("/lobby")}
-      >
-        Start Game
-      </Button>
+                style={{ fontSize: "2.5rem", width: "40rem", height: "auto" }}
+                onClick={() => history.push("/lobby/singleplayer")}
+            >
+                Start Singleplayer Game
+            </Button>
+
+            <Button
+                style={{ fontSize: "2.5rem", width: "40rem", height: "auto" }}
+                onClick={() => history.push("/lobby/multiplayer")}
+            >
+                Create Multiplayer Game
+            </Button>
+
+            <Button
+                style={{ fontSize: "2.5rem", width: "40rem", height: "auto" }}
+                onClick={() => history.push("/JoinGame")}
+            >
+                Join Multiplayer Game
+            </Button>
+
       <Button
-        style={{ fontSize: "2.5rem", width: "40rem", height: "auto" }}
-        onClick={() => history.push("/JoinGame")}
-      >
-        Join Multiplayer Game
-      </Button>
-      <Button
-        style={{ fontSize: "2.5rem", width: "40rem", height: "auto" }}
+      style={{ fontSize: "2.5rem", width: "40rem", height: "auto" }}
         onClick={() => history.push("/home/scoreboard")}
       >
         Leaderboard
       </Button>
       <Button
-        style={{ fontSize: "2.5rem", width: "40rem", height: "auto" }}
-        onClick={() => history.push("/home/history")}
+      style={{ fontSize: "2.5rem", width: "40rem", height: "auto" }}
+        onClick={() => history.push("/userinfo/history")}
       >
         Game History
       </Button>
       <Button
-        style={{ fontSize: "2.5rem", width: "40rem", height: "auto" }}
+         style={{ fontSize: "2.5rem", width: "40rem", height: "auto" }}
         onClick={() => goProfile(localStorage.getItem("userId"))}
       >
         My Profile
@@ -72,7 +80,7 @@ const Home = () => {
         About
       </Button>
       <Button
-        style={{ fontSize: "2.5rem", width: "40rem", height: "auto" }}
+         style={{ fontSize: "2.5rem", width: "40rem", height: "auto" }}
         onClick={() => doLogout()}
       >
         Logout

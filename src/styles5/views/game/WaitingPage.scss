@@ -1,0 +1,122 @@
+@import "styles/theme";
+
+/* The '&' is a shorthand for the containing element
+  for more information visit https://sass-lang.com/guide
+ */
+.waiting-page {
+    &.layout {
+        padding: 1em;
+        display: flex;
+        flex-direction: row;
+        align-items: center;
+        border-radius: $borderRadius;
+        column-gap: 0.5em;
+    }
+    &.container_left {
+        background: #001F3F;
+        padding: 2em;
+        background: #001F3F;
+        border-radius: $borderRadius;
+        display: flex;
+        flex-direction: column;
+        align-items: left;
+        row-gap: 2em;
+        margin-right: 20px;
+    }
+    &.container_right {
+        background: #001F3F;
+        padding: 2em;
+        border-radius: $borderRadius;
+        display: flex;
+        flex-direction: column;
+        align-items: left;
+        margin-left: 20px;
+    }
+    &.user-list {
+        padding-left: 0;
+    }
+    &.user-item {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+    }
+    &.select {
+        display: flex;
+        align-items: baseline;
+        justify-content: space-between;
+    }
+    &.label {
+        font-size: 20px;
+        color: $textColor;
+    }
+    &.category {
+        margin-left: 20px;
+        width: 60%;
+        border-radius: $borderRadius;
+        background-color: #1979b8;
+		color: $textColor;
+        &.Mui-disabled {
+            color: $textColor;
+        }
+    }
+    &.text {
+        margin-left: 10px;
+        width: 50%;
+        border-radius: $borderRadius;
+        background-color: #1979b8;
+		color: $textColor;
+        .MuiInputBase-input {
+			background-color: #1979b8;
+            color: $textColor;
+            height: 20px;
+            font-size: 18px;
+            font-weight: 400;
+            border: none;
+            border-radius: 0.5em;
+            &::placeholder {
+                color: #D4D4D4;
+              }
+        }
+    }
+
+    &.button-container {
+        display: flex;
+        flex-direction: row;
+        justify-content: center;
+        align-items: center;
+        row-gap: 2em;
+        column-gap: 1em;
+        
+    }
+    & p,
+    h2 {
+        font-size: 20px;
+        font-weight: 400;
+        color: $textColor;
+        margin: 0.5em 0;
+    }
+
+    .table-style {
+      width: 100%;
+      border-collapse: collapse;
+      border: 1px solid #000;
+    }
+
+    .table-style thead {
+      background-color: rgba(23,73, 159, 0.5);
+      color: white;
+    }
+
+    .table-style tbody tr {
+      background-color: rgba(128, 128, 128, 0.5);
+    }
+
+    .table-style th,
+    .table-style td {
+      padding: 8px;
+      border: 1px solid #000;
+      text-align: center;
+    }
+
+}

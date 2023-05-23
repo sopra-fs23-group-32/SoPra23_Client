@@ -105,8 +105,8 @@ const JoinGame = () => {
           <Button width="30%" onClick={() => history.push("/home")}>
             Return to home
           </Button>
-          <Button width="30%" onClick={() => history.push("/lobby")}>
-            Create a Game 
+          <Button width="30%" onClick={() => history.push("/lobby/multiplayer")}>
+          Create a Multiplayer Game
           </Button>
         </div>
       </div>

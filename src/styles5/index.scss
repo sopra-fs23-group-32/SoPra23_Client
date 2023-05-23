@@ -4,6 +4,15 @@
 /**
  This file contains the general and shared style of your application.
  */
+ body {
+  background-image: url('/img/background3.jpg');
+  background-repeat: no-repeat;
+  background-position: center center;
+  background-size: cover;
+  position:fixed;
+  width: 100%;
+}
+
 
 #buttona{
   position: absolute;
@@ -17,12 +26,6 @@
   }
   
 body {
-  background-image: url('/img/background3.jpg');
- 
-  background-position: center center;
-  background-size: 100%;
-  position: fixed;
- 
   margin: 0;
   padding: 0;
   font-family: $fontDefault;
@@ -65,7 +68,7 @@ button {
 }
 
 .bg-image {
-  background-image: url('/img/background3.jpg');
+  background-image: url('/img/background.jpg');
   background-repeat: no-repeat;
   background-position: center center;
   background-size: cover;

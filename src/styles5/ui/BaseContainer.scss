@@ -1,0 +1,26 @@
+@import 'styles/theme';
+
+.base-container {
+  margin-left: auto;
+  padding-left: 15px;
+  margin-right: auto;
+  padding-right: 15px;
+  padding-bottom: 15px;
+  max-width: $DESKTOP_WIDTH;
+  color: $textColor;
+  background: #5e5df0 !important;
+  margin-top: 60px;
+}
+
+.information-container {
+  margin-left: auto;
+  padding-left: 15px;
+  margin-right: auto;
+  padding-right: 15px;
+  width: 100%;
+  text-align: left;
+  background-color: lightgray;
+  display: flex;
+  align-items: left; 
+  justify-content: center; 
+}

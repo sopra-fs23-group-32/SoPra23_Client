@@ -4,10 +4,13 @@ import { HomeGuard } from "components/routing/routeProtectors/HomeGuard";
 import HomeRouter from "components/routing/routers/HomeRouter";
 import { LobbyGuard } from "components/routing/routeProtectors/LobbyGuard";
 
+
 import Login from "components/views/authentication/Login";
 import Register from "components/views/authentication/Register";
 import Lobby from "components/views/game/Lobby";
 import JoinGame from "components/views/game/JoinGame";
+
+import HistoryPage from "../../views/userinfo/History";
 
 import SingleGamePreparePage from "components/views/game/SinglePlayerGame/SingleGamePreparePage";
 import SingleGamePage from "components/views/game/SinglePlayerGame/SingleGamePage";
@@ -17,6 +20,9 @@ import CreatedGamePage from "components/views/game/MultiPlayerGame/CreatedGamePa
 import MutliPlayerGamePreparePage from "components/views/game/MultiPlayerGame/MultiPlayerGamePreparePage";
 import MultiPlayerGamePage from "components/views/game/MultiPlayerGame/MultiPlayerGamePage";
 import MultiPlayerGameFinishPage from "components/views/game/MultiPlayerGame/MultiPlayerGameFinishPage";
+
+import SinglePlayerGameLobby from "components/views/game/SinglePlayerGame/SinglePlayerGameLobby";
+import MultiPlayerGameLobby from "components/views/game/MultiPlayerGame/MultiPlayerGameLobby";
 
 /**
  * Main router of your application.
@@ -38,6 +44,10 @@ const AppRouter = () => {
           <Redirect to="/login" />
         </Route>
 
+        <Route exact path={`/userinfo/history`}>
+                    <HistoryPage />
+                </Route>
+
         <Route exact path="/login">
           <LoginGuard><Login /></LoginGuard>
         </Route>
@@ -47,9 +57,7 @@ const AppRouter = () => {
         <Route path="/home">
           <HomeGuard><HomeRouter base="/home" /></HomeGuard>
         </Route>
-        <Route path="/lobby">
-          <LobbyGuard><Lobby /></LobbyGuard>
-        </Route>
+      
 
         <Route exact path={`/SingleGamePage/:gameId/RoundCountPage`}>
           <SingleGamePreparePage />
@@ -75,7 +83,21 @@ const AppRouter = () => {
         </Route>
         <Route exact path={`/MultiGamePage/:gameId/GameFinish`}>
           <MultiPlayerGameFinishPage />
+          
+          
+          
+        
         </Route>
+        
+          <Route path="/lobby/singleplayer">
+                    <SinglePlayerGameLobby base="/lobby/singleplayer" />
+                </Route>
+
+                <Route path="/lobby/multiplayer">
+                    <MultiPlayerGameLobby base="/lobby/multiplayer" />
+                </Route>
+        
+        
 
       </Switch>
     </BrowserRouter>
