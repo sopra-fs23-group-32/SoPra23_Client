@@ -132,6 +132,7 @@
 
 .countdown-text {
   font-size: 50px;
+  color: white;
 }
 
 .exit-button {
@@ -162,6 +163,7 @@
     border-collapse: collapse;
     font-weight: bold;
     font-size: 20px;
+    color: white;
 
     th, td {
       padding: 10px;
@@ -171,7 +173,7 @@
     }
 
     th {
-      background-color: rgba(25, 121, 184, 0.9);
+      background-color: rgba(0, 31, 63, 0.9);
       font-weight: bold;
     }
 

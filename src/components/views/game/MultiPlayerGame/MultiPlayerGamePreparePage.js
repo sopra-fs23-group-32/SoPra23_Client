@@ -228,10 +228,7 @@ const MultiModeRoundCountdown = () => {
         </InformationContainer>
 
         <div className="roundcountdown layout" style={{ display: "flex", flexDirection: "row" }}>
-          <InformationContainer
-            className="roundcountdown leaderboard-container"
-            id="information-container"
-          >
+          <div className="roundcountdown leaderboard-container">
             <div className="leaderboard">
               <table>
                 <thead>
@@ -263,15 +260,15 @@ const MultiModeRoundCountdown = () => {
                 </tbody>
               </table>
             </div>
-          </InformationContainer>
+          </div>
           <div></div>
           <div></div>
           <div></div>
-          <InformationContainer className="roundcountdown container_right">
+          <div className="roundcountdown container_right">
           <div className="countdown-text">
             <UrgeWithPleasureComponent duration={duration} />
           </div>
-          </InformationContainer>
+          </div>
         </div>
       </div>
       <ToastContainer />

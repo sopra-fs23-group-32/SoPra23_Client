@@ -20,6 +20,7 @@ const About = () => {
 
 
   return (
+    <div className="page-container">
     <div className="About container" style={{flexDirection: "column"}}>
         <InformationContainer className="about container" style={{fontSize: '48px', width: "fit-content"}}>
             About
@@ -41,6 +42,7 @@ const About = () => {
       >
         Back to Home Page
       </Button>
+    </div>
     </div>
   );
 };

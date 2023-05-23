@@ -130,6 +130,7 @@ const SingleGamePage = () => {
   };
 
   return (
+    <div className="page-container">
     <div className="guess-the-city">
       <div style={{ position: "fixed", top: 75, left: 75 }}>
         <Button  style={{ fontSize: "45px", height: "100px", width: "100%" }}
@@ -180,6 +181,7 @@ const SingleGamePage = () => {
         </div>
       </div>
       <ToastContainer />
+    </div>
     </div>
   );
 };

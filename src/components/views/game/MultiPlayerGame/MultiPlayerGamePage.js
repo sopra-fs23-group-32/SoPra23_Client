@@ -212,6 +212,7 @@ const MultiPlayerGamePage = () => {
   };
 
   return (
+    <div className="page-container">
     <div className="guess-the-city">
       <div className="guess-the-city header">
         <Button className="exit-button" onClick={handleExitButtonClick} >
@@ -266,6 +267,7 @@ const MultiPlayerGamePage = () => {
         </div>
       </div>
       <ToastContainer />
+    </div>
     </div>
   );
 };

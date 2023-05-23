@@ -34,6 +34,7 @@ const Home = () => {
   };
 
   return (
+    <div className="page-container">
     <div className="home button-container">
       <Button
         style={{ fontSize: "2.5rem", width: "40rem", height: "auto" }}
@@ -78,6 +79,7 @@ const Home = () => {
         Logout
       </Button>
       <ToastContainer />
+    </div>
     </div>
   );
 };

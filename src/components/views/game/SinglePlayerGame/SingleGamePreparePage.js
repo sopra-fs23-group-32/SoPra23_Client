@@ -109,6 +109,7 @@ const RoundCountdown = () => {
 
 
   return (
+    <div className="page-container">
     <div className="round countdown container">
       <div style={{ position: "fixed", top: 75, left: 75 }}>
         <Button style={{ fontSize: "45px", height: "100px", width: "100%" }}
@@ -128,14 +129,15 @@ const RoundCountdown = () => {
           </div>
         </InformationContainer>
         <div className="roundcountdown layout" style={{ flexDirection: "row" }}>
-          <InformationContainer className="roundcountdown container_right">
+          <div className="roundcountdown container_right">
           <div className="countdown-text">
             <UrgeWithPleasureComponent duration={duration} />
           </div>
-          </InformationContainer>
+          </div>
         </div>
       </div>
       <ToastContainer />
+    </div>
     </div>
   );
 };

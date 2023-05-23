@@ -52,7 +52,7 @@ const JoinGame = () => {
   };
 
   return (
-    <div>
+    <div className="page-container">
     <Container className="joinboard container">
       <div className="headerrow">
         <h2>Join Multiplayer Game</h2>

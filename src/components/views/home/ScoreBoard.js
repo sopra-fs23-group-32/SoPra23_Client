@@ -3,7 +3,7 @@ import { useHistory } from "react-router-dom";
 import { api, handleError } from "helpers/api";
 import { Spinner } from "components/ui/Spinner";
 import { Button } from "components/ui/Button";
-import { InputLabel, Select, MenuItem, TextField } from "@mui/material";
+import { InputLabel, Select, MenuItem, TextField, Pagination } from "@mui/material";
 import PropTypes from "prop-types";
 import InformationContainer from "components/ui/BaseContainer";
 import { ToastContainer, toast } from "react-toastify";
@@ -16,6 +16,9 @@ const ScoreBoard = () => {
     const history = useHistory();
     const [userRanking, setUserRanking] = useState(null);
     const [selectedCategory, setSelectedCategory] = useState("WORLD");
+    const [page, setPage] = useState(1);
+    const [totalPages, setTotalPages] = useState(1);
+    const [perPage, setPerPage] = useState(10);
 
     const goProfile = (profileId) => {
         localStorage.setItem("profileId", profileId);
@@ -45,41 +48,56 @@ const ScoreBoard = () => {
         fetchData();
     }, [selectedCategory]);
 
-    const UserRanking = ({ userRanking }) => (
-        <table className="table">
-            <thead>
-                <tr>
-                    <th>Rank</th>
-                    <th>Name</th>
-                    <th>Score</th>
-                    <th>Number of Games</th>
-                    <th>Date created</th>
-                </tr>
-            </thead>
-            <tbody>
-                {userRanking.map((user, index) => (
-                    <tr
-                        className={index % 2 !== 0 ? "odd" : "even"}
-                        key={user.userId}
-                        onClick={() => goProfile(user.userId)}
-                    >
-                        <td style={{ width: "8%" }}>{user.rank}</td>
-                        <td style={{ width: "22%" }}>{user.username}</td>
-                        <td style={{ width: "20%" }}>{user.score}</td>
-                        <td style={{ width: "20%" }}>{user.gameNum}</td>
-                        <td style={{ width: "20%" }}>
-                            {new Date(user.createDay)
-                                .toISOString()
-                                .slice(0, 10)}
-                        </td>
-                    </tr>
-                ))}
-            </tbody>
-        </table>
+  const UserRanking = ({ userRanking }) => {
+    const startIndex = (page - 1) * perPage;
+    const endIndex = page * perPage;
+
+    return (
+      <table className="table">
+        <thead>
+          <tr>
+            <th>Rank</th>
+            <th>Name</th>
+            <th>Score</th>
+            <th>Number of Games</th>
+            <th>Date created</th>
+          </tr>
+        </thead>
+        <tbody>
+            {userRanking.slice(startIndex, endIndex).map((user, index) => (
+            <tr className={index % 2 !== 0 ? "odd" : "even"} key={user.userId} onClick={() => goProfile(user.userId)}>
+              <td style={{width: "8%"}}>{user.rank}</td>
+              <td style={{width: "22%"}}>{user.username}</td>
+              <td style={{width: "20%"}}>{user.score}</td>
+              <td style={{width: "20%"}}>{user.gameNum}</td>
+              <td style={{width: "20%"}}>{new Date(user.createDay).toISOString().slice(0,10)}</td>
+            </tr>
+            ))}
+        </tbody>
+      </table>
     );
-    UserRanking.propTypes = {
-        user: PropTypes.object,
-    };
+  };
+
+  UserRanking.propTypes = {
+    user: PropTypes.object,
+  };
+
+  useEffect(() => {
+    calculateTotalPages();
+  }, [userRanking, perPage]);
+
+  const calculateTotalPages = () => {
+    if (userRanking) {
+      const totalCount = userRanking.length;
+      const pages = Math.ceil(totalCount / perPage);
+      setTotalPages(pages);
+      setPage(1);
+    }
+  };
+
+  const handlePageChange = (event, newPage) => {
+    setPage(newPage);
+  };
 
     let sortedUserList = <Spinner />;
 
@@ -90,6 +108,7 @@ const ScoreBoard = () => {
     }
 
     return (
+      <div className="page-container">
         <div
             className="Scoreboard container"
             style={{ flexDirection: "column" }}
@@ -142,6 +161,15 @@ const ScoreBoard = () => {
                 </div>
 
                 <div>{sortedUserList}</div>
+                <div className="pagination-container">
+                  <Pagination
+                    count={totalPages}
+                    page={page}
+                    onChange={handlePageChange}
+                    color="primary"
+                    className="pagination"
+                  />
+                </div>
                 <div className="scoreboard button-container">
                     <Button width="300%" onClick={() => history.push("/home")}>
                         Return to Home
@@ -150,6 +178,7 @@ const ScoreBoard = () => {
             </InformationContainer>
             <ToastContainer />
         </div>
+      </div>
     );
 };
 

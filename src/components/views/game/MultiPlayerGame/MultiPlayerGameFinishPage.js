@@ -139,6 +139,7 @@ const MultiPlayerGameFinishPage = () => {
   };
 
   return (
+    <div className="page-container">
     <div className="finalpage container">
       <h2 style={{ font: "40px" }}>
         -- Game Ended --
@@ -187,6 +188,7 @@ const MultiPlayerGameFinishPage = () => {
         </Button>
       </div>
       <ToastContainer />
+    </div>
     </div>
   );
 

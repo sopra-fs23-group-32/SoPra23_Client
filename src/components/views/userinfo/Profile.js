@@ -151,6 +151,7 @@ const Profile = () => {
 
 
   return (
+    <div className="page-container">
     <div className="Profile container" style={{flexDirection: "column"}}>
       <InformationContainer className="profile container" style={{fontSize: '48px', width: "fit-content"}}>
         Profile
@@ -169,6 +170,7 @@ const Profile = () => {
       </div>
       </InformationContainer>
     <ToastContainer />
+    </div>
     </div>
   );
 };
