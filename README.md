@@ -28,7 +28,7 @@ The Multiplayer Mode provides a platform for friendly competition, where players
 ### [Dashboard](https://github.com/sopra-fs23-group-32/SoPra23_Client/blob/main/src/components/views/home/Home.js)
 The dashboard contains the menu that guides players to the main services provided by the game. The buttons within the menu include:
 
-- [Start Game](https://github.com/sopra-fs23-group-32/SoPra23_Client/blob/main/src/components/views/home/Lobby.js) - The player will be guided to the game lobby, where the play mode and game setting is set.
+- [Start Game](https://github.com/sopra-fs23-group-32/SoPra23_Client/blob/main/src/components/views/game/Lobby.js) - The player will be guided to the game lobby, where the play mode and game setting is set.
 - [Leaderboard](https://github.com/sopra-fs23-group-32/SoPra23_Client/blob/main/src/components/views/home/ScoreBoard.js) - The player will be guided to the leader board, where the player rankings are displayed.
 - [Game History](https://github.com/sopra-fs23-group-32/SoPra23_Client/blob/main/src/components/views/home/History.js) - The player will be guided to the game history, where the detailed game information can be accessed.
 - [My Profile](https://github.com/sopra-fs23-group-32/SoPra23_Client/blob/main/src/components/views/home/Profile.js) - The player will be guided the profile, where the profile can be viewed and edited.
