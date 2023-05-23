@@ -156,7 +156,7 @@ const CreatedGamePage = () => {
 
   const backToLobby = () => {
     leaveGame();
-    history.push("/lobby");
+    history.push("/lobby/multiplayer");
   };
   const backToHome = () => {
     leaveGame();

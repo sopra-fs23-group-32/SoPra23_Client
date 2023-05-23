@@ -4,7 +4,6 @@ import Home from "components/views/home/Home";
 import Profile from "components/views/userinfo/Profile"
 import About from "components/views/home/About"
 import ScoreBoard from "components/views/home/ScoreBoard"
-import HistoryPage from '../../views/userinfo/History';
 
 const HomeRouter = props => {
   /**
@@ -18,9 +17,7 @@ const HomeRouter = props => {
       <Route exact path={`${props.base}/dashboard`}>
         <Home/>
       </Route>
-      <Route exact path={`${props.base}/history`}>
-        <HistoryPage/>
-      </Route>
+      
       <Route exact path={`${props.base}/scoreboard`}>
         <ScoreBoard />
       </Route>

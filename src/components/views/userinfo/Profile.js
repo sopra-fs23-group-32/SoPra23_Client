@@ -31,16 +31,26 @@ const ProfileInfo = ({ user, setUsername, setBirthDay, setOldPwd, setPassword })
         <value>{new Date(user.createDay).toISOString().slice(0, 10)}</value>
       </div>
       <div className="user-profile-field">
-        <label>Birthday</label>
-        {localStorage.getItem("profileId") === localStorage.getItem("userId")? (
-            <>
-             <value>{user.birthDay? new Date(user.birthDay).toISOString().slice(0, 10) : "No Birthday set yet"}</value>
-             <input type="date" defaultValue={user.birthDay} onChange={e => setBirthDay(e.target.value)} />
-            </>
-        ) : (
-            <value>{user.birthDay? new Date(user.birthDay).toISOString().slice(0, 10) : "No Birthday set yet"}</value>
-        )}
-      </div>
+      <label>Birthday</label>
+      {localStorage.getItem("profileId") === localStorage.getItem("userId") ? (
+        <>
+          <value>
+            {user.birthDay ? new Date(user.birthDay).toISOString().slice(0, 10) : "No Birthday set yet"}
+          </value>
+          <input 
+            type="date" 
+            defaultValue={user.birthDay} 
+            max={new Date().toISOString().slice(0,10)}
+            onChange={e => setBirthDay(e.target.value)} 
+          />
+        </>
+      ) : (
+        <value>
+          {user.birthDay ? new Date(user.birthDay).toISOString().slice(0, 10) : "No Birthday set yet"}
+        </value>
+      )}
+    </div>
+
       {localStorage.getItem("profileId") === localStorage.getItem("userId") ? (
         <>
           <div className="user-profile-field">

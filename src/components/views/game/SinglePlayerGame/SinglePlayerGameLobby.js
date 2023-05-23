@@ -4,224 +4,174 @@ import { Button } from "components/ui/Button";
 import { api, handleError } from "helpers/api";
 import InformationContainer from "components/ui/BaseContainer";
 import { Spinner } from "components/ui/Spinner";
-
 import { InputLabel, Select, MenuItem, TextField } from "@mui/material";
 import Switch from "react-switch";
+import { ToastContainer, toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
+
 import "styles/views/game/Lobby.scss";
-const SinglePlayerLobby = () => {
-    const survivalModeGameRounds = 999999;
-    const [isLoadingGame, setIsLoadingGame] = useState(false);
-    const [selectedCategory, setSelectedCategory] = useState("EUROPE");
-    const [gameRounds, setGameRounds] = useState(1);
-    const [countdownTime, setCountdownTime] = useState(10);
-    const [isSurvivalMode, setIsSurvivalMode] = useState(false);
 
-    // use react-router-dom's hook to access the history
-    const history = useHistory();
 
-    const setLocalStorageItems = (question) => {
-        const cityNamesString = JSON.stringify([
-            question.option1,
-            question.option2,
-            question.option3,
-            question.option4,
-        ]);
-        localStorage.setItem("citynames", cityNamesString);
-        localStorage.setItem("PictureUrl", question.pictureUrl);
-        localStorage.setItem("CorrectOption", question.correctOption);
-    };
+const Lobby = () => {
+  // basic settings
+  const [selectedCategory, setSelectedCategory] = useState("EUROPE");
+  const [gameRounds, setGameRounds] = useState(1);
+  const [countdownTime, setCountdownTime] = useState(15);
+  // for UI
+  const [isLoadingGame, setIsLoadingGame] = useState(false);
 
-    const fetchQuestion = async (gameId) => {
-        try {
-            const response = await api.put(`games/${gameId}`);
-            setLocalStorageItems(response.data);
-            console.log(response.data);
-        } catch (error) {
-            throw error;
-        }
-    };
+  const userId = localStorage.getItem("userId");
+  const history = useHistory();
 
-    const handleSurvivalToggle = () => {
-        setIsSurvivalMode(!isSurvivalMode);
-    };
+  
+  const handleAddPlayer = async (gameId) => {
+    try {
+      const response = await api.post(`/games/${gameId}/players/${userId}`);
+      console.log("Player added:", response.data);
+    }
+    catch (error) {
+      toast.error(`${error.response.data.message}`);
+      console.log(handleError(error));
+    }
+  };
 
-    const startGameSingleplayer = async (
-        category,
-        gameRounds,
-        gameDuration
-    ) => {
-        try {
-            //create gameID
 
-            const requestBody = {
-                category: category,
-                totalRounds: isSurvivalMode?survivalModeGameRounds:gameRounds,
-                countdownTime: gameDuration,
-            };
-            const response = (await api.post("/games", requestBody)).data;
-            const gameId = response.gameId;
+  const startGameSingleplayer = async (category, gameRounds, gameDuration) => {
+    if (gameRounds === 0) {
+      toast.error("The rounds should not be less than 1");
+    }
+    try {
+      localStorage.setItem("category", category);
+      localStorage.setItem("totalRounds", gameRounds);
+      localStorage.setItem("countdownTime", gameDuration);
+      const requestBody = {category:category, totalRounds:gameRounds, countdownTime:gameDuration,};
+      const response = await api.post("/games", requestBody);
+      const gameId = response.data.gameId;
+      localStorage.setItem("gameId", gameId);
+      handleAddPlayer(gameId);
+      console.log("SinglePlayer Game created: ", response.data)
 
-            localStorage.setItem("gameId", gameId);
-            localStorage.setItem("survival", isSurvivalMode);
-            localStorage.setItem("score", 0);
-            localStorage.setItem("category", category);
-            localStorage.setItem("totalRounds", isSurvivalMode?survivalModeGameRounds:gameRounds);
-            localStorage.setItem("roundNumber", 1);
+      localStorage.setItem("roundNumber", 1);
+      localStorage.setItem("score", 0);
+      await new Promise((resolve) => setTimeout(resolve, 1000));
+      history.push(`/SinglegamePage/${gameId}/RoundCountPage`);
+    }
+    catch (error) {
+      toast.error(`${error.response.data.message}`);
+      console.log(handleError(error));
+    }
+  };
 
-            await fetchQuestion(gameId);
-            await handleAddPlayer(localStorage.getItem("userId"));
-            setTimeout(() => {
-                history.push(`/gamePage/${gameId}`);
-            }, 1000);
-        } catch (error) {
-            alert(
-                `Something went wrong during game start: \n${handleError(
-                    error
-                )}`
-            );
-        }
-    };
-
-    const handleAddPlayer = async (playerID) => {
-        try {
-            const gameID = localStorage.getItem("gameId");
-            const response = await api.post(
-                `/games/${gameID}/players/${playerID}`
-            );
-        } catch (error) {
-            console.error("Error adding player", error);
-        }
-    };
-
-    localStorage.setItem("countdownTime", countdownTime);
-    localStorage.setItem("sameCoundownTime", countdownTime);
-
-    return (
-      <div className="page-container">
-        <div className="lobby container">
-            <div className="lobby layout">
-                <InformationContainer
-                    className="lobby container_left"
-                    id="information-container"
-                >
-                    <div style={{ fontSize: "3rem" }}>Game Settings</div>
-                    <div
-                        style={{
-                            display: "grid",
-                            gridTemplateColumns: "1fr auto 1fr",
-                            gap: "10px",
-                        }}
-                    ></div>
-                    <div className="lobby category-select">
-                        <InputLabel className="lobby label">
-                            Select Region
-                        </InputLabel>
-                        <Select
-                            labelId="demo-simple-select-label"
-                            id="demo-simple-select"
-                            value={selectedCategory}
-                            label="category"
-                            onChange={(e) =>
-                                setSelectedCategory(e.target.value)
-                            }
-                            inputProps={{
-                                MenuProps: {
-                                    sx: {
-                                        borderRadius: "10px",
-                                    },
-                                    MenuListProps: {
-                                        sx: {
-                                            backgroundColor: "rgba(65, 63, 240, 0.7)",
-                                            color: "white",
-                                        },
-                                    },
-                                },
-                            }}
-                            className="lobby category"
-                        >
-                            <MenuItem value={"EUROPE"}>Europe</MenuItem>
-                            <MenuItem value={"ASIA"}>Asia</MenuItem>
-                            <MenuItem value={"NORTH_AMERICA"}>
-                                North America
-                            </MenuItem>
-                            <MenuItem value={"SOUTH_AMERICA"}>
-                                South America
-                            </MenuItem>
-                            <MenuItem value={"AFRICA"}>Africa</MenuItem>
-                            <MenuItem value={"OCEANIA"}>Oceania</MenuItem>
-                            <MenuItem value={"WORLD"}>World</MenuItem>
-                        </Select>
-                    </div>
-                    <div className="lobby category-select">
-                        <InputLabel className="lobby label">
-                            Survival Mode:
-                        </InputLabel>
-                        <div className="survival-switch">
-                            <Switch
-                                checked={isSurvivalMode}
-                                onChange={handleSurvivalToggle}
-                                offColor="#aaaacd"
-                                onColor="#413fdc"
-                                checkedIcon={false}
-                                uncheckedIcon={false}
-                            />
-                        </div>
-                    </div>
-                    <div className="lobby category-select">
-                        <InputLabel className="lobby label">Rounds:</InputLabel>
-                        <TextField
-                            className="lobby round"
-                            inputProps={{
-                                style: {
-                                    fontSize: "1rem",
-                                    textAlign: "center",
-                                },
-                            }}
-                            disabled={isSurvivalMode?true:false}
-                            placeholder="enter number of rounds..."
-                            value={gameRounds}
-                            onChange={(e) => setGameRounds(e.target.value)}
-                        />
-                    </div>
-                </InformationContainer>
-            </div>
-            <div className="lobby_buttons">
-                {isLoadingGame ? (
-                    <Spinner />
-                ) : (
-                    <>
-                        <Button
-                            onClick={() => {
-                                setIsLoadingGame(true);
-                                startGameSingleplayer(
-                                    selectedCategory,
-                                    gameRounds,
-                                    countdownTime
-                                );
-                            }}
-                            style={{
-                                display: "inline-block",
-                                marginRight: "10px",
-                            }}
-                        >
-                            Start Game
-                        </Button>
-
-                        <Button
-                            onClick={() => history.push("/home")}
-                            style={{
-                                display: "inline-block",
-                                marginRight: "10px",
-                            }}
-                        >
-                            Back to Home Page
-                        </Button>
-                    </>
-                )}
-            </div>
-        </div>
+  return (
+  <div className="page-container">
+    <div className="lobby container" style={{flexDirection: "column"}}>
+      <InformationContainer className="lobby container" style={{fontSize: '48px', width: "fit-content"}}>
+        Game Settings
+        <p>Start startGameSingleplayer Game</p>
+      </InformationContainer>
+      <div className="lobby layout">
+        <InformationContainer className="lobby container_left">
+          <div className="lobby category-select">
+            <InputLabel className="lobby label" style={{paddingLeft:"1px"}}>Category:</InputLabel>
+            <Select 
+              labelId="demo-simple-select-label"
+              id="demo-simple-select"
+              value={selectedCategory}
+              label="category"
+              style={{ height: '45px', marginLeft: '5px',width:"150px"}}
+              onChange={(e) => setSelectedCategory(e.target.value)}
+              inputProps={{
+                MenuProps: {
+                  sx: { borderRadius: "10px", },
+                  MenuListProps: {sx: {backgroundColor: "#1979b8", color: "white",},},
+                },
+              }}
+              className="lobby category"
+            >
+              <MenuItem value={"EUROPE"}>Europe</MenuItem>
+              <MenuItem value={"ASIA"}>Asia</MenuItem>
+              <MenuItem value={"NORTH_AMERICA"}>North America</MenuItem>
+              <MenuItem value={"SOUTH_AMERICA"}>South America</MenuItem>
+              <MenuItem value={"AFRICA"}>Africa</MenuItem>
+              <MenuItem value={"OCEANIA"}>Oceania</MenuItem>
+              <MenuItem value={"WORLD"}>World</MenuItem>
+            </Select>
+          </div>
+          <div className="lobby category-select">
+            <InputLabel className="lobby label" style={{paddingLeft:"1px"}}>Rounds:</InputLabel>
+            <TextField
+              style={{width:"150px"}}
+              className="lobby round"
+              inputProps={{
+                style: { textAlign: "center", height: "10px"},
+                min:1,
+                type:"number",
+              }}
+              placeholder="enter number..."
+              value={gameRounds}
+              onChange={(e) => {
+                const value = e.target.value;
+                if (value > 0 && /^\d+$/.test(value)) {
+                  setGameRounds(value);
+                } else if (value === "0") {
+                  toast.warning("You can't set the game's total round as 0.")
+                  // Handle the case when "0" is entered, you can display an error or show a message
+                  // Here, we are resetting the value to an empty string
+                  setGameRounds(1);
+                }
+              }}
+            />
+          </div>
+          <div className="lobby category-select">
+            <InputLabel className="lobby label" style={{paddingLeft:"1px"}}>Time Limit:</InputLabel>
+            <TextField className="lobby round"
+              style={{width:"150px"}}
+              inputProps={{
+                style: { textAlign: "center", height: "10px"},
+                min:15,
+                type:"number",
+              }}
+              placeholder="enter number..."
+              value={countdownTime} 
+              onChange={(e) => {
+                const value = e.target.value;
+                if (value > 14 && /^\d+$/.test(value)) {
+                  setCountdownTime(value);
+                } else if (value === "0") {
+                  toast.warning("You can't set the game's countdown time as 0.")
+                  // Here, we are resetting the value to an empty string
+                  setCountdownTime(15);
+                }
+              }}
+            />
+          </div>
+        </InformationContainer>
       </div>
-    );
+
+      <div className="lobby button-container">
+        <div>
+          {isLoadingGame ? (<Spinner />) : (
+            <Button style={{ display: "inline-block", margin: "auto" }}
+              onClick={() => {
+                setIsLoadingGame(true);
+                startGameSingleplayer(selectedCategory, gameRounds, countdownTime);
+                }
+              }
+            >
+              Start Game
+            </Button>
+          )}
+        </div>
+        <Button style={{ display: "inline-block", margin: "0 10px" }}
+          onClick={() => history.push("/home")}
+        >
+          Back to Home Page
+        </Button>
+      </div>
+      <ToastContainer />
+    </div>
+  </div>
+  );
 };
 
-export default SinglePlayerLobby;
+export default Lobby;
