@@ -206,52 +206,38 @@ const Lobby = () => {
           game settings anymore! 
             
           </div>
-)}
+        )}
         </InformationContainer>
       </div>
 
       <div className="lobby button-container">
-        {isMultiplayer ? (
-          <div>
-          {isLoadingMultiplayerLobby ? (<Spinner/>) : (
-          <Button style={{ display: "inline-block", margin: "0 10px" }}
-            onClick={() => {
-              setIsLoadingMultiplayerLobby(true);
-              createGame(selectedCategory, gameRounds, countdownTime);
-            }}
-          >
-            Create Game
-          </Button>
-          )}
-          </div>
-        ) : (
-          <div>
-            {isLoadingGame ? (<Spinner />) : (
-              <Button style={{ display: "inline-block", margin: "auto" }}
-                onClick={() => {
-                  setIsLoadingGame(true);
-                  startGameSingleplayer(selectedCategory, gameRounds, countdownTime);}
+        <div>
+          {isLoadingGame ? (<Spinner />) : (
+            <Button style={{ display: "inline-block", margin: "auto" }}
+              onClick={() => {
+                setIsLoadingGame(true);
+                if(isMultiplayer) {
+                  createGame(selectedCategory, gameRounds, countdownTime);
                 }
-              >
-                Start Game
-              </Button>
-            )}
-          </div>
-        )}
-      </div>
-
-      <div className="lobby button-container">
-        <Button style={{ display: "inline-block", margin: "0 10px" }}
-          onClick={() => history.push("/JoinGame")}
-        >
-          Join Multiplayer Game
-        </Button>
-
+                else {
+                  startGameSingleplayer(selectedCategory, gameRounds, countdownTime);
+                }
+                }
+              }
+            >
+              Start Game
+            </Button>
+          )}
+        </div>
         <Button style={{ display: "inline-block", margin: "0 10px" }}
           onClick={() => history.push("/home")}
         >
           Back to Home Page
         </Button>
+      </div>
+
+      <div className="lobby button-container">
+        
         <div style={{
             display: "flex",
             justifyContent: "center",
