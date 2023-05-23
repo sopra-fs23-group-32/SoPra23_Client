@@ -5,7 +5,7 @@ import { Spinner } from "components/ui/Spinner";
 import { Button } from "components/ui/Button";
 import InformationContainer from "components/ui/BaseContainer";
 import PropTypes from "prop-types";
-import { IconButton } from "@mui/material";
+import { IconButton, Pagination } from "@mui/material";
 import ArrowDropDownCircleIcon from "@mui/icons-material/ArrowDropDownCircle";
 import Typography from "@mui/material/Typography";
 import Modal from "@mui/material/Modal";
@@ -45,6 +45,9 @@ const HistoryPage = () => {
   const [gameId, setGameId] = useState(2);
   const handleOpen = (gameId) => {setGameId(gameId); setOpen(true);};
   const handleClose = () => setOpen(false);
+  const [page, setPage] = useState(1);
+  const [totalPages, setTotalPages] = useState(1);
+  const [perPage, setPerPage] = useState(10);
   
   useEffect(() => {
     async function fetchGameInfoData() {
@@ -85,68 +88,93 @@ const HistoryPage = () => {
   }
 
   
-  const UserGameInfo = ({ userGameInfo }) => (
-    <>
-    {userGameInfo.length > 0 ? (
-      <table className="table">
-        <thead>
-          <tr>
-            <th>Game Id</th>
-            <th>Category</th>
-            <th>Date</th>
-            <th>Rounds</th>
-            <th>Player Number</th>
-            <th>More</th>
-          </tr>
-        </thead>
-        <tbody>
-          {userGameInfo.map((gameInfo, index) => (
-            <tr className={index % 2 !== 0 ? "odd" : "even"} key={gameInfo.gameId}>
-              <td style={{ width: "12%", textAlign: "center" }}>{gameInfo.gameId}</td>
-              <td style={{ width: "20%", textAlign: "center" }}>{gameInfo.category}</td>
-              <td style={{ width: "20%", textAlign: "center" }}>{new Date(gameInfo.gameDate).toISOString().slice(0,10)}</td>
-              <td style={{ width: "20%", textAlign: "center" }}>{gameInfo.gameRounds}</td>
-              <td style={{ width: "20%", textAlign: "center" }}>{gameInfo.playerNum}</td>
-              <td>
-                <IconButton title="Detials" color="primary"
-                  onClick={() => {
-                    handleOpen(gameInfo.gameId);
-                    fetchGameHistoryData(gameInfo.gameId);
-                  }}
-                >
-                  <ArrowDropDownCircleIcon />
-                </IconButton>
-              </td>
-              <Modal open={open} onClose={handleClose}
-                aria-labelledby="modal-modal-title" aria-describedby="modal-modal-description"
-              >
-                <Box color="primary" sx={style}>
-                  <Typography id="modal-modal-title" variant="h4" component="h2">
-                    Game ID - {gameId}
-                  </Typography>
-                  <Typography id="modal-modal-description" sx={{ mt: 3 }}>
-                    <div>Score: {userGameHistoryStats.gameScore}</div>
-                    <div>CorrectRate: {userGameHistoryStats.correctRate}</div>
-                  </Typography>
-                  <Typography id="modal-modal-description" sx={{ mt: 3 }}>
-                    <h3>Your Answer - Correct Answer</h3>
-                    <div>{userGameHistoryAnswer.map((answer) => (
-                        <Answers answer={answer}/>
-                      ))}</div>
-                  </Typography>
-                </Box>
-              </Modal>
-            </tr>
-          ))}
-        </tbody>
-      </table>
-    ) : (
-      <div className="no-games-message">No games have been played yet.</div>
-    )}
-    </>
-  );
+  const UserGameInfo = ({ userGameInfo }) => {
+    if (userGameInfo === null) {
+      return null;
+    }
+    const startIndex = (page - 1) * perPage;
+    const endIndex = page * perPage;
+
+    return(
+        <>
+        {userGameInfo.length > 0 ? (
+          <table className="table">
+            <thead>
+              <tr>
+                <th>Game Id</th>
+                <th>Category</th>
+                <th>Date</th>
+                <th>Rounds</th>
+                <th>Player Number</th>
+                <th>More</th>
+              </tr>
+            </thead>
+            <tbody>
+              {userGameInfo.slice(startIndex, endIndex).map((gameInfo, index) => (
+                <tr className={index % 2 !== 0 ? "odd" : "even"} key={gameInfo.gameId}>
+                  <td style={{ width: "12%", textAlign: "center" }}>{gameInfo.gameId}</td>
+                  <td style={{ width: "20%", textAlign: "center" }}>{gameInfo.category}</td>
+                  <td style={{ width: "20%", textAlign: "center" }}>{new Date(gameInfo.gameDate).toISOString().slice(0,10)}</td>
+                  <td style={{ width: "20%", textAlign: "center" }}>{gameInfo.gameRounds}</td>
+                  <td style={{ width: "20%", textAlign: "center" }}>{gameInfo.playerNum}</td>
+                  <td>
+                    <IconButton title="Detials" color="primary"
+                      onClick={() => {
+                        handleOpen(gameInfo.gameId);
+                        fetchGameHistoryData(gameInfo.gameId);
+                      }}
+                    >
+                      <ArrowDropDownCircleIcon />
+                    </IconButton>
+                  </td>
+                  <Modal open={open} onClose={handleClose}
+                    aria-labelledby="modal-modal-title" aria-describedby="modal-modal-description"
+                  >
+                    <Box color="primary" sx={style}>
+                      <Typography id="modal-modal-title" variant="h4" component="h2">
+                        Game ID - {gameId}
+                      </Typography>
+                      <Typography id="modal-modal-description" sx={{ mt: 3 }}>
+                        <div>Score: {userGameHistoryStats.gameScore}</div>
+                        <div>CorrectRate: {userGameHistoryStats.correctRate}</div>
+                      </Typography>
+                      <Typography id="modal-modal-description" sx={{ mt: 3 }}>
+                        <h3>Your Answer - Correct Answer</h3>
+                        <div>{userGameHistoryAnswer.map((answer) => (
+                            <Answers answer={answer}/>
+                          ))}</div>
+                      </Typography>
+                    </Box>
+                  </Modal>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        ) : (
+          <div className="no-games-message">No games have been played yet.</div>
+        )}
+        </>
+    );
+  };
+
   UserGameInfo.propTypes = {
     gameInfo: PropTypes.object,
+  };
+
+  useEffect(() => {
+    calculateTotalPages();
+  }, [userGameInfo, perPage]);
+
+  const calculateTotalPages = () => {
+    if (userGameInfo) {
+      const pages = Math.ceil(userGameInfo.length / perPage);
+      setTotalPages(pages);
+      setPage(1);
+    }
+  };
+
+  const handlePageChange = (event, newPage) => {
+    setPage(newPage);
   };
 
   let userGameInfoList = <Spinner />
@@ -158,12 +186,21 @@ const HistoryPage = () => {
   }
     
   return (
-    <div className="History container" style={{flexDirection:"column"}}>
+    <div className="page-container" style={{flexDirection:"column"}}>
       <InformationContainer className="history container" style={{fontSize: '48px', width: "fit-content"}}>
         Your Game History:  {localStorage.getItem("username")}
       </InformationContainer>
       <InformationContainer className="history container">
         <div>{userGameInfoList}</div>
+        <div className="pagination-container">
+            <Pagination
+              count={totalPages}
+              page={page}
+              onChange={handlePageChange}
+              color="primary"
+              className="pagination"
+            />
+        </div>
         <div className="history button-container">
         <Button width="300%" onClick={() => history.push("/home")}>
           Return to Home

@@ -8,13 +8,16 @@ import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import InformationContainer from "components/ui/BaseContainer";
 import "styles/views/home/ScoreBoard.scss";
-import { InputLabel, Select, MenuItem, TextField } from "@mui/material";
+import { InputLabel, Select, MenuItem, TextField, Pagination } from "@mui/material";
 
 const ScoreBoard = () => {
   // use react-router-dom's hook to access the history
   const history = useHistory();
   const [userRanking, setUserRanking] = useState(null);
   const [selectedCategory, setSelectedCategory] = useState("ALL");
+  const [page, setPage] = useState(1);
+  const [totalPages, setTotalPages] = useState(1);
+  const [perPage, setPerPage] = useState(10);
 
   const goProfile = (profileId) => {
     localStorage.setItem("profileId", profileId);
@@ -43,9 +46,14 @@ const ScoreBoard = () => {
       }
     }
     fetchData();
+    calculateTotalPages();
   }, [selectedCategory]);
 
-  const UserRanking = ({ userRanking }) => (
+  const UserRanking = ({ userRanking }) => {
+    const startIndex = (page - 1) * perPage;
+    const endIndex = page * perPage;
+
+    return (
       <table className="table">
         <thead>
           <tr>
@@ -57,7 +65,7 @@ const ScoreBoard = () => {
           </tr>
         </thead>
         <tbody>
-            {userRanking.map((user, index) => (
+            {userRanking.slice(startIndex, endIndex).map((user, index) => (
             <tr className={index % 2 !== 0 ? "odd" : "even"} key={user.userId} onClick={() => goProfile(user.userId)}>
               <td style={{width: "8%"}}>{user.rank}</td>
               <td style={{width: "22%"}}>{user.username}</td>
@@ -68,10 +76,30 @@ const ScoreBoard = () => {
             ))}
         </tbody>
       </table>
-  );
+    );
+  };
+
   UserRanking.propTypes = {
     user: PropTypes.object,
   };
+
+  useEffect(() => {
+    calculateTotalPages();
+  }, [userRanking, perPage]);
+
+  const calculateTotalPages = () => {
+    if (userRanking) {
+      const totalCount = userRanking.length;
+      const pages = Math.ceil(totalCount / perPage);
+      setTotalPages(pages);
+      setPage(1);
+    }
+  };
+
+  const handlePageChange = (event, newPage) => {
+    setPage(newPage);
+  };
+
 
   let sortedUserList = <Spinner />;
 
@@ -82,7 +110,7 @@ const ScoreBoard = () => {
   }
 
   return (
-    <div className="Scoreboard container" style={{flexDirection: "column"}}>
+    <div className="page-container" style={{flexDirection: "column"}}>
       <InformationContainer className="scoreboard container" style={{fontSize: '48px', width: "fit-content"}}>
         Leaderboard
       </InformationContainer>
@@ -112,8 +140,17 @@ const ScoreBoard = () => {
               <MenuItem value={"ALL"}>All</MenuItem>
             </Select>
           </div>
-      
+
       <div>{sortedUserList}</div>
+      <div className="pagination-container">
+        <Pagination
+          count={totalPages}
+          page={page}
+          onChange={handlePageChange}
+          color="primary"
+          className="pagination"
+        />
+      </div>
       <div className="scoreboard button-container">
         <Button width="300%" onClick={() => history.push("/home")}>
           Return to Home

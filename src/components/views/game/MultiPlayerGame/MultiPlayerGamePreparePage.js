@@ -26,7 +26,7 @@ const UrgeWithPleasureComponent = ({ duration }) => (
 
 const MultiModeRoundCountdown = () => {
   // use react-router-dom's hook to access the history
-  const duration = 15;
+  const duration = 12;
   const [secondsLeft, setSecondsLeft] = useState(duration);
   const [intervalId, setIntervalId] = useState(null);
 
@@ -81,8 +81,6 @@ const MultiModeRoundCountdown = () => {
   }
 
   useEffect(() => {
-    // fetch question and save in localstorage
-    if (isServer==="true") {generateQuestion();}
     async function fetchRanking() {
       try {
         const response = await api.get(`/games/${gameId}/ranking`);
@@ -98,7 +96,12 @@ const MultiModeRoundCountdown = () => {
         console.log(handleError(error));
       }
     }
-    
+    // remove all local storage of previous question
+    localStorage.removeItem("citynames");
+    localStorage.removeItem("PictureUrl");
+    localStorage.removeItem("CorrectOption");
+    // fetch question and save in localstorage
+    if (isServer==="true") {generateQuestion();}
     // get all players' ranking
     fetchRanking();
     // set a timer
@@ -108,26 +111,22 @@ const MultiModeRoundCountdown = () => {
     return () => clearInterval(intervalId);
   }, []);
 
-  
-  useEffect(() => {
-    if (secondsLeft === 6) {
-      
-      if(isServer === "false"){
-        fetchQuestion();
-        
-    }
-  }}, [secondsLeft]);
-
   // go to next page when time out
   useEffect(() => {
-    if (secondsLeft === 0) {
-      clearInterval(secondsLeft);
-      clearInterval(intervalId);
-      setTimeout(() => {
+    const fetchData = async () => {
+      if (secondsLeft === 0) {
+        clearInterval(secondsLeft);
+        clearInterval(intervalId);
+        
+        if (isServer === "false") {
+          await fetchQuestion();
+        }
         
         history.push(`/MultiGamePage/${gameId}`);
-      }, 500);
-    }
+      }
+    };
+    
+    fetchData();
   }, [secondsLeft, intervalId]);
 
   const calculateRowPosition = (currentRank, previousRank) => {
@@ -194,8 +193,8 @@ const MultiModeRoundCountdown = () => {
     <div className="round countdown container">
       <div >
         <Button className="round countdown exit-button"
-        onClick={handleExitButtonClick}
-        disabled={isServer===true}
+          onClick={handleExitButtonClick}
+        
         >
           Exit Game
         </Button>
@@ -212,10 +211,45 @@ const MultiModeRoundCountdown = () => {
         </InformationContainer>
 
         <div className="roundcountdown layout" style={{ display: "flex", flexDirection: "row" }}>
-          <InformationContainer className="roundcountdown leaderboard-container">
-            <div>{playerRankingList}</div>
-          </InformationContainer>
+          <InformationContainer
+            className="roundcountdown leaderboard-container"
+            id="information-container"
+          >
+            <div className="leaderboard">
+              <table>
+                <thead>
+                  <tr>
+                    <th>Rank</th>
+                    <th>Player Name</th>
+                    <th>Score</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {leaderboardData.map((entry, index) => {
+                    const previousRank = roundNumber > 1 ? previousRoundData.find((data) => data.playerName === entry.playerName)?.rank : entry.rank;
+                    const position = calculateRowPosition(entry.rank, previousRank);
 
+                    return (
+                      <tr
+                        key={entry.id}
+                        style={{
+                          transform: `translateY(${position})`,
+                          backgroundColor: entry.playerName === username ? 'rgba(200, 0, 0, 0.5)' : 'rgba(128, 128, 128, 0.5)',
+                         }}
+                      >
+                        <td>{entry.rank}</td>
+                        <td>{entry.playerName}</td>
+                        <td>{entry.score}</td>
+                      </tr>
+                    );
+                  })}
+                </tbody>
+              </table>
+            </div>
+          </InformationContainer>
+          <div></div>
+          <div></div>
+          <div></div>
           <InformationContainer className="roundcountdown container_right">
           <div className="countdown-text">
             <UrgeWithPleasureComponent duration={duration} />
