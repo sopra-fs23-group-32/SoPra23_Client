@@ -92,6 +92,7 @@ const MultiPlayerGameLobby = () => {
     localStorage.setItem("sameCoundownTime", countdownTime);
 
     return (
+      <div className="page-container">
         <div className="lobby container">
             <div className="lobby layout">
                 <InformationContainer
@@ -209,6 +210,7 @@ const MultiPlayerGameLobby = () => {
                 </Button>
             </div>
         </div>
+      </div>
     );
 };
 

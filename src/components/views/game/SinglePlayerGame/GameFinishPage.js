@@ -43,6 +43,7 @@ const GameFinishPage = () => {
   }, []);
 
   return (
+    <div className="page-container">
     <div className="Finalpage container" style={{flexDirection: "column"}}>
     <InformationContainer className="finalpage container" style={{fontSize: '48px', width: "fit-content"}}>
       Your Singleplayer has Game Ended
@@ -64,6 +65,7 @@ const GameFinishPage = () => {
         </Button>
       </div>
       <ToastContainer />
+    </div>
     </div>
   );
 };

@@ -184,7 +184,7 @@ const HistoryPage = () => {
       <UserGameInfo userGameInfo={userGameInfo} />
     );
   }
-    
+
   return (
     <div className="page-container" style={{flexDirection:"column"}}>
       <InformationContainer className="history container" style={{fontSize: '48px', width: "fit-content"}}>

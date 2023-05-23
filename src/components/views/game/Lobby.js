@@ -101,6 +101,7 @@ const Lobby = () => {
   };
 
   return (
+    <div className="page-container">
     <div className="Lobby container" style={{flexDirection: "column"}}>
       <InformationContainer className="lobby container" style={{fontSize: '48px', width: "fit-content"}}>
         Game Settings
@@ -247,6 +248,7 @@ const Lobby = () => {
         ></div>
       </div>
       <ToastContainer />
+    </div>
     </div>
   );
 };

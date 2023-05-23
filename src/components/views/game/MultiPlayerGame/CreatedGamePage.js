@@ -201,6 +201,7 @@ const CreatedGamePage = () => {
   }
 
   return (
+    <div className="page-container">
     <div className="waiting-page layout">
       <InformationContainer className="waiting-page container_left">
         <div style={{ fontSize: "40px", textAlign: "center" }}>
@@ -269,6 +270,7 @@ const CreatedGamePage = () => {
         </p>
         <div>{playerList}</div>
       </InformationContainer>
+    </div>
     </div>
   );
 };

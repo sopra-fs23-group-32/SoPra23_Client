@@ -97,6 +97,7 @@ const SinglePlayerLobby = () => {
     localStorage.setItem("sameCoundownTime", countdownTime);
 
     return (
+      <div className="page-container">
         <div className="lobby container">
             <div className="lobby layout">
                 <InformationContainer
@@ -219,6 +220,7 @@ const SinglePlayerLobby = () => {
                 )}
             </div>
         </div>
+      </div>
     );
 };
 

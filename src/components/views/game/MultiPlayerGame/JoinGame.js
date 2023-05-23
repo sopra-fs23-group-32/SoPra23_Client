@@ -51,6 +51,7 @@ const JoinGame = () => {
     }
 
     return (
+      <div className="page-container">
         <Container className="joinboard container">
             <div className="headerrow">
                 <h2>Join a Multiplayer Game</h2>
@@ -122,6 +123,7 @@ const JoinGame = () => {
                 </div>
             </div>
         </Container>
+      </div>
     );
 };
 
