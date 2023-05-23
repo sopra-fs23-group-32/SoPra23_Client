@@ -55,7 +55,7 @@ const JoinGame = () => {
     <div>
     <Container className="joinboard container">
       <div className="headerrow">
-        <h2>Join the Server</h2>
+        <h2>Join Multiplayer Game</h2>
       </div>
       <div className="joinboard field">
         <div className="sever-field">
@@ -106,7 +106,7 @@ const JoinGame = () => {
             Return to home
           </Button>
           <Button width="30%" onClick={() => history.push("/lobby")}>
-            Return to Lobby
+            Create a Game 
           </Button>
         </div>
       </div>

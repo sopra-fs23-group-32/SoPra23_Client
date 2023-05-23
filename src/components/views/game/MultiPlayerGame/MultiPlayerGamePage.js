@@ -113,9 +113,19 @@ const MultiPlayerGamePage = () => {
             if (messagBody.type === WebSocketType.ALL_ANSWER) {
               setIsWaiting(false);
             }
-            // else if (messagBody.type === WebSocketType.GAME_END) {
-            //   history.push("/lobby");
-            // }
+            else if (messagBody.type === WebSocketType.GAME_DELETED) {
+              localStorage.removeItem("gameId");
+              localStorage.removeItem("category");
+              localStorage.removeItem("totalRounds");
+              localStorage.removeItem("countdownTime");
+              localStorage.removeItem("roundNumber");
+              localStorage.removeItem("myScore");
+              localStorage.removeItem("isServer");
+              localStorage.removeItem("citynames");
+              localStorage.removeItem("PictureUrl");
+              localStorage.removeItem("CorrectOption");
+              history.push("/home");
+            }
           }
         );
       },

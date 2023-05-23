@@ -22,13 +22,15 @@ const JoinGame = () => {
     const history = useHistory();
     const [openServers, setOpenServers] = useState([]);
 
+    const fetchGamedata = async () => {
+        const gameInfosResponse = await api.get("/games/");
+        const gameInfos = gameInfosResponse.data;
+        setOpenServers(gameInfos);
+    };
+    // automatically fetch player list
     useEffect(() => {
-        const fetchGamedata = async () => {
-            const gameInfosResponse = await api.get("/games/");
-            const gameInfos = gameInfosResponse.data;
-            setOpenServers(gameInfos);
-        };
-        fetchGamedata();
+        const interval = setInterval(fetchGamedata, 2000);
+        return () => clearInterval(interval);
     }, []);
 
     const joinServer = async serverInfo => {

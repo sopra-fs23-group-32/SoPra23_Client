@@ -44,10 +44,14 @@ const CreatedGamePage = () => {
     }
   };
 
+  useEffect(() => {
+    toast.info(`Successfully add player '${username}'(ID ${userId}) to game(ID ${gameId})!`);
+    fetchPlayer();
+  }, []);
+
   // automatically fetch player list
   useEffect(() => {
-    // toast.info(`Successfully add player '${username}'(ID ${userId}) to game(ID ${gameId})!`);
-    const interval = setInterval(fetchPlayer, 2000);
+    const interval = setInterval(fetchPlayer, 5000);
     return () => clearInterval(interval);
   }, []);
 
@@ -96,11 +100,11 @@ const CreatedGamePage = () => {
           async (message) => {
             const messagBody = JSON.parse(message.body);
             console.log("Socket receive msg: ", messagBody.type);
-            // if (messagBody.type===WebSocketType.PLAYER_ADD ||
-            //   messagBody.type===WebSocketType.PLAYER_REMOVE) {
-            //   fetchPlayer();
-            // }
-            if(!isServer) {
+            if (messagBody.type===WebSocketType.PLAYER_ADD ||
+              messagBody.type===WebSocketType.PLAYER_REMOVE) {
+              fetchPlayer();
+            }
+            if(isServer==="false") {
               if(messagBody.type===WebSocketType.GAME_START){
                 localStorage.setItem("myScore", 0);
                 localStorage.setItem("roundNumber", 1);
@@ -152,7 +156,7 @@ const CreatedGamePage = () => {
 
   const backToLobby = () => {
     leaveGame();
-    history.push("/JoinGame");
+    history.push("/lobby");
   };
   const backToHome = () => {
     leaveGame();

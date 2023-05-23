@@ -9,6 +9,10 @@ import { CountdownCircleTimer } from 'react-countdown-circle-timer';
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 
+import SockJS from "sockjs-client";
+import Stomp from "stompjs";
+import { getDomain } from "helpers/getDomain";
+import WebSocketType from "models/WebSocketType";
 import "styles/views/game/GamePrepare.scss";
 
 const UrgeWithPleasureComponent = ({ duration }) => (
@@ -65,6 +69,42 @@ const MultiModeRoundCountdown = () => {
     }
   }
 
+  async function fetchQuestion() {
+    try {
+      const response = await api.get(`games/${gameId}/questions`);
+      setLocalStorageItems(response.data);
+      console.log("Fetch question: ", response.data);
+      await new Promise((resolve) => setTimeout(resolve, 1000));
+      toast.info(`Got question for next round.`);
+    } catch (error) {
+      toast.error(`${error.response.data.message}`);
+      console.log(handleError(error));
+    }
+  }
+
+  // handle msg from the web socket
+  useEffect(() => {
+    let subscription;
+    const Socket = new SockJS(getDomain() + "/socket");
+    const stompClient = Stomp.over(Socket);
+    stompClient.connect(
+      {}, (frame) => {
+        subscription = stompClient.subscribe(`/instance/games/${gameId}`,
+          async (message) => {
+            const messagBody = JSON.parse(message.body);
+            console.log("Socket mssage: ", messagBody.type);
+            if(isServer==="false" && 
+              messagBody.type === WebSocketType.ROUND_UPDATE){
+                fetchQuestion();
+            }
+          }
+        );
+      },
+      (err) => console.log(err)
+    );
+    return () => {subscription.unsubscribe();};
+  }, []);
+
   useEffect(() => {
     async function fetchRanking() {
       try {
@@ -98,22 +138,10 @@ const MultiModeRoundCountdown = () => {
 
   // go to next page when time out
   useEffect(() => {
-    async function fetchQuestion() {
-      try {
-        const response = await api.get(`games/${gameId}/questions`);
-        setLocalStorageItems(response.data);
-        console.log("Fetch question: ", response.data);
-        await new Promise((resolve) => setTimeout(resolve, 1000));
-        toast.info(`Got question for next round.`);
-      } catch (error) {
-        toast.error(`${error.response.data.message}`);
-        console.log(handleError(error));
-      }
-    }
     if (secondsLeft === 0) {
       clearInterval(secondsLeft);
       clearInterval(intervalId);
-      if (isServer === "false") {fetchQuestion();}
+      // if (isServer === "false") {fetchQuestion();}
       history.push(`/MultiGamePage/${gameId}`);
     }
   }, [secondsLeft, intervalId]);
