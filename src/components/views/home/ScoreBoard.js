@@ -83,6 +83,10 @@ const ScoreBoard = () => {
     user: PropTypes.object,
   };
 
+  useEffect(() => {
+    calculateTotalPages();
+  }, [userRanking, perPage]);
+
   const calculateTotalPages = () => {
     if (userRanking) {
       const totalCount = userRanking.length;
@@ -143,9 +147,7 @@ const ScoreBoard = () => {
           count={totalPages}
           page={page}
           onChange={handlePageChange}
-          color="secondary"
-          variant="outlined"
-          shape="rounded"
+          color="primary"
           className="pagination"
         />
       </div>
