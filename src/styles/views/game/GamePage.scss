@@ -23,6 +23,21 @@ body {
     font-size: 3em;
 }
 
+.city-image-refresh {
+    text-align: right;
+    margin-right: 20px;
+    margin-bottom: 10px;
+}
+
+.city-image-refresh-button {
+    box-shadow: 1px 1px 5px white;
+    background: #5E5DF0;
+    &:hover {
+        transform: translateY(-2px);
+    }
+    color: white;
+}
+
 .guess-the-city {
 
     &.header {

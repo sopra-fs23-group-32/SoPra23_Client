@@ -20,7 +20,7 @@ const CreatedGamePage = () => {
   const [playerNumber, setPlayerNumber] = useState(
     localStorage.getItem("playerNum")
   );
-  //
+  
   const gameId = localStorage.getItem("gameId");
   const category = localStorage.getItem("category");
   const totalRounds = localStorage.getItem("totalRounds");
@@ -44,83 +44,77 @@ const CreatedGamePage = () => {
     }
   };
 
-  const fetchGameStatus = async () => {
-    try {
-      const response = await api.get(
-        `/games/${localStorage.getItem("gameId")}/status`
-      );
-      console.log("GameStatus: ", response.data);
-      if(response.data==="WAITING" || response.data==="ANSWERING"){
-        localStorage.setItem("myScore", 0);
-        localStorage.setItem("roundNumber", 1);
-        history.push(`/MultiGamePage/${gameId}/RoundCountPage/`);
-      }
-      else if (response.data==="DELETED") {
-        localStorage.removeItem("gameId");
-        localStorage.removeItem("category");
-        localStorage.removeItem("totalRounds");
-        localStorage.removeItem("countdownTime");
-        localStorage.removeItem("playerNum");
-        localStorage.removeItem("isServer");
-        history.push(`/home`);
-      }
-    }
-    catch (error) {
-      toast.error(`Failed to fetch player in game(ID ${gameId})\n //change this
-        ${error.response.data.message}`);
-      console.log(handleError(error));
-      backToLobby();
-    }
-  };
-
   // automatically fetch player list
   useEffect(() => {
-    toast.info(
-      `Successfully add player '${username}'(ID ${userId}) to game(ID ${gameId})!`
-    );
+    // toast.info(`Successfully add player '${username}'(ID ${userId}) to game(ID ${gameId})!`);
     const interval = setInterval(fetchPlayer, 2000);
-    return () => {
-      clearInterval(interval); // Clean up the interval on component unmount
-    };
+    return () => clearInterval(interval);
   }, []);
 
-  useEffect(() => {
-    if (isServer === "false") {
-      const interval1 = setInterval(fetchGameStatus, 1000);
-      return () => clearInterval(interval1);
-    }
-  }, [isServer]);
+  // useEffect(() => {
+  //   async function fetchGameStatus() {
+  //     try {
+  //       const response = await api.get(
+  //         `/games/${localStorage.getItem("gameId")}/status`
+  //       );
+  //       console.log("GameStatus: ", response.data);
+  //       if(response.data==="WAITING" || response.data==="ANSWERING"){
+  //         localStorage.setItem("myScore", 0);
+  //         localStorage.setItem("roundNumber", 1);
+  //         history.push(`/MultiGamePage/${gameId}/RoundCountPage/`);
+  //       }
+  //       else if (response.data==="DELETED") {
+  //         localStorage.removeItem("gameId");
+  //         localStorage.removeItem("category");
+  //         localStorage.removeItem("totalRounds");
+  //         localStorage.removeItem("countdownTime");
+  //         localStorage.removeItem("playerNum");
+  //         localStorage.removeItem("isServer");
+  //         history.push(`/home`);
+  //       }
+  //     }
+  //     catch (error) {
+  //       toast.error(`Failed to fetch player in game(ID ${gameId})\n //change this
+  //         ${error.response.data.message}`);
+  //       console.log(handleError(error));
+  //       backToLobby();
+  //     }
+  //   }
+  //   if (isServer === "false") {
+  //     const interval1 = setInterval(fetchGameStatus, 1000);
+  //     return () => clearInterval(interval1);
+  //   }
+  // }, [isServer]);
 
-  /*useEffect(() => {
+  useEffect(() => {
     const Socket = new SockJS(getDomain() + "/socket");
     const stompClient = Stomp.over(Socket);
     let subscription;
     stompClient.connect(
-      {},
-      (frame) => {
-        subscription = stompClient.subscribe(
-          `/instance/games/${gameId}`,
-          (message) => {
+      {}, (frame) => {
+        subscription = stompClient.subscribe(`/instance/games/${gameId}`, 
+          async (message) => {
             const messagBody = JSON.parse(message.body);
-            console.log("Socket receive msg: ", messagBody);
-            if (messagBody.type===WebSocketType.PLAYER_ADD ||
-              messagBody.type===WebSocketType.PLAYER_REMOVE) {
-              fetchPlayer();
-            }
-            else if (!isServer && messagBody.type===WebSocketType.GAME_START) {
-              localStorage.setItem("myScore", 0);
-              localStorage.setItem("roundNumber", 1);
-              history.push(`/MultiGamePage/${gameId}/RoundCountPage/`);
-            }
-            else if (!isServer && messagBody.type===WebSocketType.GAME_END) {
-              localStorage.removeItem("gameId");
-              localStorage.removeItem("category");
-              localStorage.removeItem("totalRounds");
-              localStorage.removeItem("countdownTime");
-              localStorage.removeItem("playerNum");
-              localStorage.removeItem("isServer");
-              toast.warning("The host player has deleted this game.")
-              history.push(`/home`);
+            console.log("Socket receive msg: ", messagBody.type);
+            // if (messagBody.type===WebSocketType.PLAYER_ADD ||
+            //   messagBody.type===WebSocketType.PLAYER_REMOVE) {
+            //   fetchPlayer();
+            // }
+            if(!isServer) {
+              if(messagBody.type===WebSocketType.GAME_START){
+                localStorage.setItem("myScore", 0);
+                localStorage.setItem("roundNumber", 1);
+                history.push(`/MultiGamePage/${gameId}/RoundCountPage/`);
+              }
+              else if (messagBody.type===WebSocketType.GAME_DELETED) {
+                localStorage.removeItem("gameId");
+                localStorage.removeItem("category");
+                localStorage.removeItem("totalRounds");
+                localStorage.removeItem("countdownTime");
+                localStorage.removeItem("playerNum");
+                localStorage.removeItem("isServer");
+                history.push(`/home`);
+              }
             }
           }
         );
@@ -128,7 +122,7 @@ const CreatedGamePage = () => {
       (err) => console.log(err)
     );
     return () => { subscription.unsubscribe();};
-  }, []); */
+  }, []);
 
   const leaveGame = async () => {
     try{

@@ -8,7 +8,7 @@ import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import InformationContainer from "components/ui/BaseContainer";
 import "styles/views/home/ScoreBoard.scss";
-import { InputLabel, Select, MenuItem, TextField, Pagination } from "@mui/material";
+import { InputLabel, Select, MenuItem, Pagination } from "@mui/material";
 
 const ScoreBoard = () => {
   // use react-router-dom's hook to access the history

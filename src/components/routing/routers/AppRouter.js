@@ -4,9 +4,9 @@ import { HomeGuard } from "components/routing/routeProtectors/HomeGuard";
 import HomeRouter from "components/routing/routers/HomeRouter";
 import { LobbyGuard } from "components/routing/routeProtectors/LobbyGuard";
 
-import Login from "components/views/Login";
-import Register from "components/views/Register";
-import Lobby from "components/views/home/Lobby";
+import Login from "components/views/authentication/Login";
+import Register from "components/views/authentication/Register";
+import Lobby from "components/views/game/Lobby";
 import JoinGame from "components/views/game/JoinGame";
 
 import SingleGamePreparePage from "components/views/game/SinglePlayerGame/SingleGamePreparePage";

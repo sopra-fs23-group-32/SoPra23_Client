@@ -26,7 +26,7 @@ const UrgeWithPleasureComponent = ({ duration }) => (
 
 const MultiModeRoundCountdown = () => {
   // use react-router-dom's hook to access the history
-  const duration = 12;
+  const duration = 18;
   const [secondsLeft, setSecondsLeft] = useState(duration);
   const [intervalId, setIntervalId] = useState(null);
 
@@ -59,22 +59,7 @@ const MultiModeRoundCountdown = () => {
       console.log("Generate question: ", response.data);
       await new Promise((resolve) => setTimeout(resolve, 1000));
       toast.info(`Question for next round created.`);
-    }
-    catch (error) {
-      toast.error(`${error.response.data.message}`);
-      console.log(handleError(error));
-    }
-  }
-
-  async function fetchQuestion() {
-    try {
-      const response = await api.get(`games/${gameId}/questions`);
-      setLocalStorageItems(response.data);
-      console.log("Fetch question: ", response.data);
-      await new Promise((resolve) => setTimeout(resolve, 1000));
-      toast.info(`Got question for next round.`);
-    }
-    catch (error) {
+    } catch (error) {
       toast.error(`${error.response.data.message}`);
       console.log(handleError(error));
     }
@@ -113,20 +98,24 @@ const MultiModeRoundCountdown = () => {
 
   // go to next page when time out
   useEffect(() => {
-    const fetchData = async () => {
-      if (secondsLeft === 0) {
-        clearInterval(secondsLeft);
-        clearInterval(intervalId);
-        
-        if (isServer === "false") {
-          await fetchQuestion();
-        }
-        
-        history.push(`/MultiGamePage/${gameId}`);
+    async function fetchQuestion() {
+      try {
+        const response = await api.get(`games/${gameId}/questions`);
+        setLocalStorageItems(response.data);
+        console.log("Fetch question: ", response.data);
+        await new Promise((resolve) => setTimeout(resolve, 1000));
+        toast.info(`Got question for next round.`);
+      } catch (error) {
+        toast.error(`${error.response.data.message}`);
+        console.log(handleError(error));
       }
-    };
-    
-    fetchData();
+    }
+    if (secondsLeft === 0) {
+      clearInterval(secondsLeft);
+      clearInterval(intervalId);
+      if (isServer === "false") {fetchQuestion();}
+      history.push(`/MultiGamePage/${gameId}`);
+    }
   }, [secondsLeft, intervalId]);
 
   const calculateRowPosition = (currentRank, previousRank) => {

@@ -1,0 +1,82 @@
+@import 'styles/theme';
+
+.history {
+  &.container {
+    background: #001F3F;;
+    color: white;
+    padding: 30px 50px;
+    border-radius: $borderRadius;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    width: max-content;
+    margin: 2em auto 0;
+    row-gap: 0.5em;
+  }
+  &.button-container {
+    display: flex;
+    width: 15em;
+    justify-content: center;
+    align-items: center;
+    margin-top: 1.5em;
+  }
+  &.label {
+    font-size: 20px;
+    font-weight: 400;
+    color: $textColor;
+  }
+  & p,h2 {
+    font-size: 48px;
+    font-weight: 500;
+    margin: 0 0;
+  }
+}
+  
+  
+.table {
+  border-collapse: collapse;
+  border-spacing: 0;
+  color: white;
+  font-weight: bold;
+  width: 800px;
+  border-radius: 5px;
+  overflow: hidden;
+}
+.table tr:nth-child(odd) {
+  border-bottom: 1px solid #ccc;
+  background-color: #5883a795;
+}
+.table tr:nth-child(even) {
+  border-bottom: 1px solid #ccc;
+  background-color: #9ab4ca95;
+}
+.table tbody tr:hover {
+  cursor: pointer;
+  transform: translateY(-2px);
+}
+.table th {
+  padding: 8px;
+  background-color: #01010195;
+}
+.table td {
+  padding: 8px;
+  border: none;
+}
+
+.pagination-container .pagination {
+  margin-top: 30px;
+  color: white;
+}
+
+.pagination-container .pagination button {
+  color: white;
+}
+
+.pagination-container .pagination .Mui-selected {
+  color: white;
+}
+
+.page-container{
+  height: 80vh;
+  overflow-y: auto;
+}

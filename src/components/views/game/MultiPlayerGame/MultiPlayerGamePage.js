@@ -3,11 +3,12 @@ import React, { useState, useEffect, useRef } from "react";
 import { Button } from "components/ui/Button";
 import { api, handleError } from "helpers/api";
 import { Grid, Container } from "@mui/material";
-import GameStatus from "models/GameStatus";
+import AutorenewIcon from "@mui/icons-material/Autorenew";
 import SockJS from "sockjs-client";
 import Stomp from "stompjs";
 import { getDomain } from "helpers/getDomain";
 import WebSocketType from "models/WebSocketType";
+import GameStatus from "models/GameStatus";
 
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
@@ -23,6 +24,7 @@ const MultiPlayerGamePage = () => {
   const [selectedCityName, setSelectedCityName] = useState(null);
   // control the flow
   const [isWaiting, setIsWaiting] = useState(true);
+  const [imageUrl, setImageUrl] = useState(localStorage.getItem("PictureUrl"));
 
   const gameId = localStorage.getItem("gameId");
   const roundNumber = localStorage.getItem("roundNumber");
@@ -44,26 +46,25 @@ const MultiPlayerGamePage = () => {
     }
   };
 
-  const fetchGameStatus = async () => {
-    try {
-      const response = await api.get(`/games/${gameId}/status`);
-      console.log("GameStatus: ", response.data);
-      if(response.data==="WAITING"){
-        setIsWaiting(false);
-      }
-    } catch (error) {
-      toast.error(`${error.response.data.message}`);
-      console.log(handleError(error));
-    }
-  };
-
   // keep fetching game status until not waiting
-  useEffect(() => {
-    if (isWaiting) {
-      const interval = setInterval(fetchGameStatus, 1000);
-      return () => clearInterval(interval);
-    }
-  }, [isWaiting]);
+  // useEffect(() => {
+  //   async function fetchGameStatus() {
+  //     try {
+  //       const response = await api.get(`/games/${gameId}/status`);
+  //       console.log("GameStatus: ", response.data);
+  //       if(response.data==="WAITING"){
+  //         setIsWaiting(false);
+  //       }
+  //     } catch (error) {
+  //       toast.error(`${error.response.data.message}`);
+  //       console.log(handleError(error));
+  //     }
+  //   }
+  //   if (isWaiting) {
+  //     const interval = setInterval(fetchGameStatus, 1000);
+  //     return () => clearInterval(interval);
+  //   }
+  // }, [isWaiting]);
 
   useEffect(() => {
     if (!isAnswerSubmitted) {
@@ -98,7 +99,6 @@ const MultiPlayerGamePage = () => {
   }, [isWaiting]);
 
   
-  /*
   // handle msg from the web socket
   useEffect(() => {
     let subscription;
@@ -106,18 +106,12 @@ const MultiPlayerGamePage = () => {
     const stompClient = Stomp.over(Socket);
     stompClient.connect(
       {}, (frame) => {
-        subscription = stompClient.subscribe(
-          `/instance/games/${gameId}`,
+        subscription = stompClient.subscribe(`/instance/games/${gameId}`,
           async (message) => {
             const messagBody = JSON.parse(message.body);
-            console.log("Socket receive msg: ", messagBody);
-            if (messagBody.type === WebSocketType.ANSWER_UPDATE 
-              && messagBody.load === GameStatus.WAITING) {
+            console.log("Socket mssage: ", messagBody.type);
+            if (messagBody.type === WebSocketType.ALL_ANSWER) {
               setIsWaiting(false);
-              // have press the button
-              if(isContinue) {
-                endRound();
-              }
             }
             // else if (messagBody.type === WebSocketType.GAME_END) {
             //   history.push("/lobby");
@@ -128,7 +122,7 @@ const MultiPlayerGamePage = () => {
       (err) => console.log(err)
     );
     return () => {subscription.unsubscribe();};
-  }, []); */
+  }, []); 
 
   const submitAnswer = async (cityName, time) => {
     setIsAnswerSubmitted(true);
@@ -158,9 +152,18 @@ const MultiPlayerGamePage = () => {
     }
   };
 
-  const handleCityNameButtonClick = (cityName) => {
-    setSelectedCityName(cityName);
-  };
+  async function refreshImage() {
+    try {
+      const response = await api.put(`games/${gameId}/refresh`);
+      setImageUrl(response.data);
+      console.log("New Image URL got.");
+      await new Promise((resolve) => setTimeout(resolve, 1000));
+      toast.info(`Image of ${correctOption} refreshed.`);
+    } catch (error) {
+      toast.error(`${error.response.data.message}`);
+      console.log(handleError(error));
+    }
+  }
 
   const cityNameButtons = cityNames.map((cityName) => (
     <button
@@ -177,7 +180,7 @@ const MultiPlayerGamePage = () => {
           : "blue-button"
       }`}
       disabled={isAnswerSubmitted===true}
-      onClick={() => handleCityNameButtonClick(cityName)}
+      onClick={() => setSelectedCityName(cityName)}
     >
       {cityName}
     </button>
@@ -201,11 +204,7 @@ const MultiPlayerGamePage = () => {
   return (
     <div className="guess-the-city">
       <div className="guess-the-city header">
-        <Button
-          className="exit-button"
-          onClick={handleExitButtonClick}
-          
-        >
+        <Button className="exit-button" onClick={handleExitButtonClick} >
           Exit Game
         </Button>
       </div>
@@ -214,12 +213,14 @@ const MultiPlayerGamePage = () => {
         <Container>
           <Grid container spacing={4}>
             <Grid item md={6}>
+              <div className="city-image-refresh" >
+                <button className="city-image-refresh-button" 
+                  onClick={() => refreshImage()}>
+                    <AutorenewIcon fontSize="large" />
+                </button>
+              </div>
               <div>
-                <img
-                  className="city-image"
-                  alt="GuessImg"
-                  src={localStorage.getItem("PictureUrl")}
-                />
+                <img className="city-image" alt="GuessImg" src={imageUrl}/>
               </div>
               <div style={{ textAlign: "center" }}>
                 <p>Your Score: {score}</p>

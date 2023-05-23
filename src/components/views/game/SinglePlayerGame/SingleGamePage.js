@@ -2,9 +2,11 @@ import { useHistory } from "react-router-dom";
 import React, { useState, useEffect } from "react";
 import { api, handleError } from "helpers/api";
 import { Grid, Container } from "@mui/material";
+import { Button } from "components/ui/Button";
+import AutorenewIcon from "@mui/icons-material/Autorenew";
+
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
-import { Button } from "components/ui/Button";
 import "styles/views/game/GamePage.scss";
 
 const SingleGamePage = () => {
@@ -12,6 +14,7 @@ const SingleGamePage = () => {
   const [score, setScore] = useState(localStorage.getItem("score"));
   const [roundTime, setRoundTime] = useState(localStorage.getItem("countdownTime"));
   const [selectedCityName, setSelectedCityName] = useState(null);
+  const [imageUrl, setImageUrl] = useState(localStorage.getItem("PictureUrl"));
 
   const cityNames = JSON.parse(localStorage.getItem("citynames"));
   const correctOption = localStorage.getItem("CorrectOption");
@@ -80,10 +83,6 @@ const SingleGamePage = () => {
     }
   };
 
-  const handleCityNameButtonClick = (cityName) => {
-    setSelectedCityName(cityName);
-  };
-
   const cityNameButtons = cityNames.map((cityName) => (
     <button key={cityName}
       className={`city-name-button ${
@@ -98,11 +97,24 @@ const SingleGamePage = () => {
           : "blue-button"
       }`}
       disabled={isAnswerSubmitted === true}
-      onClick={() => handleCityNameButtonClick(cityName)}
+      onClick={() => setSelectedCityName(cityName)}
     >
       {cityName}
     </button>
   ));
+
+  async function refreshImage() {
+    try {
+      const response = await api.put(`games/${gameId}/refresh`);
+      setImageUrl(response.data);
+      console.log("New Image URL got.");
+      await new Promise((resolve) => setTimeout(resolve, 1000));
+      toast.info(`Image of ${correctOption} refreshed.`);
+    } catch (error) {
+      toast.error(`${error.response.data.message}`);
+      console.log(handleError(error));
+    }
+  }
       
   const handleExitButtonClick = async () => {
     localStorage.removeItem("category");
@@ -130,8 +142,14 @@ const SingleGamePage = () => {
         <Container>
           <Grid container spacing={4}>
             <Grid item md={6}>
+              <div className="city-image-refresh" >
+                <button className="city-image-refresh-button" 
+                  onClick={() => refreshImage()}>
+                    <AutorenewIcon fontSize="large" />
+                </button>
+              </div>
               <div style={{ alignItems: 'center', display: "block"}}>
-                <img className="city-image" alt="GuessImg" src={localStorage.getItem("PictureUrl")}/>
+                <img className="city-image" alt="GuessImg" src={imageUrl}/>
               </div>
               <div style={{ textAlign: "center" }}>
                 <p>Your Score: {score}</p>
