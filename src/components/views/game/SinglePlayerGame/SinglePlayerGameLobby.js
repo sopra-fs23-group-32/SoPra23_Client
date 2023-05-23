@@ -5,7 +5,6 @@ import { api, handleError } from "helpers/api";
 import InformationContainer from "components/ui/BaseContainer";
 import { Spinner } from "components/ui/Spinner";
 import { InputLabel, Select, MenuItem, TextField } from "@mui/material";
-import Switch from "react-switch";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 

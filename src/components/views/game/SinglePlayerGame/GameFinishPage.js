@@ -46,7 +46,7 @@ const GameFinishPage = () => {
     <div className="page-container">
     <div className="Finalpage container" style={{flexDirection: "column"}}>
     <InformationContainer className="finalpage container" style={{fontSize: '48px', width: "fit-content"}}>
-      Your Singleplayer has Game Ended
+      Your Singleplayer Game has Ended
     </InformationContainer>
     <InformationContainer className="finalpage container" style={{ fontSize: "40px" }}>
         You got: {localStorage.getItem("score")} Points

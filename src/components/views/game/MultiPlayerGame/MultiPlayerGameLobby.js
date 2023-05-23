@@ -145,15 +145,12 @@ const Lobby = () => {
               }}
             />
           </div>
-          {isMultiplayer && (
-            <div style={{textAlign: "center"}}>
+          <div style={{textAlign: "center"}}>
             Careful: <br/>
             After creating the multiplayer lobby you won't <br />
             be able to change the 
             game settings anymore! 
-              
-            </div>
-          )}
+          </div>
         </InformationContainer>
       </div>
 

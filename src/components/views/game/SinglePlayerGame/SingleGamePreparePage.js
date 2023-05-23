@@ -3,7 +3,6 @@ import React, { useState, useEffect } from "react";
 import { Button } from "components/ui/Button";
 import { api, handleError } from "helpers/api";
 import InformationContainer from "components/ui/BaseContainer";
-import PropTypes from "prop-types";
 import { CountdownCircleTimer } from 'react-countdown-circle-timer';
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
@@ -26,7 +25,7 @@ const UrgeWithPleasureComponent = ({ duration }) => (
 
 const RoundCountdown = () => {
   // use react-router-dom's hook to access the history
-  const duration = 12;
+  const duration = 10;
   const [secondsLeft, setSecondsLeft] = useState(duration);
   const [intervalId, setIntervalId] = useState(null);
 

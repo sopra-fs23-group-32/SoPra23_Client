@@ -1,5 +1,5 @@
 import { useHistory } from "react-router-dom";
-import React, { useState, useEffect, useRef } from "react";
+import React, { useState, useEffect } from "react";
 import { Button } from "components/ui/Button";
 import { api, handleError } from "helpers/api";
 import { Grid, Container } from "@mui/material";
