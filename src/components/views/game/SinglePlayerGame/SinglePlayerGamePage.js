@@ -50,7 +50,7 @@ const SingleGamePage = () => {
       );
       const score_new = parseInt(localStorage.getItem("score")) + response.data;
       if (response.data === 0 && isSurvivalMode === "true") {
-        console.log("hihihi")
+        
         setIsLose(1);
       }
       setScore(score_new);
@@ -70,8 +70,14 @@ const SingleGamePage = () => {
           const newTimeLeft = prevTimeLeft - 1;
           if (newTimeLeft <= 0) {
             clearInterval(interval);
+            if(selectedCityName==null){
+              
             submitAnswer("no answer", totalTime);
-            setSelectedCityName("noAnswer");
+            setSelectedCityName("noAnswer");}
+            else{
+              submitAnswer(selectedCityName, totalTime);
+              setSelectedCityName(selectedCityName)
+            }
             //setIsLose(1);
           }
           return newTimeLeft;
@@ -79,7 +85,7 @@ const SingleGamePage = () => {
       }, 1000);
       return () => clearInterval(interval);
     }
-  }, [isAnswerSubmitted]);
+  }, [isAnswerSubmitted, selectedCityName]);
 
   const handleSubmit = (e) => {
     e.preventDefault();
