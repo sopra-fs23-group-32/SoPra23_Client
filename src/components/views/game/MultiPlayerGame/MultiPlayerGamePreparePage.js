@@ -30,12 +30,13 @@ const UrgeWithPleasureComponent = ({ duration }) => (
 
 const MultiModeRoundCountdown = () => {
   // use react-router-dom's hook to access the history
-  const duration = 18;
+  const duration = 12;
   const [secondsLeft, setSecondsLeft] = useState(duration);
   const [intervalId, setIntervalId] = useState(null);
 
   const [leaderboardData, setLeaderboardData] = useState([]);
   const [previousRoundData, setPreviousRoundData] = useState([]);
+  const [isFetch, setIsFetch] = useState(false);
 
   const gameId = localStorage.getItem("gameId");
   const category = localStorage.getItem("category");
@@ -76,6 +77,7 @@ const MultiModeRoundCountdown = () => {
       console.log("Fetch question: ", response.data);
       await new Promise((resolve) => setTimeout(resolve, 1000));
       toast.info(`Got question for next round.`);
+      setIsFetch(true);
     } catch (error) {
       toast.error(`${error.response.data.message}`);
       console.log(handleError(error));

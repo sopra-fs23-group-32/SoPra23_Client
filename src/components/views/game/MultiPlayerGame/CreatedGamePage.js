@@ -255,7 +255,7 @@ const CreatedGamePage = () => {
         </div>
         <div className="waiting-page button-container">
           <Button onClick={() => startGameMultiplayer(gameId)}
-            disabled={isServer === "false"}
+            disabled={isServer==="false" || playerNumber<2}
           >
             Start Game
           </Button>
