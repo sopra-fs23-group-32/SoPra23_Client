@@ -39,13 +39,11 @@ const MultiPlayerGamePage = () => {
 
   const endRound = () => {
     console.log("Lose", isLose);
-    if (isLose===1) {
+    if (isLose === 1) {
       history.push(`/MultiGamePage/${gameId}/GameFinish`);
-    }
-    else if (roundNumber === totalRounds) {
+    } else if (roundNumber === totalRounds) {
       history.push(`/MultiGamePage/${gameId}/GameFinish`);
-    }
-    else {
+    } else {
       localStorage.setItem("roundNumber", Number(roundNumber) + 1);
       history.push(`/MultiGamePage/${gameId}/RoundCountPage`);
     }
@@ -58,20 +56,25 @@ const MultiPlayerGamePage = () => {
           const newTimeLeft = prevTimeLeft - 1;
           if (newTimeLeft <= 0) {
             clearInterval(interval);
-            submitAnswer("no answer", totalTime);
-            setSelectedCityName("noAnswer");
-            setIsLose(1);
+            if (selectedCityName == null) {
+              submitAnswer("no answer", totalTime);
+              setSelectedCityName("noAnswer");
+            } else {
+              submitAnswer(selectedCityName, totalTime);
+              setSelectedCityName(selectedCityName);
+            }
+            //setIsLose(1);
           }
           return newTimeLeft;
         });
       }, 1000);
       return () => clearInterval(interval);
     }
-  }, [isAnswerSubmitted]);
+  }, [isAnswerSubmitted, selectedCityName]);
 
   // when all answered(not waiting) count 3s and go to next page
   useEffect(() => {
-    if(!isWaiting){
+    if (!isWaiting) {
       const interval = setInterval(() => {
         setRoundTime2((prevTimeLeft) => {
           const newTimeLeft = prevTimeLeft - 1;
@@ -85,22 +88,22 @@ const MultiPlayerGamePage = () => {
     }
   }, [isWaiting]);
 
-  
   // handle msg from the web socket
   useEffect(() => {
     let subscription;
     const Socket = new SockJS(getDomain() + "/socket");
     const stompClient = Stomp.over(Socket);
     stompClient.connect(
-      {}, (frame) => {
-        subscription = stompClient.subscribe(`/instance/games/${gameId}`,
+      {},
+      (frame) => {
+        subscription = stompClient.subscribe(
+          `/instance/games/${gameId}`,
           async (message) => {
             const messagBody = JSON.parse(message.body);
             console.log("Socket mssage: ", messagBody.type);
             if (messagBody.type === WebSocketType.ALL_ANSWER) {
               setIsWaiting(false);
-            }
-            else if (messagBody.type === WebSocketType.GAME_DELETED) {
+            } else if (messagBody.type === WebSocketType.GAME_DELETED) {
               localStorage.removeItem("gameId");
               localStorage.removeItem("category");
               localStorage.removeItem("totalRounds");
@@ -119,8 +122,10 @@ const MultiPlayerGamePage = () => {
       },
       (err) => console.log(err)
     );
-    return () => {subscription.unsubscribe();};
-  }, []); 
+    return () => {
+      subscription.unsubscribe();
+    };
+  }, []);
 
   const submitAnswer = async (cityName, time) => {
     setIsAnswerSubmitted(true);
@@ -130,11 +135,15 @@ const MultiPlayerGamePage = () => {
         { answer: cityName, timeTaken: time }
       );
       const score_new = parseInt(score) + response.data;
-      if(response.data===0 && isSurvivalMode==="true") {setIsLose(1);}
+      if (response.data === 0 && isSurvivalMode === "true") {
+        setIsLose(1);
+      }
       setScore(score_new);
       localStorage.setItem("myScore", score_new);
     } catch (error) {
-      toast.error( `Failed in submitting answer: \n${error.respond.data.message}`);
+      toast.error(
+        `Failed in submitting answer: \n${error.respond.data.message}`
+      );
       console.log(handleError(error));
     }
   };
@@ -145,7 +154,7 @@ const MultiPlayerGamePage = () => {
       submitAnswer(selectedCityName, totalTime - roundTime);
       if (isWaiting) {
         toast.info(`Waiting for other players to answer...`);
-      } 
+      }
     }
   };
 
@@ -163,10 +172,10 @@ const MultiPlayerGamePage = () => {
   }
 
   const submitButtonContent = isAnswerSubmitted
-  ? isWaiting
-    ? "Waiting for others"
-    : `Wait ${roundTime2} sec`
-  : "Submit Answer";
+    ? isWaiting
+      ? "Waiting for others"
+      : `Wait ${roundTime2} sec`
+    : "Submit Answer";
 
   const cityNameButtons = cityNames.map((cityName) => (
     <button
@@ -182,7 +191,7 @@ const MultiPlayerGamePage = () => {
           ? "dark-button"
           : "blue-button"
       }`}
-      disabled={isAnswerSubmitted===true}
+      disabled={isAnswerSubmitted === true}
       onClick={() => setSelectedCityName(cityName)}
     >
       {cityName}
@@ -206,54 +215,64 @@ const MultiPlayerGamePage = () => {
   };
 
   return (
-  <div className="page-container">
-    <div className="guess-the-city">
-      <div style={{ position: "fixed", top: 75, left: 75 }}>
-        <Button style={{ fontSize: "30px", height: "60px", width: "100%" }}
-         onClick={handleExitButtonClick}
-         disabled={isServer==="true"}>
-          Exit Game
-        </Button>
-      </div>
+    <div className="page-container">
+      <div className="guess-the-city">
+        <div style={{ position: "fixed", top: 75, left: 75 }}>
+          <Button
+            style={{ fontSize: "30px", height: "60px", width: "100%" }}
+            onClick={handleExitButtonClick}
+            disabled={isServer === "true"}
+          >
+            Exit Game
+          </Button>
+        </div>
 
-      <div className="guess-the-city main">
-        <Container>
-          <Grid container spacing={4}>
-            <Grid item md={6}>
-              <div className="city-image-refresh" >
-                <button className="city-image-refresh-button" 
-                  onClick={() => refreshImage()}>
+        <div className="guess-the-city main">
+          <Container>
+            <Grid container spacing={4}>
+              <Grid item md={6}>
+                <div className="city-image-refresh">
+                  <button
+                    className="city-image-refresh-button"
+                    onClick={() => refreshImage()}
+                  >
                     <AutorenewIcon fontSize="large" />
-                </button>
-              </div>
-              <div>
-                <img className="city-image" alt="GuessImg" src={imageUrl}/>
-              </div>
-              <div style={{ textAlign: "center" }}>
-                <p>Your Score: {score} {isSurvivalMode==="true"? "(Survival Mode)":""}</p>
-              </div>
-            </Grid>
-            <Grid item md={6}>
-              <Grid container justifyContent={"space-around"}>
-                <p>Round {roundNumber}</p>
-                <p className="round-time">{roundTime}</p>
+                  </button>
+                </div>
+                <div>
+                  <img className="city-image" alt="GuessImg" src={imageUrl} />
+                </div>
+                <div style={{ textAlign: "center" }}>
+                  <p>
+                    Your Score: {score}{" "}
+                    {isSurvivalMode === "true" ? "(Survival Mode)" : ""}
+                  </p>
+                </div>
               </Grid>
-              <div className="city-button-container">
-                {cityNameButtons}
-                <form onSubmit={handleSubmit} className="submit-form">
-                  <button type="submit" className="submit-button" disabled={isAnswerSubmitted}>
-                  {submitButtonContent}
-                </button>
-                </form>
-              </div>
+              <Grid item md={6}>
+                <Grid container justifyContent={"space-around"}>
+                  <p>Round {roundNumber}</p>
+                  <p className="round-time">{roundTime}</p>
+                </Grid>
+                <div className="city-button-container">
+                  {cityNameButtons}
+                  <form onSubmit={handleSubmit} className="submit-form">
+                    <button
+                      type="submit"
+                      className="submit-button "
+                      disabled={isAnswerSubmitted || selectedCityName == null}
+                    >
+                      {submitButtonContent}
+                    </button>
+                  </form>
+                </div>
+              </Grid>
             </Grid>
-          </Grid>
-        </Container>
-      </div>
+          </Container>
+        </div>
 
-    
-      <ToastContainer />
-    </div>
+        <ToastContainer />
+      </div>
     </div>
   );
 };
