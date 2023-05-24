@@ -111,29 +111,6 @@
             border-radius: 0.5em;
         }
     }
-    &.exit-button {
-        position: absolute;
-        background-color: #1979b8 !important;
-        top: 30px;
-        left: 30px;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        background-color: transparent;
-        border: none;
-        cursor: pointer;
-        font-size: 2rem;
-        color: white;
-        text-transform: uppercase;
-        font-weight: bold;
-        padding: 1rem;
-        transition: all 0.3s;
-
-        &:hover {
-            background-color: #ccc;
-        }
-    }
-
     &.button-container {
         display: flex;
         flex-direction: row;
@@ -155,12 +132,13 @@
 
 .countdown-text {
   font-size: 50px;
+  color: white;
 }
 
 .exit-button {
     position: absolute;
     background-color: #1979b8 !important;
-    top: 30px;
+    top: -100px;
     left: 30px;
     display: flex;
     align-items: center;
@@ -185,6 +163,7 @@
     border-collapse: collapse;
     font-weight: bold;
     font-size: 20px;
+    color: white;
 
     th, td {
       padding: 10px;
@@ -194,7 +173,7 @@
     }
 
     th {
-      background-color: rgba(25, 121, 184, 0.9);
+      background-color: rgba(0, 31, 63, 0.9);
       font-weight: bold;
     }
 
@@ -203,7 +182,6 @@
     }
   }
 }
-
 
 
 

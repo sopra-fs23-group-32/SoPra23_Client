@@ -2,7 +2,7 @@
 
 .joinboard {
     &.container {
-        background: transparentize(rgb(0, 31, 61), 0);
+        background-color: #5e5df0;
         padding: 1em;
         border-radius: $borderRadius;
         display: flex;
@@ -18,7 +18,7 @@
         & h2 {
             margin: 0.5em 0;
             color: white;
-            background: #1979b8;
+            background-color: rgba(65, 63, 240, 0.7);
             text-align: center;
             font-size: 48px;
             border-radius: 0.5em;
@@ -38,12 +38,20 @@
     & p {
         margin: 0.5em 0;
         color: white;
-        background: #1979b8;
+        box-shadow: 1px 1px 5px white;
+        background: #5E5DF0;
         text-align: center;
         border-radius: 0.5em;
         padding: 0 30px;
         &:hover {
+            transform: translateY(-2px);
             cursor: pointer;
         }
+        transition: all 0.3s ease;
     }
+}
+
+.page-container{
+  height: 80vh;
+  overflow-y: auto;
 }

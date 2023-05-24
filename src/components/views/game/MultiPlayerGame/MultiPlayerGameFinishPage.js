@@ -15,54 +15,48 @@ import "styles/views/game/FinalPage.scss";
 
 const MultiPlayerGameFinishPage = () => {
   const [playerRanking, setPlayerRanking] = useState([]);
+  const [isEnded, setIsEnded] = useState(false);
   const playerId = localStorage.getItem("userId");
   const gameId = localStorage.getItem("gameId");
   const isServer = localStorage.getItem("isServer");
   const history = useHistory();
 
   const saveGameHistory = async () => {
-    const response = await api.post(`/users/${playerId}/gameHistories/${gameId}`);
-    console.log("Game History: ", response.data);
-    toast.info(`Player's game history saved.`);
-    await new Promise((resolve) => setTimeout(resolve, 500));
-  }
-
-  async function fetchRanking() {
     try{
-      // get the final ranking
-      const responseRanking = await api.get(`/games/${gameId}/ranking`);
-      setPlayerRanking(responseRanking.data);
-      console.log("Ranking: ", responseRanking.data);
-      await new Promise((resolve) => setTimeout(resolve, 1000));
-    }
-    catch (error) {
-      toast.error("Something went wrong while fetching the ranking!");
+      const response = await api.post(`/users/${playerId}/gameHistories/${gameId}`);
+      console.log("Game History: ", response.data);
+      toast.info(`Player's game history saved.`);
+      //await new Promise((resolve) => setTimeout(resolve, 500));
+    } catch (error) {
+      toast.error(`Failed to fetch player in gamexx(ID ${gameId})\n //change this
+        ${error.response.data.message}`);
       console.log(handleError(error));
     }
   }
-  
-  useEffect(() => {
-    const Socket = new SockJS(getDomain() + "/socket");
-    const stompClient = Stomp.over(Socket);
-    let subscription;
-    stompClient.connect(
-      {},
-      (frame) => {
-        subscription = stompClient.subscribe(
-          `/instance/games/${gameId}`,
-          (message) => {
-            const messagBody = JSON.parse(message.body);
-            console.log("Socket receive msg: ", messagBody);
-            if (!isServer && messagBody.type===WebSocketType.GAME_END) {
-              saveGameHistory();
-            }
-          }
-        );
-      },
-      (err) => console.log(err)
-    );
-    return () => { subscription.unsubscribe();};
-  }, []);
+
+  // useEffect(() => {
+  //   async function fetchGameStatus() {
+  //     try {
+  //       const response = await api.get(
+  //         `/games/${localStorage.getItem("gameId")}/status`
+  //       );
+  //       console.log("GameStatus: ", response.data);
+  //       if(response.data=== "ENDED" && isServer==="false"){
+  //         saveGameHistory();
+  //         setIsEnded(true);
+  //       }
+  //     } catch (error) {
+  //       toast.error(`Failed to fetch player in game(ID ${gameId})\n //change this
+  //         ${error.response.data.message}`);
+  //       console.log(handleError(error));
+  //     }
+  //   }
+  //   if (!isEnded && isServer === "false"){
+  //     const interval = setInterval(fetchGameStatus,1000);
+  //     return ()=>clearInterval(interval)
+  //   }
+  // }, [isEnded]);
+    
 
   useEffect(() => {
     async function saveGameInfo() {
@@ -70,18 +64,52 @@ const MultiPlayerGameFinishPage = () => {
         const responseGameInfo = await api.post(`/gameInfo/${gameId}`);
         console.log("Game Info: ", responseGameInfo.data);
         toast.info(`Game's information saved.`);
-        await new Promise((resolve) => setTimeout(resolve, 500));
-      }
-      catch (error) {
+        //await new Promise((resolve) => setTimeout(resolve, 500));
+      } catch (error) {
         toast.error("Something went wrong while fetching the ranking!");
         console.log(handleError(error));
       }
     }
-    if (isServer) {
+    async function fetchRanking() {
+      try{
+        const responseRanking = await api.get(`/games/${gameId}/ranking`);
+        setPlayerRanking(responseRanking.data);
+        console.log("Ranking: ", responseRanking.data);
+        //await new Promise((resolve) => setTimeout(resolve, 500));
+      } catch (error) {
+        toast.error("Something went wrong while fetching the ranking!");
+        console.log(handleError(error));
+      }
+    }
+    if (isServer==="true") {
       saveGameInfo();
       saveGameHistory();
     }
     fetchRanking();
+  }, []);
+
+  // handle msg from the web socket
+  useEffect(() => {
+    let subscription;
+    const Socket = new SockJS(getDomain() + "/socket");
+    const stompClient = Stomp.over(Socket);
+    stompClient.connect(
+      {}, (frame) => {
+        subscription = stompClient.subscribe(`/instance/games/${gameId}`,
+          async (message) => {
+            const messagBody = JSON.parse(message.body);
+            console.log("Socket mssage: ", messagBody.type);
+            if(isServer==="false" && 
+              messagBody.type === WebSocketType.GAME_END){
+              saveGameHistory();
+              setIsEnded(true);
+            }
+          }
+        );
+      },
+      (err) => console.log(err)
+    );
+    return () => {subscription.unsubscribe();};
   }, []);
 
   const groupedPlayers = playerRanking.reduce((groups, player) => {
@@ -92,9 +120,10 @@ const MultiPlayerGameFinishPage = () => {
   }, {});
 
   const endGame = async() => {
-    if (isServer){
+    if (isServer==="true"){
       await api.delete(`games/${gameId}`);
-      await new Promise((resolve) => setTimeout(resolve, 500));
+      //await new Promise((resolve) => setTimeout(resolve, 500));
+      console.log(`Game ${gameId} deleted.`)
     }
     localStorage.removeItem("gameId");
     localStorage.removeItem("category");
@@ -110,6 +139,7 @@ const MultiPlayerGameFinishPage = () => {
   };
 
   return (
+    <div className="page-container">
     <div className="finalpage container">
       <h2 style={{ font: "40px" }}>
         -- Game Ended --
@@ -158,6 +188,7 @@ const MultiPlayerGameFinishPage = () => {
         </Button>
       </div>
       <ToastContainer />
+    </div>
     </div>
   );
 

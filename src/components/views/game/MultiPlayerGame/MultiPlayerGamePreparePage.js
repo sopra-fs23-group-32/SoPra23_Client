@@ -9,6 +9,10 @@ import { CountdownCircleTimer } from 'react-countdown-circle-timer';
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 
+import SockJS from "sockjs-client";
+import Stomp from "stompjs";
+import { getDomain } from "helpers/getDomain";
+import WebSocketType from "models/WebSocketType";
 import "styles/views/game/GamePrepare.scss";
 
 const UrgeWithPleasureComponent = ({ duration }) => (
@@ -26,12 +30,13 @@ const UrgeWithPleasureComponent = ({ duration }) => (
 
 const MultiModeRoundCountdown = () => {
   // use react-router-dom's hook to access the history
-  const duration = 15;
+  const duration = 12;
   const [secondsLeft, setSecondsLeft] = useState(duration);
   const [intervalId, setIntervalId] = useState(null);
 
   const [leaderboardData, setLeaderboardData] = useState([]);
   const [previousRoundData, setPreviousRoundData] = useState([]);
+  const [isFetch, setIsFetch] = useState(false);
 
   const gameId = localStorage.getItem("gameId");
   const category = localStorage.getItem("category");
@@ -59,8 +64,7 @@ const MultiModeRoundCountdown = () => {
       console.log("Generate question: ", response.data);
       await new Promise((resolve) => setTimeout(resolve, 1000));
       toast.info(`Question for next round created.`);
-    }
-    catch (error) {
+    } catch (error) {
       toast.error(`${error.response.data.message}`);
       console.log(handleError(error));
     }
@@ -73,12 +77,35 @@ const MultiModeRoundCountdown = () => {
       console.log("Fetch question: ", response.data);
       await new Promise((resolve) => setTimeout(resolve, 1000));
       toast.info(`Got question for next round.`);
-    }
-    catch (error) {
+      setIsFetch(true);
+    } catch (error) {
       toast.error(`${error.response.data.message}`);
       console.log(handleError(error));
     }
   }
+
+  // handle msg from the web socket
+  useEffect(() => {
+    let subscription;
+    const Socket = new SockJS(getDomain() + "/socket");
+    const stompClient = Stomp.over(Socket);
+    stompClient.connect(
+      {}, (frame) => {
+        subscription = stompClient.subscribe(`/instance/games/${gameId}`,
+          async (message) => {
+            const messagBody = JSON.parse(message.body);
+            console.log("Socket mssage: ", messagBody.type);
+            if(isServer==="false" && 
+              messagBody.type === WebSocketType.ROUND_UPDATE){
+                fetchQuestion();
+            }
+          }
+        );
+      },
+      (err) => console.log(err)
+    );
+    return () => {subscription.unsubscribe();};
+  }, []);
 
   useEffect(() => {
     async function fetchRanking() {
@@ -96,8 +123,12 @@ const MultiModeRoundCountdown = () => {
         console.log(handleError(error));
       }
     }
+    // remove all local storage of previous question
+    localStorage.removeItem("citynames");
+    localStorage.removeItem("PictureUrl");
+    localStorage.removeItem("CorrectOption");
     // fetch question and save in localstorage
-    if (isServer) {generateQuestion();}
+    if (isServer==="true") {generateQuestion();}
     // get all players' ranking
     fetchRanking();
     // set a timer
@@ -107,18 +138,13 @@ const MultiModeRoundCountdown = () => {
     return () => clearInterval(intervalId);
   }, []);
 
-
   // go to next page when time out
   useEffect(() => {
     if (secondsLeft === 0) {
       clearInterval(secondsLeft);
       clearInterval(intervalId);
-      setTimeout(() => {
-        if(isServer === false){
-          fetchQuestion();
-        }
-        history.push(`/MultiGamePage/${gameId}`);
-      }, 500);
+      // if (isServer === "false") {fetchQuestion();}
+      history.push(`/MultiGamePage/${gameId}`);
     }
   }, [secondsLeft, intervalId]);
 
@@ -186,8 +212,8 @@ const MultiModeRoundCountdown = () => {
     <div className="round countdown container">
       <div >
         <Button className="round countdown exit-button"
-        onClick={handleExitButtonClick}
-        disabled={isServer===true}
+          onClick={handleExitButtonClick}
+        
         >
           Exit Game
         </Button>
@@ -204,15 +230,15 @@ const MultiModeRoundCountdown = () => {
         </InformationContainer>
 
         <div className="roundcountdown layout" style={{ display: "flex", flexDirection: "row" }}>
-          <InformationContainer className="roundcountdown leaderboard-container">
-            <div>{playerRankingList}</div>
-          </InformationContainer>
-
-          <InformationContainer className="roundcountdown container_right">
-          <div className="countdown-text">
-            <UrgeWithPleasureComponent duration={duration} />
+          <div className="roundcountdown leaderboard-container">
+            {playerRankingList}
           </div>
-          </InformationContainer>
+
+          <div className="roundcountdown container_right">
+            <div className="countdown-text">
+              <UrgeWithPleasureComponent duration={duration} />
+            </div>
+          </div>
         </div>
       </div>
       <ToastContainer />

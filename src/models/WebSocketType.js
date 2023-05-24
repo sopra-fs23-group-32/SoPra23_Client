@@ -3,7 +3,8 @@ const WebSocketType={
     PLAYER_ADD: 'PLAYER_ADD',
     PLAYER_REMOVE: 'PLAYER_REMOVE',
     ROUND_UPDATE: 'ROUND_UPDATE',
-    ANSWER_UPDATE: 'ANSWER_UPDATE',
+    ALL_ANSWER: 'ALL_ANSWER',
     GAME_END: 'GAME_END',
+    GAME_DELETED: 'GAME_DELETED',
 };
 export default WebSocketType;

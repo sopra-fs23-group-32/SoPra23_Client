@@ -21,7 +21,7 @@ const JoinGame = () => {
     const fetchGamedata = async () => {
       const response = await api.get("/games/");
       setOpeningGames(response.data);
-      console.log(response)
+      console.log("All games in SET_UP", response.data)
       await new Promise((resolve) => setTimeout(resolve, 1000));
     };
     fetchGamedata();
@@ -52,10 +52,10 @@ const JoinGame = () => {
   };
 
   return (
-    <div>
+    <div className="page-container">
     <Container className="joinboard container">
       <div className="headerrow">
-        <h2>Join the Server</h2>
+        <h2>Join Multiplayer Game</h2>
       </div>
       <div className="joinboard field">
         <div className="sever-field">
@@ -105,8 +105,8 @@ const JoinGame = () => {
           <Button width="30%" onClick={() => history.push("/home")}>
             Return to home
           </Button>
-          <Button width="30%" onClick={() => history.push("/lobby")}>
-            Return to Lobby
+          <Button width="30%" onClick={() => history.push("/lobby/multiplayer")}>
+          Create a Multiplayer Game
           </Button>
         </div>
       </div>

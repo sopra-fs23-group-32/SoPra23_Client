@@ -31,13 +31,12 @@
   border-spacing: 0;
   width: 800px;
   border-radius: 5px;
-  overflow: hidden;
   color: #ffffff;
   font-weight: bold;
 }
 .table th {
   padding: 14px;
-  background-color: #01010195;
+  background-color: #413ff0b3;
   color: #ffffff;
   font-size: 26px;
 }
@@ -95,12 +94,7 @@
   position: relative;
 }
 
-.player-name {
-  position: absolute;
-  top: -50px;
-  text-align: center;
-  font-weight: bold;
-  width: 30%;
-  background-color: transparent;
-  border: none;
+.page-container{
+  height: 70vh;
+  overflow-y: auto;
 }
