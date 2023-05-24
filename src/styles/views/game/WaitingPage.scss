@@ -11,6 +11,16 @@
         align-items: center;
         border-radius: $borderRadius;
         column-gap: 0.5em;
+        & h2{
+            margin: 0;
+            color: white;
+            border-bottom: 3px solid white;
+            text-align: center;
+            font-size: 32px;
+            border-radius: 0.5em;
+            padding: 15px;
+
+        }
     }
     &.container_left {
         background: #001F3F;
@@ -49,6 +59,7 @@
     &.label {
         font-size: 20px;
         color: $textColor;
+        
     }
     &.category {
         margin-left: 20px;
@@ -62,7 +73,7 @@
     }
     &.text {
         margin-left: 10px;
-        width: 50%;
+        width: 40%;
         border-radius: $borderRadius;
         background-color: #1979b8;
 		color: $textColor;
@@ -88,6 +99,7 @@
         row-gap: 2em;
         column-gap: 1em;
         
+
     }
     & p,
     h2 {
@@ -100,23 +112,36 @@
     .table-style {
       width: 100%;
       border-collapse: collapse;
-      border: 1px solid #000;
+      
     }
 
     .table-style thead {
-      background-color: rgba(23,73, 159, 0.5);
+        background-color: rgba(65, 63, 240, 0.7);
       color: white;
+
     }
 
     .table-style tbody tr {
-      background-color: rgba(128, 128, 128, 0.5);
+        color:white;
+      background-color: #5883a795;
+      
+    }
+    .marginf{
+    
+            margin-bottom: 20px;
+          
     }
 
     .table-style th,
     .table-style td {
+        margin-left: 8px;
+        border-radius: 10px;
       padding: 8px;
-      border: 1px solid #000;
+      
       text-align: center;
+    }
+    .center-align{
+        text-align: center;
     }
 
 }

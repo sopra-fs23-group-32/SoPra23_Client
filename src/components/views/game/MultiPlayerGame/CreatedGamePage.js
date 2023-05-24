@@ -172,12 +172,12 @@ const CreatedGamePage = () => {
     <div className="waiting-page layout">
       <InformationContainer className="waiting-page container_left">
         <div style={{ fontSize: "40px", textAlign: "center" }}>
-          Game Settings
+          <h2>Game Settings</h2>
         </div>
         <div className="waiting-page select">          
           <InputLabel className="waiting-page label">Category:</InputLabel>
           <Select value={category} disabled
-          style={{ height: '45px', marginLeft: '5px', width:"200px" }}
+          style={{ height: '45px', marginLeft: '5px', width:"40%", backgroundColor: "#5e5df0" }}
             inputProps={{
               MenuProps: {
                 sx: {borderRadius: "10px", },
@@ -201,14 +201,14 @@ const CreatedGamePage = () => {
         <div className="waiting-page select">
           <InputLabel className="waiting-page label">Rounds:</InputLabel>
           <TextField className="waiting-page text"
-            inputProps={{ style: { textAlign: "center", height: "10px"} }}
+            inputProps={{ style: { textAlign: "center", height: "10px",backgroundColor: "#5e5df0",} }}
             value={totalRounds} disabled 
           />
         </div>
         <div className="waiting-page select">
         <InputLabel className="waiting-page label">Time Limit:</InputLabel>
         <TextField className="waiting-page text"
-          inputProps={{ style: { textAlign: "center", height: "10px"}, }}
+          inputProps={{ style: { textAlign: "center", height: "10px",backgroundColor: "#5e5df0",} }}
           value={totalTime} disabled 
         />
         </div>
@@ -224,21 +224,24 @@ const CreatedGamePage = () => {
               Only the host can start a game.
             </div>
           )}
-        </div>
-        <div className="waiting-page button-container">
-          <Button onClick={() => startGameMultiplayer(gameId)}
+          
+        </div><div className="center-align">
+        <Button  style={{  width:"50%",  }} onClick={() => startGameMultiplayer(gameId)}
             disabled={isServer==="false" || playerNumber<2}
           >
             Start Game
-          </Button>
+          </Button></div>
+        <div className="waiting-page button-container">
+          
           <Button onClick={() => backToLobby()}>Back to Lobby</Button>
           <Button onClick={() => backToHome()}>Back to Home Page</Button>
         </div>
+        
       </InformationContainer>
 
       <InformationContainer className="waiting-page container_right">
-        <p style={{ fontSize: "30px", marginBottom: "20px" }}>
-            {playerNumber} {playerNumber === 1 ? "player is" : "players are"} in the lobby:
+        <p style={{ fontSize: "30px", marginBottom: "20px",  }}>
+            <h2>{playerNumber} {playerNumber === 1 ? "player is" : "players are"} in the lobby:</h2>
         </p>
         <div>{playerList}</div>
       </InformationContainer>
