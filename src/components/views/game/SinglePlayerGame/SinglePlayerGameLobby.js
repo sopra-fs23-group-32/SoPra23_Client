@@ -98,6 +98,8 @@ const Lobby = () => {
               <MenuItem value={"NORTH_AMERICA"}>North America</MenuItem>
               <MenuItem value={"SOUTH_AMERICA"}>South America</MenuItem>
               <MenuItem value={"AFRICA"}>Africa</MenuItem>
+              <MenuItem value={"WORLD"}>World</MenuItem>
+
             </Select>
           </div>
           <div className="lobby category-select">
