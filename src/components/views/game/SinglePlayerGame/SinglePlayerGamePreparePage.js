@@ -27,7 +27,6 @@ const RoundCountdown = () => {
   // use react-router-dom's hook to access the history
   const duration = 8;
   const [secondsLeft, setSecondsLeft] = useState(duration);
-  const [intervalId, setIntervalId] = useState(null);
   const [questionReady, setQuestionReady] = useState(false);
 
   const roundNumber = localStorage.getItem("roundNumber");
@@ -35,7 +34,7 @@ const RoundCountdown = () => {
   const category = localStorage.getItem("category");
   const score = localStorage.getItem("score");
   const gameId = localStorage.getItem("gameId");
-  const isSurvialMode = localStorage.getItem("isSurvialMode");
+  const isSurvivalMode = localStorage.getItem("isSurvivalMode");
   const history = useHistory();
 
   const setLocalStorageItems = (question) => {
@@ -64,11 +63,6 @@ const RoundCountdown = () => {
     }
     // fetch question and save in localstorage
     fetchQuestion();
-    // set a timer
-    // const intervalId = setInterval(() => {
-    //   setSecondsLeft((prevSecondsLeft) => prevSecondsLeft - 1);
-    // }, 1000);
-    // return () => clearInterval(intervalId);
   }, []);
 
   // go to next page when time out
@@ -88,7 +82,6 @@ const RoundCountdown = () => {
           if (newTimeLeft<=0 && questionReady) {
               history.push(`/SingleGamePage/${gameId}`);
           }
-          else
           return newTimeLeft;
         });
       }, 1000);
@@ -96,14 +89,6 @@ const RoundCountdown = () => {
     }
   }, [secondsLeft, questionReady]);
 
-  
-  // useEffect(() => {
-  //   if (secondsLeft === 0) {
-  //     clearInterval(secondsLeft);
-  //     clearInterval(intervalId);
-      
-  //   }
-  // }, [secondsLeft, intervalId]);
 
   const convertCityCategory = (category) => {
     // Split the category by underscores
@@ -119,16 +104,17 @@ const RoundCountdown = () => {
   }
 
   const handleExitButtonClick = async() => {
+    await api.delete(`games/${gameId}`);
+    localStorage.removeItem("gameId");
     localStorage.removeItem("category");
     localStorage.removeItem("totalRounds");
     localStorage.removeItem("countdownTime");
     localStorage.removeItem("roundNumber");
     localStorage.removeItem("score");
+    localStorage.removeItem("isSurvivalMode");
     localStorage.removeItem("citynames");
     localStorage.removeItem("PictureUrl");
     localStorage.removeItem("CorrectOption");
-    await api.delete(`games/${gameId}`);
-    localStorage.removeItem("gameId");
     history.push("/home");
   };
 
@@ -148,8 +134,12 @@ const RoundCountdown = () => {
       <div className="roundcountdown layout" style={{ dislay: "flex" }}>
         <InformationContainer className="roundcountdown container_left">
           <div style={{ fontSize: "40px" }}>
-            Round {roundNumber} of {totalRounds} is starting soon... <br/>
-            {isSurvialMode==="true" ? "Try to survive in the next round :)" : ""}
+            {isSurvivalMode==="true" ?
+              <div>
+                Round {roundNumber} is starting soon... <br />
+                Try to survive in the next round :)
+              </div>
+               : `Round ${roundNumber} of ${totalRounds} is starting soon...`}
           </div>
           <div style={{ fontSize: "30px" }}>
             City Category: {convertCityCategory(category)}, Your Score: {score}

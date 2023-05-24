@@ -30,13 +30,12 @@ const UrgeWithPleasureComponent = ({ duration }) => (
 
 const MultiModeRoundCountdown = () => {
   // use react-router-dom's hook to access the history
-  const duration = 12;
+  const duration = 10;
   const [secondsLeft, setSecondsLeft] = useState(duration);
-  const [intervalId, setIntervalId] = useState(null);
 
   const [leaderboardData, setLeaderboardData] = useState([]);
   const [previousRoundData, setPreviousRoundData] = useState([]);
-  const [isFetch, setIsFetch] = useState(false);
+  const [questionReady, setQuestionReady] = useState(false);
 
   const gameId = localStorage.getItem("gameId");
   const category = localStorage.getItem("category");
@@ -46,6 +45,7 @@ const MultiModeRoundCountdown = () => {
   const username = localStorage.getItem("username")
   const score = localStorage.getItem("myScore");
   const isServer = localStorage.getItem("isServer");
+  const isSurvivalMode = localStorage.getItem("isSurvivalMode");
   const history = useHistory();
 
   const setLocalStorageItems = (question) => {
@@ -64,6 +64,7 @@ const MultiModeRoundCountdown = () => {
       console.log("Generate question: ", response.data);
       await new Promise((resolve) => setTimeout(resolve, 1000));
       toast.info(`Question for next round created.`);
+      setQuestionReady(true);
     } catch (error) {
       toast.error(`${error.response.data.message}`);
       console.log(handleError(error));
@@ -77,7 +78,7 @@ const MultiModeRoundCountdown = () => {
       console.log("Fetch question: ", response.data);
       await new Promise((resolve) => setTimeout(resolve, 1000));
       toast.info(`Got question for next round.`);
-      setIsFetch(true);
+      setQuestionReady(true);
     } catch (error) {
       toast.error(`${error.response.data.message}`);
       console.log(handleError(error));
@@ -131,22 +132,32 @@ const MultiModeRoundCountdown = () => {
     if (isServer==="true") {generateQuestion();}
     // get all players' ranking
     fetchRanking();
-    // set a timer
-    const intervalId = setInterval(() => {
-      setSecondsLeft((prevSecondsLeft) => prevSecondsLeft - 1);
-    }, 1000);
-    return () => clearInterval(intervalId);
   }, []);
 
   // go to next page when time out
   useEffect(() => {
-    if (secondsLeft === 0) {
-      clearInterval(secondsLeft);
-      clearInterval(intervalId);
-      // if (isServer === "false") {fetchQuestion();}
-      history.push(`/MultiGamePage/${gameId}`);
+    if(secondsLeft>0 || questionReady) {
+      const interval = setInterval(() => {
+        setSecondsLeft((prevSecondsLeft) => {
+          let newTimeLeft = prevSecondsLeft;
+          // count down
+          if (newTimeLeft>0) {
+            newTimeLeft = newTimeLeft - 1;
+            if (newTimeLeft<=0) {
+              toast.info("Waiting for new questions");
+            }
+          }
+          // waiting for question
+          if (newTimeLeft<=0 && questionReady) {
+            history.push(`/MultiGamePage/${gameId}`);
+          }
+          return newTimeLeft;
+        });
+      }, 1000);
+      return () => clearInterval(interval);
     }
-  }, [secondsLeft, intervalId]);
+  }, [secondsLeft, questionReady]);
+
 
   const calculateRowPosition = (currentRank, previousRank) => {
     const position = currentRank - previousRank;
@@ -215,6 +226,7 @@ const MultiModeRoundCountdown = () => {
     localStorage.removeItem("roundNumber");
     localStorage.removeItem("myScore");
     localStorage.removeItem("isServer");
+    localStorage.removeItem("isSurvivalMode");
     localStorage.removeItem("citynames");
     localStorage.removeItem("PictureUrl");
     localStorage.removeItem("CorrectOption");
@@ -222,11 +234,12 @@ const MultiModeRoundCountdown = () => {
   };
 
   return (
+  <div className="page-container">
     <div className="round countdown container">
-       <div style={{ position: "fixed", top: 75, left: 75 }}>
+      <div style={{ position: "fixed", top: 75, left: 75 }}>
         <Button style={{ fontSize: "30px", height: "60px", width: "100%" }}
-          onClick={handleExitButtonClick}
-        >
+         onClick={handleExitButtonClick}
+         disabled={isServer==="true"}>
           Exit Game
         </Button>
       </div>
@@ -234,7 +247,12 @@ const MultiModeRoundCountdown = () => {
       <div className="roundcountdown layout" style={{ dislay: "flex" }}>
         <InformationContainer className="roundcountdown container_left">
           <div style={{ fontSize: "40px" }}>
-            Round {roundNumber} of {totalRounds} is starting soon...
+          {isSurvivalMode==="true" ?
+            <div>
+              Round {roundNumber} is starting soon... <br />
+              Try to survive in the next round :)
+            </div>
+             : `Round ${roundNumber} of ${totalRounds} is starting soon...`}
           </div>
           <div style={{ fontSize: "30px" }}>
             City Category: {convertCityCategory(category)}, Your Score: {score}
@@ -255,6 +273,7 @@ const MultiModeRoundCountdown = () => {
       </div>
       <ToastContainer />
     </div>
+  </div>
   );
 };
 export default MultiModeRoundCountdown;

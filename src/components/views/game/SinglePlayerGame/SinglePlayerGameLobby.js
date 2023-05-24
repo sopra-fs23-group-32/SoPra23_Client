@@ -48,7 +48,7 @@ const Lobby = () => {
       localStorage.setItem("category", category);
       localStorage.setItem("totalRounds", gameRounds);
       localStorage.setItem("countdownTime", gameDuration);
-      localStorage.setItem("isSurvialMode", isSurvivalMode);
+      localStorage.setItem("isSurvivalMode", isSurvivalMode);
       const requestBody = {category:category, totalRounds:gameRounds, countdownTime:gameDuration,};
       const response = await api.post("/games", requestBody);
       const gameId = response.data.gameId;
@@ -99,7 +99,8 @@ const Lobby = () => {
               <MenuItem value={"NORTH_AMERICA"}>North America</MenuItem>
               <MenuItem value={"SOUTH_AMERICA"}>South America</MenuItem>
               <MenuItem value={"AFRICA"}>Africa</MenuItem>
-              <MenuItem value={"OCEANIA"}>Oceania</MenuItem>
+              <MenuItem value={"WORLD"}>World</MenuItem>
+
             </Select>
           </div>
           <div className="lobby category-select">

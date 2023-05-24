@@ -19,6 +19,7 @@ const MultiPlayerGameFinishPage = () => {
   const playerId = localStorage.getItem("userId");
   const gameId = localStorage.getItem("gameId");
   const isServer = localStorage.getItem("isServer");
+  const isSurvivalMode = localStorage.getItem("isSurvivalMode");
   const history = useHistory();
 
   const saveGameHistory = async () => {
@@ -83,8 +84,8 @@ const MultiPlayerGameFinishPage = () => {
     }
     if (isServer==="true") {
       saveGameInfo();
-      saveGameHistory();
     }
+    saveGameHistory();
     fetchRanking();
   }, []);
 
@@ -99,10 +100,11 @@ const MultiPlayerGameFinishPage = () => {
           async (message) => {
             const messagBody = JSON.parse(message.body);
             console.log("Socket mssage: ", messagBody.type);
-            if(isServer==="false" && 
+            if(isServer==="false" && isSurvivalMode==="false" && 
               messagBody.type === WebSocketType.GAME_END){
-              saveGameHistory();
-              setIsEnded(true);
+                setIsEnded(true);
+                await api.delete(`games/${gameId}`);
+                console.log(`Game ${gameId} deleted.`)
             }
           }
         );
@@ -120,16 +122,28 @@ const MultiPlayerGameFinishPage = () => {
   }, {});
 
   const endGame = async() => {
-    if (isServer==="true"){
-      await api.delete(`games/${gameId}`);
-      //await new Promise((resolve) => setTimeout(resolve, 500));
-      console.log(`Game ${gameId} deleted.`)
+    if (isSurvivalMode==="false"){
+      if(isServer==="true") {
+        await api.delete(`games/${gameId}`);
+        console.log(`Game ${gameId} deleted.`)
+      }
+      // else {
+      //   await api.delete(`games/${gameId}/players/${playerId}`);
+      //   console.log(`You leave Game ${gameId}.`)
+      // }
+    }
+    else {
+      if(!isEnded) {
+        await api.delete(`games/${gameId}/players/${playerId}`);
+        console.log(`You leave Game ${gameId}.`)
+      }
     }
     localStorage.removeItem("gameId");
     localStorage.removeItem("category");
     localStorage.removeItem("totalRounds");
     localStorage.removeItem("countdownTime");
     localStorage.removeItem("isServer");
+    localStorage.removeItem("isSurvivalMode");
     localStorage.removeItem("roundNumber");
     localStorage.removeItem("myScore");
     localStorage.removeItem("citynames");
@@ -139,10 +153,12 @@ const MultiPlayerGameFinishPage = () => {
   };
 
   return (
-    <div className="page-container">
+  <div className="page-container">
     <div className="finalpage container">
       <h2 style={{ font: "40px" }}>
-        -- Game Ended --
+        -- MultiPlayer Game Ended -- <br/>
+        {(isSurvivalMode==="true") ? 
+        `You survive for ${localStorage.getItem("roundNumber")-1} round(s) in the SurvivalMode`: ""}
       </h2>
       <div className="podium">
         <div className="third-place">

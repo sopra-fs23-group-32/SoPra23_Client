@@ -22,20 +22,16 @@ const SingleGamePage = () => {
   const roundNumber = localStorage.getItem("roundNumber");
   const totalTime = localStorage.getItem("countdownTime");
   const gameId = localStorage.getItem("gameId");
-  const isSurvialMode = localStorage.getItem("isSurvialMode");
+  const isSurvivalMode = localStorage.getItem("isSurvivalMode");
   const playerId = localStorage.getItem("userId");
 
   const history = useHistory();
 
   const endRound = () => {
-    // remove all local storage of previous question
-    localStorage.removeItem("citynames");
-    localStorage.removeItem("PictureUrl");
-    localStorage.removeItem("CorrectOption");
     if (isLose===1){
       history.push(`/SingleGamePage/${gameId}/GameFinishPage`);
     }
-    else if (localStorage.getItem("roundNumber") === localStorage.getItem("totalRounds")) {
+    else if (roundNumber === localStorage.getItem("totalRounds")) {
       history.push(`/SingleGamePage/${gameId}/GameFinishPage`);
     }
     else {
@@ -52,7 +48,7 @@ const SingleGamePage = () => {
         {answer: cityName, timeTaken: time,}
       );
       const score_new = parseInt(localStorage.getItem("score")) + response.data;
-      if(response.data===0 && isSurvialMode==="true") {setIsLose(1);}
+      if(response.data===0 && isSurvivalMode==="true") {setIsLose(1);}
       setScore(score_new);
       localStorage.setItem("score", score_new);
     } catch (error) {
@@ -116,7 +112,7 @@ const SingleGamePage = () => {
       setImageUrl(response.data);
       console.log("New Image URL got.");
       await new Promise((resolve) => setTimeout(resolve, 1000));
-      toast.info(`Image of ${correctOption} refreshed.`);
+      toast.info(`Image refreshed.`);
     } catch (error) {
       toast.error(`${error.response.data.message}`);
       console.log(handleError(error));
@@ -124,16 +120,17 @@ const SingleGamePage = () => {
   }
       
   const handleExitButtonClick = async () => {
+    await api.delete(`games/${gameId}`);
+    localStorage.removeItem("gameId");
     localStorage.removeItem("category");
     localStorage.removeItem("totalRounds");
     localStorage.removeItem("countdownTime");
     localStorage.removeItem("roundNumber");
     localStorage.removeItem("score");
+    localStorage.removeItem("isSurvivalMode");
     localStorage.removeItem("citynames");
     localStorage.removeItem("PictureUrl");
     localStorage.removeItem("CorrectOption");
-    await api.delete(`games/${gameId}`);
-    localStorage.removeItem("gameId");
     history.push("/home");
   };
 
@@ -161,7 +158,7 @@ const SingleGamePage = () => {
                 <img className="city-image" alt="GuessImg" src={imageUrl}/>
               </div>
               <div style={{ textAlign: "center" }}>
-                <p>Your Score: {score} {isSurvialMode==="true"? "(Survival Mode)":""}</p>
+                <p>Your Score: {score} {isSurvivalMode==="true"? "(Survival Mode)":""}</p>
               </div>
             </Grid>
             <Grid item md={6}>
@@ -182,12 +179,7 @@ const SingleGamePage = () => {
         </Container>
       </div>
 
-      <div className="main">
-        <div className="info-container">
-          <span className="round-number">Round {roundNumber}</span>
-          <span className="score">Score: {score}</span>
-        </div>
-      </div>
+     
       <ToastContainer />
     </div>
     </div>
