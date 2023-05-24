@@ -28,6 +28,7 @@ const RoundCountdown = () => {
   const duration = 8;
   const [secondsLeft, setSecondsLeft] = useState(duration);
   const [intervalId, setIntervalId] = useState(null);
+  const [questionReady, setQuestionReady] = useState(false);
 
   const roundNumber = localStorage.getItem("roundNumber");
   const totalRounds = localStorage.getItem("totalRounds");
@@ -53,6 +54,8 @@ const RoundCountdown = () => {
         setLocalStorageItems(response.data);
         console.log("Questions: ", response.data);
         await new Promise((resolve) => setTimeout(resolve, 1000));
+        toast.info("Question for next round gennerated.")
+        setQuestionReady(true);
       }
       catch (error) {
         toast.error(`${error.response.data.message}`);
@@ -62,22 +65,45 @@ const RoundCountdown = () => {
     // fetch question and save in localstorage
     fetchQuestion();
     // set a timer
-    const intervalId = setInterval(() => {
-      setSecondsLeft((prevSecondsLeft) => prevSecondsLeft - 1);
-    }, 1000);
-    return () => clearInterval(intervalId);
+    // const intervalId = setInterval(() => {
+    //   setSecondsLeft((prevSecondsLeft) => prevSecondsLeft - 1);
+    // }, 1000);
+    // return () => clearInterval(intervalId);
   }, []);
 
   // go to next page when time out
   useEffect(() => {
-    if (secondsLeft === 0) {
-      clearInterval(secondsLeft);
-      clearInterval(intervalId);
-      setTimeout(() => {
-        history.push(`/SingleGamePage/${gameId}`);
-      }, 500);
+    if(secondsLeft>0 || questionReady) {
+      const interval = setInterval(() => {
+        setSecondsLeft((prevSecondsLeft) => {
+          let newTimeLeft = prevSecondsLeft;
+          // count down
+          if (newTimeLeft>0) {
+            newTimeLeft = newTimeLeft - 1;
+            if (newTimeLeft<=0) {
+              toast.info("Waiting for new questions");
+            }
+          }
+          // waiting for question
+          if (newTimeLeft<=0 && questionReady) {
+              history.push(`/SingleGamePage/${gameId}`);
+          }
+          else
+          return newTimeLeft;
+        });
+      }, 1000);
+      return () => clearInterval(interval);
     }
-  }, [secondsLeft, intervalId]);
+  }, [secondsLeft, questionReady]);
+
+  
+  // useEffect(() => {
+  //   if (secondsLeft === 0) {
+  //     clearInterval(secondsLeft);
+  //     clearInterval(intervalId);
+      
+  //   }
+  // }, [secondsLeft, intervalId]);
 
   const convertCityCategory = (category) => {
     // Split the category by underscores
@@ -102,6 +128,7 @@ const RoundCountdown = () => {
     localStorage.removeItem("PictureUrl");
     localStorage.removeItem("CorrectOption");
     await api.delete(`games/${gameId}`);
+    localStorage.removeItem("gameId");
     history.push("/home");
   };
 
@@ -111,7 +138,7 @@ const RoundCountdown = () => {
     <div className="page-container">
     <div className="round countdown container">
       <div style={{ position: "fixed", top: 75, left: 75 }}>
-        <Button style={{ fontSize: "45px", height: "100px", width: "100%" }}
+        <Button style={{ fontSize: "30px", height: "60px", width: "100%" }}
           onClick={handleExitButtonClick}
         >
           Exit Game
