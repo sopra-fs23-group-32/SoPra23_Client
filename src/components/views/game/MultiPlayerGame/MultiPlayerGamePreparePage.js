@@ -34,7 +34,7 @@ const MultiModeRoundCountdown = () => {
   const [secondsLeft, setSecondsLeft] = useState(duration);
 
   const [leaderboardData, setLeaderboardData] = useState([]);
-  const [previousRoundData, setPreviousRoundData] = useState([]);
+  const [previousRoundData] = useState([]);
   const [questionReady, setQuestionReady] = useState(false);
 
   const gameId = localStorage.getItem("gameId");
@@ -112,10 +112,6 @@ const MultiModeRoundCountdown = () => {
     async function fetchRanking() {
       try {
         const response = await api.get(`/games/${gameId}/ranking`);
-        // if (roundNumber === 1) {
-        //   setPreviousRoundData(leaderboardData);
-        //   console.log("Previous round data", leaderboardData)
-        // }
         setLeaderboardData(response.data);
         console.log("Ranking: ", response.data);
         await new Promise((resolve) => setTimeout(resolve, 1000));
@@ -136,24 +132,23 @@ const MultiModeRoundCountdown = () => {
 
   // go to next page when time out
   useEffect(() => {
-    if(secondsLeft>0 || questionReady) {
+    if (secondsLeft > 0 || questionReady) {
       const interval = setInterval(() => {
         setSecondsLeft((prevSecondsLeft) => {
-          let newTimeLeft = prevSecondsLeft;
-          // count down
-          if (newTimeLeft>0) {
-            newTimeLeft = newTimeLeft - 1;
-            if (newTimeLeft<=0) {
+          let newTimeLeft = prevSecondsLeft - 1;
+  
+          if (newTimeLeft <= 0) {
+            if (questionReady) {
+              history.push(`/MultiGamePage/${gameId}`);
+            } else {
               toast.info("Waiting for new questions");
             }
           }
-          // waiting for question
-          if (newTimeLeft<=0 && questionReady) {
-            history.push(`/MultiGamePage/${gameId}`);
-          }
+  
           return newTimeLeft;
         });
       }, 1000);
+  
       return () => clearInterval(interval);
     }
   }, [secondsLeft, questionReady]);
@@ -261,9 +256,40 @@ const MultiModeRoundCountdown = () => {
 
         <div className="roundcountdown layout" style={{ display: "flex", flexDirection: "row" }}>
           <div className="roundcountdown leaderboard-container">
-            {playerRankingList}
+            <div className="leaderboard">
+              <table>
+                <thead>
+                  <tr>
+                    <th>Rank</th>
+                    <th>Player Name</th>
+                    <th>Score</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {leaderboardData.map((entry, index) => {
+                    const previousRank = roundNumber > 1 ? previousRoundData.find((data) => data.playerName === entry.playerName)?.rank : entry.rank;
+                    const position = calculateRowPosition(entry.rank, previousRank);
+                    return (
+                      <tr
+                        key={entry.id}
+                        style={{
+                          transform: `translateY(${position})`,
+                          backgroundColor: entry.playerName === username ? 'rgba(200, 0, 0, 0.5)' : 'rgba(128, 128, 128, 0.5)',
+                         }}
+                      >
+                        <td>{entry.rank}</td>
+                        <td>{entry.playerName}</td>
+                        <td>{entry.score}</td>
+                      </tr>
+                    );
+                  })}
+                </tbody>
+              </table>
+            </div>
           </div>
-
+          <div></div>
+          <div></div>
+          <div></div>
           <div className="roundcountdown container_right">
             <div className="countdown-text">
               <UrgeWithPleasureComponent duration={duration} />

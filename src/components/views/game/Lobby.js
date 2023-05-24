@@ -19,10 +19,9 @@ const Lobby = () => {
   const [countdownTime, setCountdownTime] = useState(15);
   // for Multi Mode
   const [isMultiplayer, setIsMultiplayer] = useState(true);
-  const [targetPlayerNumber, setTargetPlayerNumber] = useState(1);
+  const [targetPlayerNumber] = useState(1);
   // for UI
   const [isLoadingGame, setIsLoadingGame] = useState(false);
-  const [isLoadingMultiplayerLobby, setIsLoadingMultiplayerLobby] = useState(false);
 
   const userId = localStorage.getItem("userId");
 
