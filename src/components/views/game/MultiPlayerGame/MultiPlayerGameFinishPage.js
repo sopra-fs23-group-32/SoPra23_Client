@@ -171,7 +171,11 @@ const MultiPlayerGameFinishPage = () => {
           {playerRanking.map((player, index) => (
             <TableRow className={index % 2 !== 0 ? "tr odd" : "tr even"} key={index}>
               <TableCell className="td" style={{width: "20%"}}>-{player.rank}-</TableCell>
-              <TableCell className="td" style={{width: "55%"}}>{player.playerName}</TableCell>
+              <TableCell className="td" style={{ width: "55%" }}>
+              {player.playerName === localStorage.getItem("username")
+                ? `${player.playerName} (you)`
+                : player.playerName}
+            </TableCell>
               <TableCell className="td" style={{width: "25%"}}>{player.score} Points</TableCell>
             </TableRow>
           ))}
@@ -179,7 +183,7 @@ const MultiPlayerGameFinishPage = () => {
       </Table>
 
       <h2 style={{ font: "40px" }}>
-        You got {localStorage.getItem("score")} Pts
+        You got {localStorage.getItem("myScore")} Pts
       </h2>
       
       <div className="final button-container">

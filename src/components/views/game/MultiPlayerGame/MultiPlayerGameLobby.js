@@ -89,6 +89,7 @@ const Lobby = () => {
               }}
               className="lobby category"
             >
+              {/* <MenuItem value={"WORLD"}>World</MenuItem> */}
               <MenuItem value={"EUROPE"}>Europe</MenuItem>
               <MenuItem value={"ASIA"}>Asia</MenuItem>
               <MenuItem value={"NORTH_AMERICA"}>North America</MenuItem>
@@ -162,7 +163,7 @@ const Lobby = () => {
                 createGame(selectedCategory, gameRounds, countdownTime);
               }}
             >
-              Start Game
+              Create Multiplayer Lobby
             </Button>
           )}
         </div>
