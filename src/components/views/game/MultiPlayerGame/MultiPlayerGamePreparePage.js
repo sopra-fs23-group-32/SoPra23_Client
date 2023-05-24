@@ -34,7 +34,7 @@ const MultiModeRoundCountdown = () => {
   const [secondsLeft, setSecondsLeft] = useState(duration);
 
   const [leaderboardData, setLeaderboardData] = useState([]);
-  const [previousRoundData, setPreviousRoundData] = useState([]);
+  const [previousRoundData] = useState([]);
   const [questionReady, setQuestionReady] = useState(false);
 
   const gameId = localStorage.getItem("gameId");
@@ -112,10 +112,6 @@ const MultiModeRoundCountdown = () => {
     async function fetchRanking() {
       try {
         const response = await api.get(`/games/${gameId}/ranking`);
-        // if (roundNumber === 1) {
-        //   setPreviousRoundData(leaderboardData);
-        //   console.log("Previous round data", leaderboardData)
-        // }
         setLeaderboardData(response.data);
         console.log("Ranking: ", response.data);
         await new Promise((resolve) => setTimeout(resolve, 1000));
@@ -136,24 +132,23 @@ const MultiModeRoundCountdown = () => {
 
   // go to next page when time out
   useEffect(() => {
-    if(secondsLeft>0 || questionReady) {
+    if (secondsLeft > 0 || questionReady) {
       const interval = setInterval(() => {
         setSecondsLeft((prevSecondsLeft) => {
-          let newTimeLeft = prevSecondsLeft;
-          // count down
-          if (newTimeLeft>0) {
-            newTimeLeft = newTimeLeft - 1;
-            if (newTimeLeft<=0) {
+          let newTimeLeft = prevSecondsLeft - 1;
+  
+          if (newTimeLeft <= 0) {
+            if (questionReady) {
+              history.push(`/MultiGamePage/${gameId}`);
+            } else {
               toast.info("Waiting for new questions");
             }
           }
-          // waiting for question
-          if (newTimeLeft<=0 && questionReady) {
-            history.push(`/MultiGamePage/${gameId}`);
-          }
+  
           return newTimeLeft;
         });
       }, 1000);
+  
       return () => clearInterval(interval);
     }
   }, [secondsLeft, questionReady]);
@@ -204,6 +199,19 @@ const MultiModeRoundCountdown = () => {
     );
   }
 
+  const convertCityCategory = (category) => {
+    // Split the category by underscores
+    const words = category.split('_');
+  
+    // Capitalize each word
+    const capitalizedWords = words.map(word => word.charAt(0).toUpperCase() + word.slice(1).toLowerCase());
+  
+    // Join the words with spaces
+    const convertedCategory = capitalizedWords.join(' ');
+  
+    return convertedCategory;
+  }
+
   const handleExitButtonClick = async() => {
     await api.delete(`games/${gameId}/players/${playerId}`);
     localStorage.removeItem("gameId");
@@ -242,7 +250,7 @@ const MultiModeRoundCountdown = () => {
              : `Round ${roundNumber} of ${totalRounds} is starting soon...`}
           </div>
           <div style={{ fontSize: "30px" }}>
-            City Category: {category}, Your Score: {score}
+            City Category: {convertCityCategory(category)}, Your Score: {score}
           </div>
         </InformationContainer>
 

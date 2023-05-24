@@ -1,10 +1,9 @@
-import React, { useEffect } from "react";
-import { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { useHistory } from "react-router-dom";
 import { api, handleError } from "helpers/api";
 import { Button } from "components/ui/Button";
 import {Table, TableBody, TableCell, TableContainer,
-  TableHead, TableRow, Paper, Container,
+  TableHead, TableRow,  Container,
 } from "@mui/material";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";

@@ -3,7 +3,7 @@ import { useHistory } from "react-router-dom";
 import { api, handleError } from "helpers/api";
 import { Spinner } from "components/ui/Spinner";
 import { Button } from "components/ui/Button";
-import { InputLabel, Select, MenuItem, TextField, Pagination } from "@mui/material";
+import { InputLabel, Select, MenuItem, Pagination } from "@mui/material";
 import PropTypes from "prop-types";
 import InformationContainer from "components/ui/BaseContainer";
 import { ToastContainer, toast } from "react-toastify";
@@ -18,7 +18,7 @@ const ScoreBoard = () => {
     const [selectedCategory, setSelectedCategory] = useState("WORLD");
     const [page, setPage] = useState(1);
     const [totalPages, setTotalPages] = useState(1);
-    const [perPage, setPerPage] = useState(10);
+    const [perPage] = useState(10);
 
     const goProfile = (profileId) => {
         localStorage.setItem("profileId", profileId);

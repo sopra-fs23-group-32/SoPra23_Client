@@ -8,7 +8,6 @@ import SockJS from "sockjs-client";
 import Stomp from "stompjs";
 import { getDomain } from "helpers/getDomain";
 import WebSocketType from "models/WebSocketType";
-import GameStatus from "models/GameStatus";
 
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
@@ -51,26 +50,6 @@ const MultiPlayerGamePage = () => {
       history.push(`/MultiGamePage/${gameId}/RoundCountPage`);
     }
   };
-
-  // keep fetching game status until not waiting
-  // useEffect(() => {
-  //   async function fetchGameStatus() {
-  //     try {
-  //       const response = await api.get(`/games/${gameId}/status`);
-  //       console.log("GameStatus: ", response.data);
-  //       if(response.data==="WAITING"){
-  //         setIsWaiting(false);
-  //       }
-  //     } catch (error) {
-  //       toast.error(`${error.response.data.message}`);
-  //       console.log(handleError(error));
-  //     }
-  //   }
-  //   if (isWaiting) {
-  //     const interval = setInterval(fetchGameStatus, 1000);
-  //     return () => clearInterval(interval);
-  //   }
-  // }, [isWaiting]);
 
   useEffect(() => {
     if (!isAnswerSubmitted) {
@@ -183,6 +162,12 @@ const MultiPlayerGamePage = () => {
     }
   }
 
+  const submitButtonContent = isAnswerSubmitted
+  ? isWaiting
+    ? "Waiting for others"
+    : `Wait ${roundTime2} sec`
+  : "Submit Answer";
+
   const cityNameButtons = cityNames.map((cityName) => (
     <button
       key={cityName}
@@ -256,14 +241,9 @@ const MultiPlayerGamePage = () => {
               <div className="city-button-container">
                 {cityNameButtons}
                 <form onSubmit={handleSubmit} className="submit-form">
-                  <button type="submit" className="submit-button"
-                    disabled={isAnswerSubmitted}>
-                    {isAnswerSubmitted ? 
-                      isWaiting ? 
-                        `Waiting for others`
-                         : `Wait ${roundTime2} sec`
-                       : "Submit Answer"}
-                  </button>
+                  <button type="submit" className="submit-button" disabled={isAnswerSubmitted}>
+                  {submitButtonContent}
+                </button>
                 </form>
               </div>
             </Grid>

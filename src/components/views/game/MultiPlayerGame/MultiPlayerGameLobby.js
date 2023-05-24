@@ -16,8 +16,6 @@ const Lobby = () => {
   const [selectedCategory, setSelectedCategory] = useState("EUROPE");
   const [gameRounds, setGameRounds] = useState(1);
   const [countdownTime, setCountdownTime] = useState(15);
-  // for Multi Mode
-  // const [targetPlayerNumber, setTargetPlayerNumber] = useState(1);
   // for UI
   const [isLoadingGame, setIsLoadingGame] = useState(false);
   // for Survival Mode
@@ -48,7 +46,6 @@ const Lobby = () => {
       localStorage.setItem("category", category);
       localStorage.setItem("totalRounds", gameRounds);
       localStorage.setItem("countdownTime", gameDuration);
-      // localStorage.setItem("targetPlayerNumber", targetPlayerNumber);
       localStorage.setItem("isSurvivalMode", isSurvivalMode);
       // Create Game
       const requestBody = {category:category_uppercase, totalRounds:gameRounds, countdownTime:gameDuration,};

@@ -2,7 +2,6 @@ import { BrowserRouter, Redirect, Route, Switch } from "react-router-dom";
 import { LoginGuard } from "components/routing/routeProtectors/LoginGuard";
 import { HomeGuard } from "components/routing/routeProtectors/HomeGuard";
 import HomeRouter from "components/routing/routers/HomeRouter";
-import { LobbyGuard } from "components/routing/routeProtectors/LobbyGuard";
 
 
 import Login from "components/views/authentication/Login";

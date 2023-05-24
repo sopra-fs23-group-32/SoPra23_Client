@@ -34,29 +34,6 @@ const MultiPlayerGameFinishPage = () => {
       console.log(handleError(error));
     }
   }
-
-  // useEffect(() => {
-  //   async function fetchGameStatus() {
-  //     try {
-  //       const response = await api.get(
-  //         `/games/${localStorage.getItem("gameId")}/status`
-  //       );
-  //       console.log("GameStatus: ", response.data);
-  //       if(response.data=== "ENDED" && isServer==="false"){
-  //         saveGameHistory();
-  //         setIsEnded(true);
-  //       }
-  //     } catch (error) {
-  //       toast.error(`Failed to fetch player in game(ID ${gameId})\n //change this
-  //         ${error.response.data.message}`);
-  //       console.log(handleError(error));
-  //     }
-  //   }
-  //   if (!isEnded && isServer === "false"){
-  //     const interval = setInterval(fetchGameStatus,1000);
-  //     return ()=>clearInterval(interval)
-  //   }
-  // }, [isEnded]);
     
 
   useEffect(() => {
@@ -64,8 +41,7 @@ const MultiPlayerGameFinishPage = () => {
       try {
         const responseGameInfo = await api.post(`/gameInfo/${gameId}`);
         console.log("Game Info: ", responseGameInfo.data);
-        toast.info(`Game's information saved.`);
-        //await new Promise((resolve) => setTimeout(resolve, 500));
+        toast.info(`Game's information saved.`);  
       } catch (error) {
         toast.error("Something went wrong while fetching the ranking!");
         console.log(handleError(error));
@@ -76,7 +52,6 @@ const MultiPlayerGameFinishPage = () => {
         const responseRanking = await api.get(`/games/${gameId}/ranking`);
         setPlayerRanking(responseRanking.data);
         console.log("Ranking: ", responseRanking.data);
-        //await new Promise((resolve) => setTimeout(resolve, 500));
       } catch (error) {
         toast.error("Something went wrong while fetching the ranking!");
         console.log(handleError(error));
@@ -89,7 +64,6 @@ const MultiPlayerGameFinishPage = () => {
     fetchRanking();
   }, []);
 
-  // handle msg from the web socket
   useEffect(() => {
     let subscription;
     const Socket = new SockJS(getDomain() + "/socket");
@@ -127,10 +101,6 @@ const MultiPlayerGameFinishPage = () => {
         await api.delete(`games/${gameId}`);
         console.log(`Game ${gameId} deleted.`)
       }
-      // else {
-      //   await api.delete(`games/${gameId}/players/${playerId}`);
-      //   console.log(`You leave Game ${gameId}.`)
-      // }
     }
     else {
       if(!isEnded) {
