@@ -3,7 +3,7 @@ import { LoginGuard } from "components/routing/routeProtectors/LoginGuard";
 import { HomeGuard } from "components/routing/routeProtectors/HomeGuard";
 import HomeRouter from "components/routing/routers/HomeRouter";
 import { LobbyGuard } from "components/routing/routeProtectors/LobbyGuard";
-import LogoutComponent from "components/routing/routers/LogoutComponent";
+
 
 import Login from "components/views/authentication/Login";
 import Register from "components/views/authentication/Register";
@@ -32,7 +32,6 @@ import MultiPlayerGameFinishPage from "components/views/game/MultiPlayerGame/Mul
 const AppRouter = () => {
   return (
     <BrowserRouter>
-      <LogoutComponent />
       <Switch>
         {/* default path */}
         {/* <Route exact path="">
@@ -41,7 +40,8 @@ const AppRouter = () => {
         <Route exact path="/">
           <Redirect to="/login" />
         </Route>
-
+        
+       
         <Route exact path={`/userinfo/history`}>
             <HistoryPage />
         </Route>
