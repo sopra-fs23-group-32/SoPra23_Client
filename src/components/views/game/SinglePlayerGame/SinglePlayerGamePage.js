@@ -31,7 +31,7 @@ const SingleGamePage = () => {
     if (isLose===1){
       history.push(`/SingleGamePage/${gameId}/GameFinishPage`);
     }
-    else if (localStorage.getItem("roundNumber") === localStorage.getItem("totalRounds")) {
+    else if (roundNumber === localStorage.getItem("totalRounds")) {
       history.push(`/SingleGamePage/${gameId}/GameFinishPage`);
     }
     else {

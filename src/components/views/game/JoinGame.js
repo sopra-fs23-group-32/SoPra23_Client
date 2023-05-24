@@ -47,6 +47,12 @@ const JoinGame = () => {
     localStorage.setItem("countdownTime", game.countdownTime);
     localStorage.setItem("playerNum", game.playerNum);
     localStorage.setItem("isServer", false);
+    if (game.totalRounds>1000) {
+      localStorage.setItem("isSurvivalMode", true);
+    }
+    else {
+      localStorage.setItem("isSurvivalMode", false);
+    }
     handleAddPlayer(game.gameId);
     history.push("/StartGamePage");
   };

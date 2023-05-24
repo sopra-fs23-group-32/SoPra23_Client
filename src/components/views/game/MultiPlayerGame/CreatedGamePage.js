@@ -26,6 +26,7 @@ const CreatedGamePage = () => {
   const totalRounds = localStorage.getItem("totalRounds");
   const totalTime = localStorage.getItem("countdownTime");
   const isServer = localStorage.getItem("isServer");
+  const isSurvivalMode = localStorage.getItem("isSurvivalMode");
 
   const userId = localStorage.getItem("userId");
   const username = localStorage.getItem("username");
@@ -117,6 +118,7 @@ const CreatedGamePage = () => {
                 localStorage.removeItem("countdownTime");
                 localStorage.removeItem("playerNum");
                 localStorage.removeItem("isServer");
+                localStorage.removeItem("isSurvivalMode");
                 history.push(`/home`);
               }
             }
@@ -151,7 +153,7 @@ const CreatedGamePage = () => {
     localStorage.removeItem("countdownTime");
     localStorage.removeItem("playerNum");
     localStorage.removeItem("isServer");
-
+    localStorage.removeItem("isSurvivalMode");
   };
 
   const backToLobby = () => {
@@ -225,24 +227,24 @@ const CreatedGamePage = () => {
             <MenuItem value={"SOUTH_AMERICA"}>South America</MenuItem>
             <MenuItem value={"AFRICA"}>Africa</MenuItem>
             <MenuItem value={"OCEANIA"}>Oceania</MenuItem>
-            <MenuItem value={"WORLD"}>World</MenuItem>
           </Select>
+        </div>
+        <div className="lobby category-select">
+          <InputLabel className="lobby label">
+            {isSurvivalMode==="true"? "Survival Mode" : "Normal Mode"}
+          </InputLabel>
         </div>
         <div className="waiting-page select">
           <InputLabel className="waiting-page label">Rounds:</InputLabel>
           <TextField className="waiting-page text"
-            inputProps={{
-              style: { textAlign: "center", height: "10px"}
-            }}
+            inputProps={{ style: { textAlign: "center", height: "10px"} }}
             value={totalRounds} disabled 
           />
         </div>
         <div className="waiting-page select">
         <InputLabel className="waiting-page label">Time Limit:</InputLabel>
         <TextField className="waiting-page text"
-          inputProps={{
-            style: { textAlign: "center", height: "10px"},
-          }}
+          inputProps={{ style: { textAlign: "center", height: "10px"}, }}
           value={totalTime} disabled 
         />
         </div>
