@@ -12,7 +12,19 @@ const LogoutComponent = () => {
       localStorage.removeItem("newTimeLeft");
       localStorage.removeItem("targetPlayerNumber");
       localStorage.removeItem("players");
-      localStorage.removeItem("gameId")
+      localStorage.removeItem("gameId");
+      localStorage.removeItem("category");
+      localStorage.removeItem("citynames");
+      localStorage.removeItem("survival");
+      localStorage.removeItem("score");
+      localStorage.removeItem("myScore");
+      localStorage.removeItem("correctOption");
+      localStorage.removeItem("roundNumber");
+      localStorage.removeItem("isServer");
+      localStorage.removeItem("totalRounds");
+      localStorage.removeItem("PictureUrl");
+
+
     };
 
     window.addEventListener("beforeunload", handleBeforeUnload);
@@ -22,7 +34,6 @@ const LogoutComponent = () => {
     };
   }, []);
 
-  // Return your logout UI or null if you don't need a visible logout component
   return null;
 };
 
