@@ -74,7 +74,7 @@ const RoundCountdown = () => {
   
           if (newTimeLeft <= 0) {
             if (questionReady) {
-              history.push(`/MultiGamePage/${gameId}`);
+              history.push(`/SingleGamePage/${gameId}`);
             } else {
               toast.info("Waiting for new questions");
             }
