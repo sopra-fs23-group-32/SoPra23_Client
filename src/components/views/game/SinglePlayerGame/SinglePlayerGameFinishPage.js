@@ -10,7 +10,7 @@ import "styles/views/game/FinalPage.scss";
 
 const GameFinishPage = () => {
   const gameId = localStorage.getItem("gameId");
-  const isSurvialMode = localStorage.getItem("isSurvialMode");
+  const isSurvivalMode = localStorage.getItem("isSurvivalMode");
   const playerId = localStorage.getItem("userId");
   const history = useHistory();
 
@@ -20,7 +20,7 @@ const GameFinishPage = () => {
     localStorage.removeItem("countdownTime");
     localStorage.removeItem("roundNumber");
     localStorage.removeItem("score");
-    localStorage.removeItem("isSurvialMode");
+    localStorage.removeItem("isSurvivalMode");
     await api.delete(`games/${gameId}`);
     history.push("/home");
   };
@@ -47,7 +47,7 @@ const GameFinishPage = () => {
     <div className="Finalpage container" style={{flexDirection: "column"}}>
     <InformationContainer className="finalpage container" style={{fontSize: '48px', width: "fit-content"}}>
       Your Singleplayer Game has ended <br/>
-      {(isSurvialMode==="true")? `You survive for ${localStorage.getItem("roundNumber")-1} round(s) in the SurvivalMode`: ""}
+      {(isSurvivalMode==="true")? `You survive for ${localStorage.getItem("roundNumber")-1} round(s) in the SurvivalMode`: ""}
     </InformationContainer>
     <InformationContainer className="finalpage container" style={{ fontSize: "40px" }}>
         You got: {localStorage.getItem("score")} Points
