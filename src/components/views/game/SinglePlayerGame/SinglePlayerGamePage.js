@@ -137,7 +137,7 @@ const SingleGamePage = () => {
   return (
     <div className="page-container">
     <div className="guess-the-city">
-      <div style={{ position: "fixed", top: 75, left: 75 }}>
+      <div style={{ position: "fixed", top: 150, left: 75 }}>
         <Button style={{ fontSize: "30px", height: "60px", width: "100%" }}
          onClick={handleExitButtonClick}>
           Exit Game

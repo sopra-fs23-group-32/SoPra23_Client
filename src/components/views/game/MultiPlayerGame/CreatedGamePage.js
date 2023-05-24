@@ -212,11 +212,17 @@ const CreatedGamePage = () => {
           value={totalTime} disabled 
         />
         </div>
-        <div style={{flexDirection:"column"}}>
-          {playerNumber<2 && (
-          <div style={{textAlign: "center"}}>
-          You can't start a multiplayer game by yourself!
-          </div>
+        <div style={{ flexDirection: "column" }}>
+          {playerNumber < 2 && (
+            <div style={{ textAlign: "center" }}>
+              You can't start a multiplayer game by yourself!
+            </div>
+          )}
+
+          {isServer === "false" && (
+            <div style={{ textAlign: "center" }}>
+              Only the host can start a game.
+            </div>
           )}
         </div>
         <div className="waiting-page button-container">

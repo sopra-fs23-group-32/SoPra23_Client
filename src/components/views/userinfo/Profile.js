@@ -13,30 +13,30 @@ import "styles/views/userinfo/Profile.scss";
 const ProfileInfo = ({ user, setUsername, setBirthDay, setOldPwd, setPassword }) => (
     <div className="user-profile">
       <div className="user-profile-field">
-        <label>Username</label>
+        <label style={{flexBasis:"33%"}}>Username</label>
         {localStorage.getItem("profileId") === localStorage.getItem("userId") ? (
           <>
              <input type="text" defaultValue={user.username} onChange={e => setUsername(e.target.value)} />
           </>
         ) : (
-            <value>{user.username}</value>
+            <div>{user.username}</div>
         )}
       </div>
       <div className="user-profile-field">
         <label>Status</label>
-        <value>{user.status}</value>
+        <div>{user.status === 'ONLINE' ? 'Online' : 'Offline'}</div>
       </div>
       <div className="user-profile-field">
         <label>Created on</label>
-        <value>{new Date(user.createDay).toISOString().slice(0, 10)}</value>
+        <div>{new Date(user.createDay).toISOString().slice(0, 10)}</div>
       </div>
       <div className="user-profile-field">
       <label>Birthday</label>
       {localStorage.getItem("profileId") === localStorage.getItem("userId") ? (
         <>
-          <value>
+          <div>
             {user.birthDay ? new Date(user.birthDay).toISOString().slice(0, 10) : "No Birthday set yet"}
-          </value>
+          </div>
           <input 
             type="date" 
             defaultValue={user.birthDay} 
@@ -45,20 +45,20 @@ const ProfileInfo = ({ user, setUsername, setBirthDay, setOldPwd, setPassword })
           />
         </>
       ) : (
-        <value>
+        <div>
           {user.birthDay ? new Date(user.birthDay).toISOString().slice(0, 10) : "No Birthday set yet"}
-        </value>
+        </div>
       )}
     </div>
 
       {localStorage.getItem("profileId") === localStorage.getItem("userId") ? (
         <>
           <div className="user-profile-field">
-            <label>Enter Old Password</label>
+            <label style={{flexBasis:"33%"}}>Enter Old Password</label>
             <input type="password" onChange={e => setOldPwd(e.target.value)} />
           </div>
           <div className="user-profile-field">
-            <label>Set New Password</label>
+            <label style={{flexBasis:"33%"}}>Set New Password</label>
             <input type="password" onChange={e => setPassword(e.target.value)} />
           </div>
         </>
