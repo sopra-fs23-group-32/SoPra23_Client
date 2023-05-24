@@ -12,7 +12,9 @@ import "styles/views/game/GamePage.scss";
 const SingleGamePage = () => {
   const [isAnswerSubmitted, setIsAnswerSubmitted] = useState(false); // new state variable
   const [score, setScore] = useState(localStorage.getItem("score"));
-  const [roundTime, setRoundTime] = useState(localStorage.getItem("countdownTime"));
+  const [roundTime, setRoundTime] = useState(
+    localStorage.getItem("countdownTime")
+  );
   const [selectedCityName, setSelectedCityName] = useState(null);
   const [imageUrl, setImageUrl] = useState(localStorage.getItem("PictureUrl"));
   const [isLose, setIsLose] = useState(0);
@@ -28,34 +30,38 @@ const SingleGamePage = () => {
   const history = useHistory();
 
   const endRound = () => {
-    if (isLose===1){
+    if (isLose === 1) {
+      
       history.push(`/SingleGamePage/${gameId}/GameFinishPage`);
-    }
-    else if (roundNumber === localStorage.getItem("totalRounds")) {
+    } else if (roundNumber === localStorage.getItem("totalRounds")) {
       history.push(`/SingleGamePage/${gameId}/GameFinishPage`);
-    }
-    else {
+    } else {
       localStorage.setItem("roundNumber", Number(roundNumber) + 1);
       history.push(`/SingleGamePage/${gameId}/RoundCountPage`);
     }
   };
 
-  const submitAnswer = async(cityName, time) => {
+  const submitAnswer = async (cityName, time) => {
     setIsAnswerSubmitted(true);
     try {
       const response = await api.post(
         `/games/${gameId}/players/${playerId}/answers`,
-        {answer: cityName, timeTaken: time,}
+        { answer: cityName, timeTaken: time }
       );
       const score_new = parseInt(localStorage.getItem("score")) + response.data;
-      if(response.data===0 && isSurvivalMode==="true") {setIsLose(1);}
+      if (response.data === 0 && isSurvivalMode === "true") {
+        console.log("hihihi")
+        setIsLose(1);
+      }
       setScore(score_new);
       localStorage.setItem("score", score_new);
     } catch (error) {
-      toast.error(`Failed in submitting answer: \n${error.respond.data.message}`);
+      toast.error(
+        `Failed in submitting answer: \n${error.respond.data.message}`
+      );
       console.log(handleError(error));
     }
-  }
+  };
 
   useEffect(() => {
     if (!isAnswerSubmitted) {
@@ -66,7 +72,7 @@ const SingleGamePage = () => {
             clearInterval(interval);
             submitAnswer("no answer", totalTime);
             setSelectedCityName("noAnswer");
-            setIsLose(1);
+            //setIsLose(1);
           }
           return newTimeLeft;
         });
@@ -75,19 +81,18 @@ const SingleGamePage = () => {
     }
   }, [isAnswerSubmitted]);
 
-
   const handleSubmit = (e) => {
     e.preventDefault();
     if (!isAnswerSubmitted) {
       submitAnswer(selectedCityName, totalTime - roundTime);
-    }
-    else {
+    } else {
       endRound();
     }
   };
 
   const cityNameButtons = cityNames.map((cityName) => (
-    <button key={cityName}
+    <button
+      key={cityName}
       className={`city-name-button ${
         isAnswerSubmitted
           ? cityName === correctOption
@@ -118,7 +123,7 @@ const SingleGamePage = () => {
       console.log(handleError(error));
     }
   }
-      
+
   const handleExitButtonClick = async () => {
     await api.delete(`games/${gameId}`);
     localStorage.removeItem("gameId");
@@ -136,52 +141,60 @@ const SingleGamePage = () => {
 
   return (
     <div className="page-container">
-    <div className="guess-the-city">
-      <div style={{ position: "fixed", top: 150, left: 75 }}>
-        <Button style={{ fontSize: "30px", height: "60px", width: "100%" }}
-         onClick={handleExitButtonClick}>
-          Exit Game
-        </Button>
-      </div>
+      <div className="guess-the-city">
+        <div style={{ position: "fixed", top: 150, left: 75 }}>
+          <Button
+            style={{ fontSize: "30px", height: "60px", width: "100%" }}
+            onClick={handleExitButtonClick}
+          >
+            Exit Game
+          </Button>
+        </div>
 
-      <div className="guess-the-city main">
-        <Container>
-          <Grid container spacing={4}>
-            <Grid item md={6}>
-              <div className="city-image-refresh" >
-                <button className="city-image-refresh-button"  
-                  onClick={refreshImage}>
+        <div className="guess-the-city main">
+          <Container>
+            <Grid container spacing={4}>
+              <Grid item md={6}>
+                <div className="city-image-refresh">
+                  <button
+                    className="city-image-refresh-button"
+                    onClick={refreshImage}
+                  >
                     <AutorenewIcon fontSize="large" />
-                </button>
-              </div>
-              <div style={{ alignItems: 'center', display: "block"}}>
-                <img className="city-image" alt="GuessImg" src={imageUrl}/>
-              </div>
-              <div style={{ textAlign: "center" }}>
-                <p>Your Score: {score} {isSurvivalMode==="true"? "(Survival Mode)":""}</p>
-              </div>
-            </Grid>
-            <Grid item md={6}>
-              <Grid container justifyContent={"space-around"}>
-                <p>Round {roundNumber}</p>
-                <p className="round-time">{roundTime}</p>
-              </Grid>
-              <div className="city-button-container">
-                {cityNameButtons}
-                <form onSubmit={handleSubmit} className="submit-form">
-                  <button type="submit" className="submit-button">
-                    {isAnswerSubmitted ? "Next" : "Submit Answer"}
                   </button>
-                </form>
-              </div>
+                </div>
+                <div style={{ alignItems: "center", display: "block" }}>
+                  <img className="city-image" alt="GuessImg" src={imageUrl} />
+                </div>
+                <div style={{ textAlign: "center" }}>
+                  <p>
+                    Your Score: {score}{" "}
+                    {isSurvivalMode === "true" ? "(Survival Mode)" : ""}
+                  </p>
+                </div>
+              </Grid>
+              <Grid item md={6}>
+                <Grid container justifyContent={"space-around"}>
+                  <p>Round {roundNumber}</p>
+                  <p className="round-time">{roundTime}</p>
+                </Grid>
+                <div className="city-button-container">
+                  {cityNameButtons}
+                  <form onSubmit={handleSubmit} className="submit-form">
+                    <button type="submit" 
+                      className="submit-button"
+                      disabled={selectedCityName==null}>
+                      {isAnswerSubmitted ? "Next" : "Submit Answer"}
+                    </button>
+                  </form>
+                </div>
+              </Grid>
             </Grid>
-          </Grid>
-        </Container>
-      </div>
+          </Container>
+        </div>
 
-     
-      <ToastContainer />
-    </div>
+        <ToastContainer />
+      </div>
     </div>
   );
 };
