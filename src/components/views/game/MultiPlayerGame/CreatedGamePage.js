@@ -12,7 +12,7 @@ import Stomp from "stompjs";
 import { getDomain } from "helpers/getDomain";
 import WebSocketType from "models/WebSocketType";
 
-import { ToastContainer, toast } from "react-toastify";
+import {toast } from "react-toastify";
 import "styles/views/game/WaitingPage.scss";
 
 const CreatedGamePage = () => {
@@ -50,46 +50,11 @@ const CreatedGamePage = () => {
     fetchPlayer();
   }, []);
 
-  // automatically fetch player list
   useEffect(() => {
     const interval = setInterval(fetchPlayer, 5000);
     return () => clearInterval(interval);
   }, []);
 
-  // useEffect(() => {
-  //   async function fetchGameStatus() {
-  //     try {
-  //       const response = await api.get(
-  //         `/games/${localStorage.getItem("gameId")}/status`
-  //       );
-  //       console.log("GameStatus: ", response.data);
-  //       if(response.data==="WAITING" || response.data==="ANSWERING"){
-  //         localStorage.setItem("myScore", 0);
-  //         localStorage.setItem("roundNumber", 1);
-  //         history.push(`/MultiGamePage/${gameId}/RoundCountPage/`);
-  //       }
-  //       else if (response.data==="DELETED") {
-  //         localStorage.removeItem("gameId");
-  //         localStorage.removeItem("category");
-  //         localStorage.removeItem("totalRounds");
-  //         localStorage.removeItem("countdownTime");
-  //         localStorage.removeItem("playerNum");
-  //         localStorage.removeItem("isServer");
-  //         history.push(`/home`);
-  //       }
-  //     }
-  //     catch (error) {
-  //       toast.error(`Failed to fetch player in game(ID ${gameId})\n //change this
-  //         ${error.response.data.message}`);
-  //       console.log(handleError(error));
-  //       backToLobby();
-  //     }
-  //   }
-  //   if (isServer === "false") {
-  //     const interval1 = setInterval(fetchGameStatus, 1000);
-  //     return () => clearInterval(interval1);
-  //   }
-  // }, [isServer]);
 
   useEffect(() => {
     const Socket = new SockJS(getDomain() + "/socket");

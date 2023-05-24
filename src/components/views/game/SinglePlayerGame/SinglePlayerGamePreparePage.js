@@ -67,24 +67,23 @@ const RoundCountdown = () => {
 
   // go to next page when time out
   useEffect(() => {
-    if(secondsLeft>0 || questionReady) {
+    if (secondsLeft > 0 || questionReady) {
       const interval = setInterval(() => {
         setSecondsLeft((prevSecondsLeft) => {
-          let newTimeLeft = prevSecondsLeft;
-          // count down
-          if (newTimeLeft>0) {
-            newTimeLeft = newTimeLeft - 1;
-            if (newTimeLeft<=0) {
+          let newTimeLeft = prevSecondsLeft - 1;
+  
+          if (newTimeLeft <= 0) {
+            if (questionReady) {
+              history.push(`/MultiGamePage/${gameId}`);
+            } else {
               toast.info("Waiting for new questions");
             }
           }
-          // waiting for question
-          if (newTimeLeft<=0 && questionReady) {
-              history.push(`/SingleGamePage/${gameId}`);
-          }
+  
           return newTimeLeft;
         });
       }, 1000);
+  
       return () => clearInterval(interval);
     }
   }, [secondsLeft, questionReady]);
