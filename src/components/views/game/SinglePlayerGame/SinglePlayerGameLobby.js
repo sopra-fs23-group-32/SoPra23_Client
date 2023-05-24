@@ -48,7 +48,7 @@ const Lobby = () => {
       localStorage.setItem("category", category);
       localStorage.setItem("totalRounds", gameRounds);
       localStorage.setItem("countdownTime", gameDuration);
-      localStorage.setItem("isSurvialMode", isSurvivalMode);
+      localStorage.setItem("isSurvivalMode", isSurvivalMode);
       const requestBody = {category:category, totalRounds:gameRounds, countdownTime:gameDuration,};
       const response = await api.post("/games", requestBody);
       const gameId = response.data.gameId;

@@ -20,13 +20,15 @@ const MultiPlayerGamePage = () => {
   const [roundTime, setRoundTime] = useState(
     localStorage.getItem("countdownTime")
   );
-  const [roundTime2, setRoundTime2] = useState(4);
+  const [roundTime2, setRoundTime2] = useState(3);
   const [selectedCityName, setSelectedCityName] = useState(null);
   // control the flow
   const [isWaiting, setIsWaiting] = useState(true);
   const [imageUrl, setImageUrl] = useState(localStorage.getItem("PictureUrl"));
+  const [isLose, setIsLose] = useState(0);
 
   const gameId = localStorage.getItem("gameId");
+  const isSurvivalMode = localStorage.getItem("isSurvivalMode");
   const roundNumber = localStorage.getItem("roundNumber");
   const totalRounds = localStorage.getItem("totalRounds");
   const totalTime = localStorage.getItem("countdownTime");
@@ -37,7 +39,11 @@ const MultiPlayerGamePage = () => {
   const history = useHistory();
 
   const endRound = () => {
-    if (roundNumber === totalRounds) {
+    console.log("Lose", isLose);
+    if (isLose===1) {
+      history.push(`/MultiGamePage/${gameId}/GameFinish`);
+    }
+    else if (roundNumber === totalRounds) {
       history.push(`/MultiGamePage/${gameId}/GameFinish`);
     }
     else {
@@ -75,6 +81,7 @@ const MultiPlayerGamePage = () => {
             clearInterval(interval);
             submitAnswer("no answer", totalTime);
             setSelectedCityName("noAnswer");
+            setIsLose(1);
           }
           return newTimeLeft;
         });
@@ -122,6 +129,7 @@ const MultiPlayerGamePage = () => {
               localStorage.removeItem("roundNumber");
               localStorage.removeItem("myScore");
               localStorage.removeItem("isServer");
+              localStorage.removeItem("isSurvivalMode");
               localStorage.removeItem("citynames");
               localStorage.removeItem("PictureUrl");
               localStorage.removeItem("CorrectOption");
@@ -143,12 +151,11 @@ const MultiPlayerGamePage = () => {
         { answer: cityName, timeTaken: time }
       );
       const score_new = parseInt(score) + response.data;
+      if(response.data===0 && isSurvivalMode==="true") {setIsLose(1);}
       setScore(score_new);
       localStorage.setItem("myScore", score_new);
     } catch (error) {
-      toast.error(
-        `Failed in submitting answer: \n${error.respond.data.message}`
-      );
+      toast.error( `Failed in submitting answer: \n${error.respond.data.message}`);
       console.log(handleError(error));
     }
   };
@@ -206,6 +213,7 @@ const MultiPlayerGamePage = () => {
     localStorage.removeItem("roundNumber");
     localStorage.removeItem("myScore");
     localStorage.removeItem("isServer");
+    localStorage.removeItem("isSurvivalMode");
     localStorage.removeItem("citynames");
     localStorage.removeItem("PictureUrl");
     localStorage.removeItem("CorrectOption");
@@ -213,10 +221,12 @@ const MultiPlayerGamePage = () => {
   };
 
   return (
-    <div className="page-container">
+  <div className="page-container">
     <div className="guess-the-city">
-      <div className="guess-the-city header">
-        <Button className="exit-button" onClick={handleExitButtonClick} >
+      <div style={{ position: "fixed", top: 75, left: 75 }}>
+        <Button style={{ fontSize: "30px", height: "60px", width: "100%" }}
+         onClick={handleExitButtonClick}
+         disabled={isServer==="true"}>
           Exit Game
         </Button>
       </div>
@@ -235,7 +245,7 @@ const MultiPlayerGamePage = () => {
                 <img className="city-image" alt="GuessImg" src={imageUrl}/>
               </div>
               <div style={{ textAlign: "center" }}>
-                <p>Your Score: {score}</p>
+                <p>Your Score: {score} {isSurvivalMode==="true"? "(Survival Mode)":""}</p>
               </div>
             </Grid>
             <Grid item md={6}>
