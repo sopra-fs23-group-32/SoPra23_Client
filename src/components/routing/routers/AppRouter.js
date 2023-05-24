@@ -41,10 +41,7 @@ const AppRouter = () => {
           <Redirect to="/login" />
         </Route>
         
-          <Route exact path="">
-          <Redirect to="/login" />
-        </Route>
-
+       
         <Route exact path={`/userinfo/history`}>
             <HistoryPage />
         </Route>
