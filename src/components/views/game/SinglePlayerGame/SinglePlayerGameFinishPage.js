@@ -47,7 +47,7 @@ const GameFinishPage = () => {
     <div className="Finalpage container" style={{flexDirection: "column"}}>
     <InformationContainer className="finalpage container" style={{fontSize: '48px', width: "fit-content"}}>
       Your Singleplayer Game has ended <br/>
-      {(isSurvialMode==="true")? `You survive for ${localStorage.getItem("roundNumber")-1} round(s) in the SurvialMode`: ""}
+      {(isSurvialMode==="true")? `You survive for ${localStorage.getItem("roundNumber")-1} round(s) in the SurvivalMode`: ""}
     </InformationContainer>
     <InformationContainer className="finalpage container" style={{ fontSize: "40px" }}>
         You got: {localStorage.getItem("score")} Points

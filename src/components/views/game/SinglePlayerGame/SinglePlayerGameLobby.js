@@ -106,7 +106,7 @@ const Lobby = () => {
             <div className="survival-switch">
                 <Switch checked={isSurvivalMode}
                     onChange={()=>setIsSurvivalMode(!isSurvivalMode)}
-                    offColor="#1979b8" onColor="#1979b8"
+                    offColor="#000000" onColor="#1979b8"
                     checkedIcon={false} uncheckedIcon={false}
                 />
             </div>
@@ -116,16 +116,13 @@ const Lobby = () => {
             <TextField className="lobby round" style={{width:"150px"}}
               inputProps={{ style: { textAlign: "center", height: "10px"}, min:1, type:"number",}}
               disabled={isSurvivalMode}
-              placeholder="enter number..."
               value={gameRounds}
               onChange={(e) => {
                 const value = e.target.value;
                 if (value > 0 && value < 1001 && /^\d+$/.test(value)) {
                   setGameRounds(value);
-                }
-                else{
+                } else{
                   toast.warning("You can only set the game's total round in range [1, 1000].")
-                  // Here, we are resetting the value to an empty string
                   setGameRounds(1);
                 }
               }}
@@ -133,23 +130,15 @@ const Lobby = () => {
           </div>
           <div className="lobby category-select">
             <InputLabel className="lobby label" style={{paddingLeft:"1px"}}>Time Limit:</InputLabel>
-            <TextField className="lobby round"
-              style={{width:"150px"}}
-              inputProps={{
-                style: { textAlign: "center", height: "10px"},
-                min:15,
-                type:"number",
-              }}
-              placeholder="enter number..."
+            <TextField className="lobby round" style={{width:"150px"}}
+              inputProps={{ style: { textAlign: "center", height: "10px"},min:15, type:"number",}}
               value={countdownTime} 
               onChange={(e) => {
                 const value = e.target.value;
-                if (value > 11 && value < 60 && /^\d+$/.test(value)) {
+                if (value>11 && value<60 && /^\d+$/.test(value)) {
                   setCountdownTime(value);
-                }
-                else{
-                  toast.warning("You can't set the game's countdown time in range [12, 59] sec.")
-                  // Here, we are resetting the value to an empty string
+                } else{
+                  toast.warning("You can only set the game's countdown time in range [12, 59] sec.")
                   setCountdownTime(15);
                 }
               }}
