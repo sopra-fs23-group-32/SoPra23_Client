@@ -62,6 +62,20 @@ const JoinGame = () => {
     history.push("/StartGamePage");
   };
 
+  const convertCityCategory = (category) => {
+    // Split the category by underscores
+    const words = category.split('_');
+  
+    // Capitalize each word
+    const capitalizedWords = words.map(word => word.charAt(0).toUpperCase() + word.slice(1).toLowerCase());
+  
+    // Join the words with spaces
+    const convertedCategory = capitalizedWords.join(' ');
+  
+    return convertedCategory;
+  }
+
+
   return (
     <div className="page-container">
       <Container className="joinboard container">
@@ -133,7 +147,7 @@ const JoinGame = () => {
                           align="center"
                           style={{ fontSize: "18px", color: "white" }}
                         >
-                          {openingGame.category}
+                          {convertCityCategory(openingGame.category)}
                         </TableCell>
                         <TableCell
                           align="center"
