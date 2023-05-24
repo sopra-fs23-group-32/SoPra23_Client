@@ -179,12 +179,7 @@ const SingleGamePage = () => {
         </Container>
       </div>
 
-      <div className="main">
-        <div className="info-container">
-          <span className="round-number">Round {roundNumber}</span>
-          <span className="score">Score: {score}</span>
-        </div>
-      </div>
+     
       <ToastContainer />
     </div>
     </div>
