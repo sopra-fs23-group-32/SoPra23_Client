@@ -25,7 +25,7 @@ const UrgeWithPleasureComponent = ({ duration }) => (
 
 const RoundCountdown = () => {
   // use react-router-dom's hook to access the history
-  const duration = 10;
+  const duration = 8;
   const [secondsLeft, setSecondsLeft] = useState(duration);
   const [intervalId, setIntervalId] = useState(null);
 
@@ -34,7 +34,7 @@ const RoundCountdown = () => {
   const category = localStorage.getItem("category");
   const score = localStorage.getItem("score");
   const gameId = localStorage.getItem("gameId");
-
+  const isSurvialMode = localStorage.getItem("isSurvialMode");
   const history = useHistory();
 
   const setLocalStorageItems = (question) => {
@@ -121,7 +121,8 @@ const RoundCountdown = () => {
       <div className="roundcountdown layout" style={{ dislay: "flex" }}>
         <InformationContainer className="roundcountdown container_left">
           <div style={{ fontSize: "40px" }}>
-            Round {roundNumber} of {totalRounds} is starting soon...
+            Round {roundNumber} of {totalRounds} is starting soon... <br/>
+            {isSurvialMode==="true" ? "Try to survive in the next round :)" : ""}
           </div>
           <div style={{ fontSize: "30px" }}>
             City Category: {convertCityCategory(category)}, Your Score: {score}

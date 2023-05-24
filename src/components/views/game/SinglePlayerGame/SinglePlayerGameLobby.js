@@ -2,6 +2,7 @@ import { useHistory } from "react-router-dom";
 import React, { useState } from "react";
 import { Button } from "components/ui/Button";
 import { api, handleError } from "helpers/api";
+import Switch from "react-switch";
 import InformationContainer from "components/ui/BaseContainer";
 import { Spinner } from "components/ui/Spinner";
 import { InputLabel, Select, MenuItem, TextField } from "@mui/material";
@@ -18,6 +19,8 @@ const Lobby = () => {
   const [countdownTime, setCountdownTime] = useState(15);
   // for UI
   const [isLoadingGame, setIsLoadingGame] = useState(false);
+  // for Survival Mode
+  const [isSurvivalMode, setIsSurvivalMode] = useState(false);
 
   const userId = localStorage.getItem("userId");
   const history = useHistory();
@@ -34,15 +37,18 @@ const Lobby = () => {
     }
   };
 
-
   const startGameSingleplayer = async (category, gameRounds, gameDuration) => {
     if (gameRounds === 0) {
       toast.error("The rounds should not be less than 1");
+    }
+    if(isSurvivalMode) {
+      gameRounds = 10000;
     }
     try {
       localStorage.setItem("category", category);
       localStorage.setItem("totalRounds", gameRounds);
       localStorage.setItem("countdownTime", gameDuration);
+      localStorage.setItem("isSurvialMode", isSurvivalMode);
       const requestBody = {category:category, totalRounds:gameRounds, countdownTime:gameDuration,};
       const response = await api.post("/games", requestBody);
       const gameId = response.data.gameId;
@@ -66,7 +72,7 @@ const Lobby = () => {
     <div className="lobby container" style={{flexDirection: "column"}}>
       <InformationContainer className="lobby container" style={{fontSize: '48px', width: "fit-content"}}>
         Game Settings
-        <p>Start startGameSingleplayer Game</p>
+        <p>Start Singleplayer Game</p>
       </InformationContainer>
       <div className="lobby layout">
         <InformationContainer className="lobby container_left">
@@ -93,28 +99,32 @@ const Lobby = () => {
               <MenuItem value={"SOUTH_AMERICA"}>South America</MenuItem>
               <MenuItem value={"AFRICA"}>Africa</MenuItem>
               <MenuItem value={"OCEANIA"}>Oceania</MenuItem>
-              <MenuItem value={"WORLD"}>World</MenuItem>
             </Select>
           </div>
           <div className="lobby category-select">
+            <InputLabel className="lobby label">Survival Mode:</InputLabel>
+            <div className="survival-switch">
+                <Switch checked={isSurvivalMode}
+                    onChange={()=>setIsSurvivalMode(!isSurvivalMode)}
+                    offColor="#1979b8" onColor="#1979b8"
+                    checkedIcon={false} uncheckedIcon={false}
+                />
+            </div>
+          </div>
+          <div className="lobby category-select">
             <InputLabel className="lobby label" style={{paddingLeft:"1px"}}>Rounds:</InputLabel>
-            <TextField
-              style={{width:"150px"}}
-              className="lobby round"
-              inputProps={{
-                style: { textAlign: "center", height: "10px"},
-                min:1,
-                type:"number",
-              }}
+            <TextField className="lobby round" style={{width:"150px"}}
+              inputProps={{ style: { textAlign: "center", height: "10px"}, min:1, type:"number",}}
+              disabled={isSurvivalMode}
               placeholder="enter number..."
               value={gameRounds}
               onChange={(e) => {
                 const value = e.target.value;
-                if (value > 0 && /^\d+$/.test(value)) {
+                if (value > 0 && value < 1001 && /^\d+$/.test(value)) {
                   setGameRounds(value);
-                } else if (value === "0") {
-                  toast.warning("You can't set the game's total round as 0.")
-                  // Handle the case when "0" is entered, you can display an error or show a message
+                }
+                else{
+                  toast.warning("You can only set the game's total round in range [1, 1000].")
                   // Here, we are resetting the value to an empty string
                   setGameRounds(1);
                 }
@@ -134,10 +144,11 @@ const Lobby = () => {
               value={countdownTime} 
               onChange={(e) => {
                 const value = e.target.value;
-                if (value > 14 && /^\d+$/.test(value)) {
+                if (value > 11 && value < 60 && /^\d+$/.test(value)) {
                   setCountdownTime(value);
-                } else if (value === "0") {
-                  toast.warning("You can't set the game's countdown time as 0.")
+                }
+                else{
+                  toast.warning("You can't set the game's countdown time in range [12, 59] sec.")
                   // Here, we are resetting the value to an empty string
                   setCountdownTime(15);
                 }
@@ -151,10 +162,8 @@ const Lobby = () => {
         <div>
           {isLoadingGame ? (<Spinner />) : (
             <Button style={{ display: "inline-block", margin: "auto" }}
-              onClick={() => {
-                setIsLoadingGame(true);
-                startGameSingleplayer(selectedCategory, gameRounds, countdownTime);
-                }
+              onClick={() => { setIsLoadingGame(true);
+                startGameSingleplayer(selectedCategory, gameRounds, countdownTime);}
               }
             >
               Start Game

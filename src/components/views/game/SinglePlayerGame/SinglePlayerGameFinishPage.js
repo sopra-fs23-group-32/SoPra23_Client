@@ -9,6 +9,9 @@ import "react-toastify/dist/ReactToastify.css";
 import "styles/views/game/FinalPage.scss";
 
 const GameFinishPage = () => {
+  const gameId = localStorage.getItem("gameId");
+  const isSurvialMode = localStorage.getItem("isSurvialMode");
+  const playerId = localStorage.getItem("userId");
   const history = useHistory();
 
   const endGame = async () => {
@@ -17,36 +20,34 @@ const GameFinishPage = () => {
     localStorage.removeItem("countdownTime");
     localStorage.removeItem("roundNumber");
     localStorage.removeItem("score");
-    await api.delete(`games/${localStorage.getItem("gameId")}`);
+    localStorage.removeItem("isSurvialMode");
+    await api.delete(`games/${gameId}`);
     history.push("/home");
   };
 
   useEffect(() => {
-    const fetchData = async () => {
+    const saveGameLog = async () => {
       try {
-        const responseGameInfo = await api.post(
-          `/gameInfo/${localStorage.getItem("gameId")}`
-        );
+        const responseGameInfo = await api.post(`/gameInfo/${gameId}`);
         console.log("Game Info saved: ", responseGameInfo.data);
-        const responseGameHistory = await api.post(
-          `/users/${localStorage.getItem("userId")}/gameHistories/${localStorage.getItem("gameId")}`
-        );
+        const responseGameHistory = await api.post(`/users/${playerId}/gameHistories/${gameId}`);
         console.log("Game history saved: ", responseGameHistory.data);
+        toast.info("Game's Log saved.")
         await new Promise((resolve) => setTimeout(resolve, 1000));
-      }
-      catch (error) {
+      } catch (error) {
         toast.error("Something went wrong while fetching the users!");
         console.log(handleError(error));
       }
     };
-    fetchData();
+    saveGameLog();
   }, []);
 
   return (
     <div className="page-container">
     <div className="Finalpage container" style={{flexDirection: "column"}}>
     <InformationContainer className="finalpage container" style={{fontSize: '48px', width: "fit-content"}}>
-      Your Singleplayer Game has Ended
+      Your Singleplayer Game has ended <br/>
+      {(isSurvialMode==="true")? `You survive for ${localStorage.getItem("roundNumber")-1} round(s) in the SurvialMode`: ""}
     </InformationContainer>
     <InformationContainer className="finalpage container" style={{ fontSize: "40px" }}>
         You got: {localStorage.getItem("score")} Points

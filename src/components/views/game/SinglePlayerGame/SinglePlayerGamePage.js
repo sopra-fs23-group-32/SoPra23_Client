@@ -15,12 +15,14 @@ const SingleGamePage = () => {
   const [roundTime, setRoundTime] = useState(localStorage.getItem("countdownTime"));
   const [selectedCityName, setSelectedCityName] = useState(null);
   const [imageUrl, setImageUrl] = useState(localStorage.getItem("PictureUrl"));
+  const [isLose, setIsLose] = useState(0);
 
   const cityNames = JSON.parse(localStorage.getItem("citynames"));
   const correctOption = localStorage.getItem("CorrectOption");
   const roundNumber = localStorage.getItem("roundNumber");
   const totalTime = localStorage.getItem("countdownTime");
   const gameId = localStorage.getItem("gameId");
+  const isSurvialMode = localStorage.getItem("isSurvialMode");
   const playerId = localStorage.getItem("userId");
 
   const history = useHistory();
@@ -30,8 +32,10 @@ const SingleGamePage = () => {
     localStorage.removeItem("citynames");
     localStorage.removeItem("PictureUrl");
     localStorage.removeItem("CorrectOption");
-    // go to next page
-    if (localStorage.getItem("roundNumber") === localStorage.getItem("totalRounds")) {
+    if (isLose===1){
+      history.push(`/SingleGamePage/${gameId}/GameFinishPage`);
+    }
+    else if (localStorage.getItem("roundNumber") === localStorage.getItem("totalRounds")) {
       history.push(`/SingleGamePage/${gameId}/GameFinishPage`);
     }
     else {
@@ -48,6 +52,7 @@ const SingleGamePage = () => {
         {answer: cityName, timeTaken: time,}
       );
       const score_new = parseInt(localStorage.getItem("score")) + response.data;
+      if(response.data===0 && isSurvialMode==="true") {setIsLose(1);}
       setScore(score_new);
       localStorage.setItem("score", score_new);
     } catch (error) {
@@ -57,20 +62,22 @@ const SingleGamePage = () => {
   }
 
   useEffect(() => {
-    const intervalId = setInterval(() => {
-      setRoundTime((prevTimeLeft) => {
-        const newTimeLeft = prevTimeLeft - 1;
-        if (newTimeLeft <= 0) {
-          clearInterval(intervalId);
-          if(!isAnswerSubmitted) {
+    if (!isAnswerSubmitted) {
+      const interval = setInterval(() => {
+        setRoundTime((prevTimeLeft) => {
+          const newTimeLeft = prevTimeLeft - 1;
+          if (newTimeLeft <= 0) {
+            clearInterval(interval);
             submitAnswer("no answer", totalTime);
+            setSelectedCityName("noAnswer");
+            setIsLose(1);
           }
-        }
-        return newTimeLeft;
-      });
-    }, 1000);
-    return () => clearInterval(intervalId);
-  }, []);
+          return newTimeLeft;
+        });
+      }, 1000);
+      return () => clearInterval(interval);
+    }
+  }, [isAnswerSubmitted]);
 
 
   const handleSubmit = (e) => {
@@ -126,6 +133,7 @@ const SingleGamePage = () => {
     localStorage.removeItem("PictureUrl");
     localStorage.removeItem("CorrectOption");
     await api.delete(`games/${gameId}`);
+    await new Promise((resolve) => setTimeout(resolve, 500));
     history.push("/home");
   };
 
