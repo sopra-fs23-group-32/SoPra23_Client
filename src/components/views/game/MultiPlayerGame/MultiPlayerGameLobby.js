@@ -16,7 +16,7 @@ const Lobby = () => {
   const [gameRounds, setGameRounds] = useState(1);
   const [countdownTime, setCountdownTime] = useState(15);
   // for Multi Mode
-  const [targetPlayerNumber, setTargetPlayerNumber] = useState(1);
+  // const [targetPlayerNumber, setTargetPlayerNumber] = useState(1);
   // for UI
   const [isLoadingGame, setIsLoadingGame] = useState(false);
 
@@ -43,7 +43,7 @@ const Lobby = () => {
       localStorage.setItem("category", category);
       localStorage.setItem("totalRounds", gameRounds);
       localStorage.setItem("countdownTime", gameDuration);
-      localStorage.setItem("targetPlayerNumber", targetPlayerNumber);
+      // localStorage.setItem("targetPlayerNumber", targetPlayerNumber);
 
       // Create Game
       const requestBody = {category:category_uppercase, totalRounds:gameRounds, countdownTime:gameDuration,};
@@ -137,7 +137,7 @@ const Lobby = () => {
                 if (value > 14 && /^\d+$/.test(value)) {
                   setCountdownTime(value);
                 } else if (value === "0") {
-                  toast.warning("You can't set the game's countdown time as 0.")
+                  toast.warning("You can only set the game's countdown time > 14.")
                   // Here, we are resetting the value to an empty string
                   setCountdownTime(15);
                 }
