@@ -47,7 +47,7 @@ const HistoryPage = () => {
   const handleClose = () => setOpen(false);
   const [page, setPage] = useState(1);
   const [totalPages, setTotalPages] = useState(1);
-  const [perPage, setPerPage] = useState(10);
+  const perPage = 8;
   
   useEffect(() => {
     async function fetchGameInfoData() {
@@ -115,7 +115,9 @@ const HistoryPage = () => {
                   <td style={{ width: "12%", textAlign: "center" }}>{gameInfo.gameId}</td>
                   <td style={{ width: "20%", textAlign: "center" }}>{gameInfo.category}</td>
                   <td style={{ width: "20%", textAlign: "center" }}>{new Date(gameInfo.gameDate).toISOString().slice(0,10)}</td>
-                  <td style={{ width: "20%", textAlign: "center" }}>{gameInfo.gameRounds}</td>
+                  <td style={{ width: "20%", textAlign: "center" }}>
+                    {gameInfo.gameRounds===10000? "SurvivalMode" : gameInfo.gameRounds}
+                  </td>
                   <td style={{ width: "20%", textAlign: "center" }}>{gameInfo.playerNum}</td>
                   <td>
                     <IconButton title="Detials" color="primary"

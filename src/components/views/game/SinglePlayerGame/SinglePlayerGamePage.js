@@ -133,7 +133,7 @@ const SingleGamePage = () => {
     localStorage.removeItem("PictureUrl");
     localStorage.removeItem("CorrectOption");
     await api.delete(`games/${gameId}`);
-    await new Promise((resolve) => setTimeout(resolve, 500));
+    localStorage.removeItem("gameId");
     history.push("/home");
   };
 
@@ -141,7 +141,7 @@ const SingleGamePage = () => {
     <div className="page-container">
     <div className="guess-the-city">
       <div style={{ position: "fixed", top: 75, left: 75 }}>
-        <Button  style={{ fontSize: "45px", height: "100px", width: "100%" }}
+        <Button style={{ fontSize: "30px", height: "60px", width: "100%" }}
          onClick={handleExitButtonClick}>
           Exit Game
         </Button>
@@ -152,8 +152,8 @@ const SingleGamePage = () => {
           <Grid container spacing={4}>
             <Grid item md={6}>
               <div className="city-image-refresh" >
-                <button className="city-image-refresh-button" 
-                  onClick={() => refreshImage()}>
+                <button className="city-image-refresh-button"  
+                  onClick={refreshImage}>
                     <AutorenewIcon fontSize="large" />
                 </button>
               </div>
@@ -161,7 +161,7 @@ const SingleGamePage = () => {
                 <img className="city-image" alt="GuessImg" src={imageUrl}/>
               </div>
               <div style={{ textAlign: "center" }}>
-                <p>Your Score: {score}</p>
+                <p>Your Score: {score} {isSurvialMode==="true"? "(Survival Mode)":""}</p>
               </div>
             </Grid>
             <Grid item md={6}>

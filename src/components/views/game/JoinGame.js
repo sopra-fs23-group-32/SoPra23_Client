@@ -83,7 +83,7 @@ const JoinGame = () => {
                         {openingGame.category}
                       </TableCell>
                       <TableCell align="center" style={{ fontSize: '18px', color: 'white' }}>
-                        {openingGame.totalRounds}
+                        {openingGame.totalRounds===10000? "SurvivalMode" : openingGame.totalRounds}
                       </TableCell>
                       <TableCell align="center" style={{ fontSize: '18px', color: 'white' }}>
                         {openingGame.playerNum}
