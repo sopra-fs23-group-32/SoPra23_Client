@@ -74,6 +74,7 @@ const MultiPlayerGamePage = () => {
           if (newTimeLeft <= 0) {
             clearInterval(interval);
             submitAnswer("no answer", totalTime);
+            setSelectedCityName("noAnswer");
           }
           return newTimeLeft;
         });
