@@ -204,6 +204,19 @@ const MultiModeRoundCountdown = () => {
     );
   }
 
+  const convertCityCategory = (category) => {
+    // Split the category by underscores
+    const words = category.split('_');
+  
+    // Capitalize each word
+    const capitalizedWords = words.map(word => word.charAt(0).toUpperCase() + word.slice(1).toLowerCase());
+  
+    // Join the words with spaces
+    const convertedCategory = capitalizedWords.join(' ');
+  
+    return convertedCategory;
+  }
+
   const handleExitButtonClick = async() => {
     await api.delete(`games/${gameId}/players/${playerId}`);
     localStorage.removeItem("gameId");
@@ -242,7 +255,7 @@ const MultiModeRoundCountdown = () => {
              : `Round ${roundNumber} of ${totalRounds} is starting soon...`}
           </div>
           <div style={{ fontSize: "30px" }}>
-            City Category: {category}, Your Score: {score}
+            City Category: {convertCityCategory(category)}, Your Score: {score}
           </div>
         </InformationContainer>
 

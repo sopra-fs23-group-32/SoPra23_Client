@@ -67,7 +67,11 @@ const ScoreBoard = () => {
             {userRanking.slice(startIndex, endIndex).map((user, index) => (
             <tr className={index % 2 !== 0 ? "odd" : "even"} key={user.userId} onClick={() => goProfile(user.userId)}>
               <td style={{width: "8%"}}>{user.rank}</td>
-              <td style={{width: "22%"}}>{user.username}</td>
+              <td style={{ width: "22%" }}>
+                {user.username === localStorage.getItem("username")
+                  ? `${user.username} (you)`
+                  : user.username}
+              </td>
               <td style={{width: "20%"}}>{user.score}</td>
               <td style={{width: "20%"}}>{user.gameNum}</td>
               <td style={{width: "20%"}}>{new Date(user.createDay).toISOString().slice(0,10)}</td>

@@ -13,8 +13,8 @@ import 'styles/views/authentication/Register.scss';
 
 const FormField = (props) => {
   return (
-    <div className="login field">
-    <input className="login input"
+    <div className="registration field">
+    <input className="registration input"
         label={props.label}
         placeholder="Enter Username here..."
         value={props.value}
@@ -28,11 +28,11 @@ const FormField = (props) => {
 
 const FormField2 = (props) => {
 return (
-  <div className="login field" style={{marginBottom:"0px"}}>
+  <div className="registration field" style={{marginBottom:"0px"}}>
     <input 
       label={props.label}
       type="password"
-      className="login input"
+      className="registration input"
       placeholder="Enter Password here..."
       value={props.value}
       onChange={(e) => props.onChange(e.target.value)}
