@@ -261,9 +261,40 @@ const MultiModeRoundCountdown = () => {
 
         <div className="roundcountdown layout" style={{ display: "flex", flexDirection: "row" }}>
           <div className="roundcountdown leaderboard-container">
-            {playerRankingList}
+            <div className="leaderboard">
+              <table>
+                <thead>
+                  <tr>
+                    <th>Rank</th>
+                    <th>Player Name</th>
+                    <th>Score</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {leaderboardData.map((entry, index) => {
+                    const previousRank = roundNumber > 1 ? previousRoundData.find((data) => data.playerName === entry.playerName)?.rank : entry.rank;
+                    const position = calculateRowPosition(entry.rank, previousRank);
+                    return (
+                      <tr
+                        key={entry.id}
+                        style={{
+                          transform: `translateY(${position})`,
+                          backgroundColor: entry.playerName === username ? 'rgba(200, 0, 0, 0.5)' : 'rgba(128, 128, 128, 0.5)',
+                         }}
+                      >
+                        <td>{entry.rank}</td>
+                        <td>{entry.playerName}</td>
+                        <td>{entry.score}</td>
+                      </tr>
+                    );
+                  })}
+                </tbody>
+              </table>
+            </div>
           </div>
-
+          <div></div>
+          <div></div>
+          <div></div>
           <div className="roundcountdown container_right">
             <div className="countdown-text">
               <UrgeWithPleasureComponent duration={duration} />
