@@ -112,8 +112,7 @@ const Lobby = () => {
                 <Switch
                   checked={isSurvivalMode}
                   onChange={() => setIsSurvivalMode(!isSurvivalMode)}
-                  offColor="#000000"
-                  onColor="#1979b8"
+                  onColor="#5e5df0"
                   checkedIcon={false}
                   uncheckedIcon={false}
                 />
