@@ -25,6 +25,7 @@ const MultiPlayerGamePage = () => {
   const [isWaiting, setIsWaiting] = useState(true);
   const [imageUrl, setImageUrl] = useState(localStorage.getItem("PictureUrl"));
   const [isLose, setIsLose] = useState(false);
+  const [scoreIsSet, scoreHasBeenSet] = useState(false);
 
   const gameId = localStorage.getItem("gameId");
   const isSurvivalMode = localStorage.getItem("isSurvivalMode");
@@ -64,6 +65,7 @@ const MultiPlayerGamePage = () => {
       }
       setScore(score_new);
       localStorage.setItem("myScore", score_new);
+      scoreHasBeenSet(true);
     } catch (error) {
       toast.error( `Failed in submitting answer: \n${error.respond.data.message}`);
       console.log(handleError(error));
@@ -71,6 +73,7 @@ const MultiPlayerGamePage = () => {
   };
 
   useEffect(() => {
+    
     if (!isAnswerSubmitted) {
       const interval = setInterval(() => {
         setRoundTime((prevTimeLeft) => {
@@ -125,13 +128,13 @@ const MultiPlayerGamePage = () => {
       const interval = setInterval(() => {
         setRoundTime2((prevTimeLeft) => {
           const newTimeLeft = prevTimeLeft - 1;
-          if (newTimeLeft <= 0) { endRound(); }
+          if (newTimeLeft <= 0 &&scoreIsSet) { endRound(); }
           return newTimeLeft;
         });
       }, 1000);
       return () => clearInterval(interval);
     }
-  }, [isWaiting]);
+  }, [isWaiting,scoreIsSet]);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
