@@ -15,38 +15,34 @@ const GameFinishPage = () => {
   const history = useHistory();
 
   const endGame = async () => {
+    if (isSurvivalMode==="false") {
+      await api.delete(`games/${gameId}`);
+    }
     localStorage.removeItem("category");
     localStorage.removeItem("totalRounds");
     localStorage.removeItem("countdownTime");
     localStorage.removeItem("roundNumber");
     localStorage.removeItem("score");
     localStorage.removeItem("isSurvivalMode");
-    if (isSurvivalMode==="false") {
-      await api.delete(`games/${gameId}`);
-    }
     history.push("/home");
   };
 
-  async function deleteSurvivalPlayer() {
-    await api.delete(`games/${gameId}/players/${playerId}?check=0`);
-    await new Promise((resolve) => setTimeout(resolve, 1000));
-    console.log(`You leave Game ${gameId}.`)
-  }
+  
 
   useEffect(() => {
-    async function saveGameHistory() {
+    async function saveGameLog() {
       try {
         const responseGameHistory = await api.post(`/users/${playerId}/gameHistories/${gameId}`);
         console.log("Game history saved: ", responseGameHistory.data);
         toast.info("Game history saved.")
         await new Promise((resolve) => setTimeout(resolve, 500));
-      } catch (error) {
-        toast.error("Something went wrong while saving the history!");
-        console.log(handleError(error));
-      }
-    }
-    async function saveGameInfo() {
-      try {
+
+        if (isSurvivalMode==="true") {
+          await api.delete(`games/${gameId}/players/${playerId}?check=0`);
+          await new Promise((resolve) => setTimeout(resolve, 500));
+          console.log(`You leave Game ${gameId}.`)
+        }
+
         const responseGameInfo = await api.post(`/gameInfo/${gameId}`);
         console.log("Game Info saved: ", responseGameInfo.data);
         toast.info("Game's Info saved.")
@@ -56,11 +52,7 @@ const GameFinishPage = () => {
         console.log(handleError(error));
       }
     }
-    saveGameHistory();
-    if (isSurvivalMode==="true") {
-      deleteSurvivalPlayer();
-    }
-    saveGameInfo();
+    saveGameLog();
   }, []);
 
   return (
