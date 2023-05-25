@@ -100,7 +100,7 @@ const JoinGame = () => {
                       align="center"
                       style={{ fontSize: "18px", color: "white" }}
                     >
-                      Game ID
+                      HostName
                     </TableCell>
                     <TableCell
                       align="center"
@@ -141,7 +141,7 @@ const JoinGame = () => {
                           align="center"
                           style={{ fontSize: "18px", color: "white" }}
                         >
-                          {openingGame.gameId}
+                          {openingGame.hostname}
                         </TableCell>
                         <TableCell
                           align="center"
