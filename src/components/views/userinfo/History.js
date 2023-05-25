@@ -138,7 +138,7 @@ const HistoryPage = () => {
                       </Typography>
                       <Typography id="modal-modal-description" sx={{ mt: 3 }}>
                         <div>Score: {userGameHistoryStats.gameScore}</div>
-                        <div>CorrectRate: {userGameHistoryStats.correctRate}</div>
+                        <div>CorrectRate %: {userGameHistoryStats.correctRate}</div>
                       </Typography>
                       <Typography id="modal-modal-description" sx={{ mt: 3 }}>
                         <h3>Your Answer - Correct Answer</h3>
