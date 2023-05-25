@@ -112,7 +112,7 @@ const Lobby = () => {
                 <MenuItem value={"WORLD"}>World</MenuItem>
               </Select>
             </div>
-            <div className="lobby category-select">
+            {/*<div className="lobby category-select">
               <InputLabel className="lobby label">Survival Mode:</InputLabel>
               <div className="survival-switch">
                 <Switch
@@ -124,7 +124,7 @@ const Lobby = () => {
                   uncheckedIcon={false}
                 />
               </div>
-            </div>
+            </div>*/}
             <div className="lobby category-select">
               <InputLabel
                 className="lobby label"
