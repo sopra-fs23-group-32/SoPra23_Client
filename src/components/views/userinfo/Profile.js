@@ -16,7 +16,7 @@ const ProfileInfo = ({ user, setUsername, setBirthDay, setOldPwd, setPassword })
         <label style={{flexBasis:"33%"}}>Username</label>
         {localStorage.getItem("profileId") === localStorage.getItem("userId") ? (
           <>
-             <input type="text" defaultValue={user.username} onChange={e => setUsername(e.target.value)} />
+             <input type="text"style={{color:"white"}} defaultValue={user.username} onChange={e => setUsername(e.target.value)} />
           </>
         ) : (
             <div>{user.username}</div>
@@ -35,10 +35,11 @@ const ProfileInfo = ({ user, setUsername, setBirthDay, setOldPwd, setPassword })
       {localStorage.getItem("profileId") === localStorage.getItem("userId") ? (
         <>
           <div>
-            {user.birthDay ? new Date(user.birthDay).toISOString().slice(0, 10) : "No Birthday set yet"}
+            {user.birthDay ? new Date(user.birthDay).toISOString().slice(0, 10) : "Not Set"}
           </div>
           <input 
             type="date" 
+            style={{color:"white"}}
             defaultValue={user.birthDay} 
             max={new Date().toISOString().slice(0,10)}
             onChange={e => setBirthDay(e.target.value)} 
@@ -55,11 +56,11 @@ const ProfileInfo = ({ user, setUsername, setBirthDay, setOldPwd, setPassword })
         <>
           <div className="user-profile-field">
             <label style={{flexBasis:"33%"}}>Enter Old Password</label>
-            <input type="password" onChange={e => setOldPwd(e.target.value)} />
+            <input type="password" style={{color:"white"}} onChange={e => setOldPwd(e.target.value)} />
           </div>
           <div className="user-profile-field">
             <label style={{flexBasis:"33%"}}>Set New Password</label>
-            <input type="password" onChange={e => setPassword(e.target.value)} />
+            <input type="password" style={{color:"white"}}  onChange={e => setPassword(e.target.value)} />
           </div>
         </>
       ) : (
@@ -163,10 +164,9 @@ const Profile = () => {
   return (
     <div className="page-container">
     <div className="Profile container" style={{flexDirection: "column"}}>
-      <InformationContainer className="profile container" style={{fontSize: '48px', width: "fit-content"}}>
-        Profile
-      </InformationContainer>
+      
     <InformationContainer className="profile container" style={{width: "fit-content"}}>
+      <h2>Profile</h2>
       {content}
       <div className="profile button-container">
         <Button width="100%"
