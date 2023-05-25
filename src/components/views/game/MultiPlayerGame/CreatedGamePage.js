@@ -51,7 +51,7 @@ const CreatedGamePage = () => {
   }, []);
 
   useEffect(() => {
-    const interval = setInterval(fetchPlayer, 5000);
+    const interval = setInterval(fetchPlayer, 3000);
     return () => clearInterval(interval);
   }, []);
 
