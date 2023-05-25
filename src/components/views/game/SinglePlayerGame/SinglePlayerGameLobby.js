@@ -69,7 +69,7 @@ const Lobby = () => {
 
   return (
     <div className="page-container">
-      <div className="lobby container" style={{ flexDirection: "column" }}>
+      <div className="Lobby container" style={{ flexDirection: "column" }}>
         <div className="lobby layout">
           <InformationContainer className="lobby container_left">
             <h2>Singleplayer Settings</h2>

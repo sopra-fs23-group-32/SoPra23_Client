@@ -39,13 +39,11 @@ const MultiPlayerGamePage = () => {
 
   const endRound = () => {
     console.log("Lose", isLose);
-    if (isLose===1) {
+    if (isLose === 1) {
       history.push(`/MultiGamePage/${gameId}/GameFinish`);
-    }
-    else if (roundNumber === totalRounds) {
+    } else if (roundNumber === totalRounds) {
       history.push(`/MultiGamePage/${gameId}/GameFinish`);
-    }
-    else {
+    } else {
       localStorage.setItem("roundNumber", Number(roundNumber) + 1);
       history.push(`/MultiGamePage/${gameId}/RoundCountPage`);
     }
@@ -97,8 +95,10 @@ const MultiPlayerGamePage = () => {
     const Socket = new SockJS(getDomain() + "/socket");
     const stompClient = Stomp.over(Socket);
     stompClient.connect(
-      {}, (frame) => {
-        subscription = stompClient.subscribe(`/instance/games/${gameId}`,
+      {},
+      (frame) => {
+        subscription = stompClient.subscribe(
+          `/instance/games/${gameId}`,
           async (message) => {
             const messagBody = JSON.parse(message.body);
             console.log("Socket mssage: ", messagBody.type);
@@ -110,8 +110,10 @@ const MultiPlayerGamePage = () => {
       },
       (err) => console.log(err)
     );
-    return () => {subscription.unsubscribe();};
-  }, []); 
+    return () => {
+      subscription.unsubscribe();
+    };
+  }, []);
 
   // when all answered(not waiting) count 3s and go to next page
   useEffect(() => {
@@ -133,7 +135,7 @@ const MultiPlayerGamePage = () => {
       submitAnswer(selectedCityName, totalTime - roundTime);
       if (isWaiting) {
         toast.info(`Waiting for other players to answer...`);
-      } 
+      }
     }
   };
 
@@ -164,7 +166,7 @@ const MultiPlayerGamePage = () => {
           ? "dark-button"
           : "blue-button"
       }`}
-      disabled={isAnswerSubmitted===true}
+      disabled={isAnswerSubmitted === true}
       onClick={() => setSelectedCityName(cityName)}
     >
       {cityName}
@@ -202,13 +204,15 @@ const MultiPlayerGamePage = () => {
         </Button>
       </div>
 
-      <div className="guess-the-city main">
-        <Container>
-          <Grid container spacing={4}>
-            <Grid item md={6}>
-              <div className="city-image-refresh" >
-                <button className="city-image-refresh-button" 
-                  onClick={() => refreshImage()}>
+        <div className="guess-the-city main">
+          <Container>
+            <Grid container spacing={4}>
+              <Grid item md={6}>
+                <div className="city-image-refresh">
+                  <button
+                    className="city-image-refresh-button"
+                    onClick={() => refreshImage()}
+                  >
                     <AutorenewIcon fontSize="large" />
                 </button>
               </div>
