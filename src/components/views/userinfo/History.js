@@ -60,7 +60,7 @@ const HistoryPage = () => {
         setUserGameInfo(response.data);
         console.log("Get All Game Infos: ", response.data);
       } catch (error) {
-        toast.error(`${error.response.data.message}`);
+        // toast.error(`${error.response.data.message}`);
         console.log(handleError(error));
       }
     }
@@ -80,8 +80,8 @@ const HistoryPage = () => {
       // This is just a fake async call, so that the spinner can be displayed
       await new Promise((resolve) => setTimeout(resolve, 1000));
     } catch (error) {
-      toast.error(
-        `An error occurs while fetching the userGameHistory: \n${error.respond.data.message}`
+      toast.warning(
+        `Something wrong when fetching the userGameHistory: \n${error.respond.data.message}`
       );
       console.log(handleError(error));
     }

@@ -26,26 +26,26 @@ const ScoreBoard = () => {
     };
 
     useEffect(() => {
-        async function fetchData() {
-            try {
-                let urlCategory;
-                if (selectedCategory === "WORLD") {
-                    urlCategory = "/users/ranking";
-                } else {
-                    urlCategory = "/users/ranking?category=" + selectedCategory;
-                }
-                const response = await api.get(urlCategory);
-                // This is just a fake async call, so that the spinner can be displayed
-                await new Promise((resolve) => setTimeout(resolve, 1000));
-                // Get the returned users and update the state.
-                setUserRanking(response.data);
-                console.log(response);
-            } catch (error) {
-                toast.error(`${error.response.data.message}`);
-                console.log(handleError(error));
-            }
+      async function fetchData() {
+        try {
+          let urlCategory;
+          if (selectedCategory === "WORLD") {
+              urlCategory = "/users/ranking";
+          } else {
+              urlCategory = "/users/ranking?category=" + selectedCategory;
+          }
+          const response = await api.get(urlCategory);
+          // This is just a fake async call, so that the spinner can be displayed
+          await new Promise((resolve) => setTimeout(resolve, 1000));
+          // Get the returned users and update the state.
+          setUserRanking(response.data);
+          console.log(response);
+        } catch (error) {
+            // toast.error(`${error.response.data.message}`);
+            console.log(handleError(error));
         }
-        fetchData();
+      }
+      fetchData();
     }, [selectedCategory]);
 
   const UserRanking = ({ userRanking }) => {

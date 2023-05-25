@@ -48,7 +48,7 @@ const GameFinishPage = () => {
         toast.info("Game's Info saved.")
         await new Promise((resolve) => setTimeout(resolve, 500));
       } catch (error) {
-        toast.error("Something went wrong while saving the gameInfo!");
+        toast.warning("Something went wrong while saving the gameInfo!");
         console.log(handleError(error));
       }
     }

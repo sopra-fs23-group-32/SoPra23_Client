@@ -39,8 +39,7 @@ const CreatedGamePage = () => {
       setGamePlayers(response.data);
       setPlayerNumber(response.data.length);
     } catch (error) {
-      toast.error(`Failed to fetch player in game(ID ${gameId})\n
-        ${error.response.data.message}`);
+      toast.warning(`Failed to fetch player in game(ID ${gameId})`);
       console.log(handleError(error));
     }
   };
@@ -106,6 +105,7 @@ const CreatedGamePage = () => {
         await api.delete(`/games/${gameId}`);
         await new Promise((resolve) => setTimeout(resolve, 500));
         console.log(`Game ${gameId} deleted.`);
+        toast.info(`Game (ID: ${gameId}) deleted.`);
       }
       else {
         await api.delete(`/games/${gameId}/players/${userId}`);
@@ -113,8 +113,6 @@ const CreatedGamePage = () => {
         console.log(`Player ${userId} deleted from Game ${gameId}`);
       }
     } catch (error) {
-      toast.error(`Failed to fetch player in game(ID ${gameId})\n
-        ${error.response.data.message}`);
       console.log(handleError(error));
     }
     localStorage.removeItem("gameId");
@@ -248,8 +246,9 @@ const CreatedGamePage = () => {
         </p>
         <div>{playerList}</div>
       </InformationContainer>
+      <ToastContainer />
     </div>
-    </div>
+  </div>
   );
 };
 
