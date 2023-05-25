@@ -44,7 +44,6 @@ const MultiModeRoundCountdown = () => {
   const playerId = localStorage.getItem("userId");
   const username = localStorage.getItem("username")
   const score = localStorage.getItem("myScore");
-  const isServer = localStorage.getItem("isServer");
   const isSurvivalMode = localStorage.getItem("isSurvivalMode");
   const history = useHistory();
 
@@ -59,12 +58,12 @@ const MultiModeRoundCountdown = () => {
 
   async function generateQuestion() {
     try {
-      const response = await api.put(`games/${gameId}`);
-      setLocalStorageItems(response.data);
-      console.log("Generate question: ", response.data);
+      await api.put(`games/${gameId}`);
+      // setLocalStorageItems(response.data);
+      console.log("Generate questio.");
       await new Promise((resolve) => setTimeout(resolve, 1000));
-      toast.info(`Question for next round created.`);
-      setQuestionReady(true);
+      // toast.info(`Question for next round created.`);
+      // setQuestionReady(true);
     } catch (error) {
       toast.error(`${error.response.data.message}`);
       console.log(handleError(error));
@@ -96,8 +95,7 @@ const MultiModeRoundCountdown = () => {
           async (message) => {
             const messagBody = JSON.parse(message.body);
             console.log("Socket mssage: ", messagBody.type);
-            if(isServer==="false" && 
-              messagBody.type === WebSocketType.ROUND_UPDATE){
+            if(messagBody.type === WebSocketType.ROUND_UPDATE) {
                 fetchQuestion();
             }
           }
@@ -124,8 +122,15 @@ const MultiModeRoundCountdown = () => {
     localStorage.removeItem("citynames");
     localStorage.removeItem("PictureUrl");
     localStorage.removeItem("CorrectOption");
-    // fetch question and save in localstorage
-    if (isServer==="true") {generateQuestion();}
+    // notify the backend to generate question
+    if(roundNumber===1) {
+      if(localStorage.getItem("isServer")==="true") {
+        generateQuestion();
+      }
+    }
+    else {
+      generateQuestion();
+    }
     // get all players' ranking
     fetchRanking();
   }, []);
@@ -220,7 +225,7 @@ const MultiModeRoundCountdown = () => {
     localStorage.removeItem("countdownTime");
     localStorage.removeItem("roundNumber");
     localStorage.removeItem("myScore");
-    localStorage.removeItem("isServer");
+    // localStorage.removeItem("isServer");
     localStorage.removeItem("isSurvivalMode");
     localStorage.removeItem("citynames");
     localStorage.removeItem("PictureUrl");
@@ -233,8 +238,7 @@ const MultiModeRoundCountdown = () => {
     <div className="round countdown container">
       <div style={{ position: "fixed", top: 75, left: 75 }}>
         <Button style={{ fontSize: "30px", height: "60px", width: "100%" }}
-         onClick={handleExitButtonClick}
-         disabled={isServer==="true"}>
+         onClick={handleExitButtonClick}>
           Exit Game
         </Button>
       </div>

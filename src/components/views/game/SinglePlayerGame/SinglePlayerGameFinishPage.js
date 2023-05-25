@@ -21,25 +21,46 @@ const GameFinishPage = () => {
     localStorage.removeItem("roundNumber");
     localStorage.removeItem("score");
     localStorage.removeItem("isSurvivalMode");
-    await api.delete(`games/${gameId}`);
+    if (isSurvivalMode==="false") {
+      await api.delete(`games/${gameId}`);
+    }
     history.push("/home");
   };
 
+  async function deleteSurvivalPlayer() {
+    await api.delete(`games/${gameId}/players/${playerId}?check=0`);
+    await new Promise((resolve) => setTimeout(resolve, 1000));
+    console.log(`You leave Game ${gameId}.`)
+  }
+
   useEffect(() => {
-    const saveGameLog = async () => {
+    async function saveGameHistory() {
+      try {
+        const responseGameHistory = await api.post(`/users/${playerId}/gameHistories/${gameId}`);
+        console.log("Game history saved: ", responseGameHistory.data);
+        toast.info("Game history saved.")
+        await new Promise((resolve) => setTimeout(resolve, 500));
+      } catch (error) {
+        toast.error("Something went wrong while saving the history!");
+        console.log(handleError(error));
+      }
+    }
+    async function saveGameInfo() {
       try {
         const responseGameInfo = await api.post(`/gameInfo/${gameId}`);
         console.log("Game Info saved: ", responseGameInfo.data);
-        const responseGameHistory = await api.post(`/users/${playerId}/gameHistories/${gameId}`);
-        console.log("Game history saved: ", responseGameHistory.data);
-        toast.info("Game's Log saved.")
-        await new Promise((resolve) => setTimeout(resolve, 1000));
+        toast.info("Game's Info saved.")
+        await new Promise((resolve) => setTimeout(resolve, 500));
       } catch (error) {
-        toast.error("Something went wrong while fetching the users!");
+        toast.error("Something went wrong while saving the gameInfo!");
         console.log(handleError(error));
       }
-    };
-    saveGameLog();
+    }
+    saveGameHistory();
+    if (isSurvivalMode==="true") {
+      deleteSurvivalPlayer();
+    }
+    saveGameInfo();
   }, []);
 
   return (

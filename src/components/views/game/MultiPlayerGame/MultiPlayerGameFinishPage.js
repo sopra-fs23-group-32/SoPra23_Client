@@ -15,12 +15,23 @@ import "styles/views/game/FinalPage.scss";
 
 const MultiPlayerGameFinishPage = () => {
   const [playerRanking, setPlayerRanking] = useState([]);
-  const [isEnded, setIsEnded] = useState(false);
+  // const [isEnded, setIsEnded] = useState(false);
   const playerId = localStorage.getItem("userId");
   const gameId = localStorage.getItem("gameId");
-  const isServer = localStorage.getItem("isServer");
+  // const isServer = localStorage.getItem("isServer");
   const isSurvivalMode = localStorage.getItem("isSurvivalMode");
   const history = useHistory();
+
+  async function saveGameInfo() {
+    try {
+      const responseGameInfo = await api.post(`/gameInfo/${gameId}`);
+      console.log("Game Info: ", responseGameInfo.data);
+      toast.info(`Game's information saved.`);  
+    } catch (error) {
+      toast.error("Something went wrong while fetching the ranking!");
+      console.log(handleError(error));
+    }
+  }
 
   const saveGameHistory = async () => {
     try{
@@ -34,19 +45,13 @@ const MultiPlayerGameFinishPage = () => {
       console.log(handleError(error));
     }
   }
-    
 
+  async function deleteSurvivalPlayer() {
+    await api.delete(`games/${gameId}/players/${playerId}?check=0`);
+    console.log(`You leave Game ${gameId}.`)
+  }
+    
   useEffect(() => {
-    async function saveGameInfo() {
-      try {
-        const responseGameInfo = await api.post(`/gameInfo/${gameId}`);
-        console.log("Game Info: ", responseGameInfo.data);
-        toast.info(`Game's information saved.`);  
-      } catch (error) {
-        toast.error("Something went wrong while fetching the ranking!");
-        console.log(handleError(error));
-      }
-    }
     async function fetchRanking() {
       try{
         const responseRanking = await api.get(`/games/${gameId}/ranking`);
@@ -57,35 +62,14 @@ const MultiPlayerGameFinishPage = () => {
         console.log(handleError(error));
       }
     }
-    if (isServer==="true") {
+    saveGameHistory();
+    if (isSurvivalMode==="false") {
       saveGameInfo();
     }
-    saveGameHistory();
+    else {
+      deleteSurvivalPlayer();
+    }
     fetchRanking();
-  }, []);
-
-  useEffect(() => {
-    let subscription;
-    const Socket = new SockJS(getDomain() + "/socket");
-    const stompClient = Stomp.over(Socket);
-    stompClient.connect(
-      {}, (frame) => {
-        subscription = stompClient.subscribe(`/instance/games/${gameId}`,
-          async (message) => {
-            const messagBody = JSON.parse(message.body);
-            console.log("Socket mssage: ", messagBody.type);
-            if(isServer==="false" && isSurvivalMode==="false" && 
-              messagBody.type === WebSocketType.GAME_END){
-                setIsEnded(true);
-                await api.delete(`games/${gameId}`);
-                console.log(`Game ${gameId} deleted.`)
-            }
-          }
-        );
-      },
-      (err) => console.log(err)
-    );
-    return () => {subscription.unsubscribe();};
   }, []);
 
   const groupedPlayers = playerRanking.reduce((groups, player) => {
@@ -96,23 +80,19 @@ const MultiPlayerGameFinishPage = () => {
   }, {});
 
   const endGame = async() => {
-    if (isSurvivalMode==="false"){
-      if(isServer==="true") {
-        await api.delete(`games/${gameId}`);
-        console.log(`Game ${gameId} deleted.`)
-      }
+    // having save the Info
+    if (isSurvivalMode==="false") {
+      await api.delete(`games/${gameId}/players/${playerId}`);
+      console.log(`You leave Game ${gameId}.`)
     }
     else {
-      if(!isEnded) {
-        await api.delete(`games/${gameId}/players/${playerId}`);
-        console.log(`You leave Game ${gameId}.`)
-      }
+      saveGameInfo();
     }
     localStorage.removeItem("gameId");
     localStorage.removeItem("category");
     localStorage.removeItem("totalRounds");
     localStorage.removeItem("countdownTime");
-    localStorage.removeItem("isServer");
+    // localStorage.removeItem("isServer");
     localStorage.removeItem("isSurvivalMode");
     localStorage.removeItem("roundNumber");
     localStorage.removeItem("myScore");

@@ -34,7 +34,7 @@ const MultiPlayerGamePage = () => {
   const cityNames = JSON.parse(localStorage.getItem("citynames"));
   const correctOption = localStorage.getItem("CorrectOption");
   const playerId = localStorage.getItem("userId");
-  const isServer = localStorage.getItem("isServer");
+  // const isServer = localStorage.getItem("isServer");
   const history = useHistory();
 
   const endRound = () => {
@@ -50,77 +50,6 @@ const MultiPlayerGamePage = () => {
       history.push(`/MultiGamePage/${gameId}/RoundCountPage`);
     }
   };
-
-  useEffect(() => {
-    if (!isAnswerSubmitted) {
-      const interval = setInterval(() => {
-        setRoundTime((prevTimeLeft) => {
-          const newTimeLeft = prevTimeLeft - 1;
-          if (newTimeLeft <= 0) {
-            clearInterval(interval);
-            submitAnswer("no answer", totalTime);
-            setSelectedCityName("noAnswer");
-            setIsLose(1);
-          }
-          return newTimeLeft;
-        });
-      }, 1000);
-      return () => clearInterval(interval);
-    }
-  }, [isAnswerSubmitted]);
-
-  // when all answered(not waiting) count 3s and go to next page
-  useEffect(() => {
-    if(!isWaiting){
-      const interval = setInterval(() => {
-        setRoundTime2((prevTimeLeft) => {
-          const newTimeLeft = prevTimeLeft - 1;
-          if (newTimeLeft <= 0) {
-            endRound();
-          }
-          return newTimeLeft;
-        });
-      }, 1000);
-      return () => clearInterval(interval);
-    }
-  }, [isWaiting]);
-
-  
-  // handle msg from the web socket
-  useEffect(() => {
-    let subscription;
-    const Socket = new SockJS(getDomain() + "/socket");
-    const stompClient = Stomp.over(Socket);
-    stompClient.connect(
-      {}, (frame) => {
-        subscription = stompClient.subscribe(`/instance/games/${gameId}`,
-          async (message) => {
-            const messagBody = JSON.parse(message.body);
-            console.log("Socket mssage: ", messagBody.type);
-            if (messagBody.type === WebSocketType.ALL_ANSWER) {
-              setIsWaiting(false);
-            }
-            else if (messagBody.type === WebSocketType.GAME_DELETED) {
-              localStorage.removeItem("gameId");
-              localStorage.removeItem("category");
-              localStorage.removeItem("totalRounds");
-              localStorage.removeItem("countdownTime");
-              localStorage.removeItem("roundNumber");
-              localStorage.removeItem("myScore");
-              localStorage.removeItem("isServer");
-              localStorage.removeItem("isSurvivalMode");
-              localStorage.removeItem("citynames");
-              localStorage.removeItem("PictureUrl");
-              localStorage.removeItem("CorrectOption");
-              history.push("/home");
-            }
-          }
-        );
-      },
-      (err) => console.log(err)
-    );
-    return () => {subscription.unsubscribe();};
-  }, []); 
 
   const submitAnswer = async (cityName, time) => {
     setIsAnswerSubmitted(true);
@@ -139,6 +68,65 @@ const MultiPlayerGamePage = () => {
     }
   };
 
+  useEffect(() => {
+    if (!isAnswerSubmitted) {
+      const interval = setInterval(() => {
+        setRoundTime((prevTimeLeft) => {
+          const newTimeLeft = prevTimeLeft - 1;
+          if (newTimeLeft <= 0) {
+            clearInterval(interval);
+            if(selectedCityName==null) {
+              submitAnswer("no answer", totalTime);
+              setSelectedCityName("noAnswer");
+            }
+            else {
+              submitAnswer(selectedCityName, totalTime);
+              setSelectedCityName(selectedCityName)
+            }
+          }
+          return newTimeLeft;
+        });
+      }, 1000);
+      return () => clearInterval(interval);
+    }
+  }, [isAnswerSubmitted, selectedCityName]);
+  
+  // handle msg from the web socket
+  useEffect(() => {
+    let subscription;
+    const Socket = new SockJS(getDomain() + "/socket");
+    const stompClient = Stomp.over(Socket);
+    stompClient.connect(
+      {}, (frame) => {
+        subscription = stompClient.subscribe(`/instance/games/${gameId}`,
+          async (message) => {
+            const messagBody = JSON.parse(message.body);
+            console.log("Socket mssage: ", messagBody.type);
+            if (messagBody.type === WebSocketType.ALL_ANSWER) {
+              setIsWaiting(false);
+            }
+          }
+        );
+      },
+      (err) => console.log(err)
+    );
+    return () => {subscription.unsubscribe();};
+  }, []); 
+
+  // when all answered(not waiting) count 3s and go to next page
+  useEffect(() => {
+    if(!isWaiting){
+      const interval = setInterval(() => {
+        setRoundTime2((prevTimeLeft) => {
+          const newTimeLeft = prevTimeLeft - 1;
+          if (newTimeLeft <= 0) { endRound(); }
+          return newTimeLeft;
+        });
+      }, 1000);
+      return () => clearInterval(interval);
+    }
+  }, [isWaiting]);
+
   const handleSubmit = async (e) => {
     e.preventDefault();
     if (!isAnswerSubmitted) {
@@ -155,18 +143,12 @@ const MultiPlayerGamePage = () => {
       setImageUrl(response.data);
       console.log("New Image URL got.");
       await new Promise((resolve) => setTimeout(resolve, 1000));
-      toast.info(`Image of ${correctOption} refreshed.`);
+      toast.info(`Image refreshed.`);
     } catch (error) {
       toast.error(`${error.response.data.message}`);
       console.log(handleError(error));
     }
   }
-
-  const submitButtonContent = isAnswerSubmitted
-  ? isWaiting
-    ? "Waiting for others"
-    : `Wait ${roundTime2} sec`
-  : "Submit Answer";
 
   const cityNameButtons = cityNames.map((cityName) => (
     <button
@@ -197,7 +179,7 @@ const MultiPlayerGamePage = () => {
     localStorage.removeItem("countdownTime");
     localStorage.removeItem("roundNumber");
     localStorage.removeItem("myScore");
-    localStorage.removeItem("isServer");
+    // localStorage.removeItem("isServer");
     localStorage.removeItem("isSurvivalMode");
     localStorage.removeItem("citynames");
     localStorage.removeItem("PictureUrl");
@@ -205,13 +187,17 @@ const MultiPlayerGamePage = () => {
     history.push("/home");
   };
 
+  const submitButtonContent = isAnswerSubmitted ? 
+    isWaiting ? 
+      "Waiting for others" : `Wait ${roundTime2} sec`
+    : "Submit Answer";
+
   return (
   <div className="page-container">
     <div className="guess-the-city">
       <div style={{ position: "fixed", top: 75, left: 75 }}>
         <Button style={{ fontSize: "30px", height: "60px", width: "100%" }}
-         onClick={handleExitButtonClick}
-         disabled={isServer==="true"}>
+         onClick={handleExitButtonClick}>
           Exit Game
         </Button>
       </div>
@@ -250,11 +236,9 @@ const MultiPlayerGamePage = () => {
           </Grid>
         </Container>
       </div>
-
-    
       <ToastContainer />
     </div>
-    </div>
+  </div>
   );
 };
 

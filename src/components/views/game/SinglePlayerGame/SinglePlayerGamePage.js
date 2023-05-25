@@ -19,21 +19,22 @@ const SingleGamePage = () => {
   const [imageUrl, setImageUrl] = useState(localStorage.getItem("PictureUrl"));
   const [isLose, setIsLose] = useState(0);
 
-  const cityNames = JSON.parse(localStorage.getItem("citynames"));
-  const correctOption = localStorage.getItem("CorrectOption");
-  const roundNumber = localStorage.getItem("roundNumber");
-  const totalTime = localStorage.getItem("countdownTime");
   const gameId = localStorage.getItem("gameId");
   const isSurvivalMode = localStorage.getItem("isSurvivalMode");
+  const roundNumber = localStorage.getItem("roundNumber");
+  const totalRounds = localStorage.getItem("totalRounds");
+  const totalTime = localStorage.getItem("countdownTime");
+  const cityNames = JSON.parse(localStorage.getItem("citynames"));
+  const correctOption = localStorage.getItem("CorrectOption");
+  
   const playerId = localStorage.getItem("userId");
 
   const history = useHistory();
 
   const endRound = () => {
     if (isLose === 1) {
-      
       history.push(`/SingleGamePage/${gameId}/GameFinishPage`);
-    } else if (roundNumber === localStorage.getItem("totalRounds")) {
+    } else if (roundNumber === totalRounds) {
       history.push(`/SingleGamePage/${gameId}/GameFinishPage`);
     } else {
       localStorage.setItem("roundNumber", Number(roundNumber) + 1);
@@ -50,7 +51,6 @@ const SingleGamePage = () => {
       );
       const score_new = parseInt(localStorage.getItem("score")) + response.data;
       if (response.data === 0 && isSurvivalMode === "true") {
-        
         setIsLose(1);
       }
       setScore(score_new);
@@ -70,15 +70,14 @@ const SingleGamePage = () => {
           const newTimeLeft = prevTimeLeft - 1;
           if (newTimeLeft <= 0) {
             clearInterval(interval);
-            if(selectedCityName==null){
-              
-            submitAnswer("no answer", totalTime);
-            setSelectedCityName("noAnswer");}
-            else{
+            if(selectedCityName==null) {
+              submitAnswer("no answer", totalTime);
+              setSelectedCityName("noAnswer");
+            }
+            else {
               submitAnswer(selectedCityName, totalTime);
               setSelectedCityName(selectedCityName)
             }
-            //setIsLose(1);
           }
           return newTimeLeft;
         });
