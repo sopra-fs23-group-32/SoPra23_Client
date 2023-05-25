@@ -35,7 +35,7 @@ const MultiPlayerGameFinishPage = () => {
       toast.info(`Game's information saved.`);  
       await new Promise((resolve) => setTimeout(resolve, 500));
     } catch (error) {
-      toast.error("Something went wrong while saving the gameInfo!");
+      toast.warning("Something went wrong while saving the gameInfo!");
       console.log(handleError(error));
     }
   }
@@ -47,7 +47,7 @@ const MultiPlayerGameFinishPage = () => {
         setPlayerRanking(responseRanking.data);
         console.log("Ranking: ", responseRanking.data);
       } catch (error) {
-        toast.error("Something went wrong while fetching the ranking!");
+        toast.warning("Something went wrong while fetching the ranking!");
         console.log(handleError(error));
       }
     }
@@ -74,7 +74,7 @@ const MultiPlayerGameFinishPage = () => {
           await new Promise((resolve) => setTimeout(resolve, 500));
         }
       } catch (error) {
-        toast.error("Something went wrong while saving the gameLog!");
+        toast.warning("Something went wrong while saving the gameLog!");
         console.log(handleError(error));
       }
     }

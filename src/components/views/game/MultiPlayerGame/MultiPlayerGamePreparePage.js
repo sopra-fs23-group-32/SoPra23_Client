@@ -65,7 +65,7 @@ const MultiModeRoundCountdown = () => {
       // toast.info(`Question for next round created.`);
       // setQuestionReady(true);
     } catch (error) {
-      toast.error(`${error.response.data.message}`);
+      // toast.error(`${error.response.data.message}`);
       console.log(handleError(error));
     }
   }
@@ -79,7 +79,7 @@ const MultiModeRoundCountdown = () => {
       toast.info(`Got question for next round.`);
       setQuestionReady(true);
     } catch (error) {
-      toast.error(`${error.response.data.message}`);
+      toast.warning(`${error.response.data.message}`);
       console.log(handleError(error));
     }
   }
@@ -114,7 +114,7 @@ const MultiModeRoundCountdown = () => {
         console.log("Ranking: ", response.data);
         await new Promise((resolve) => setTimeout(resolve, 1000));
       } catch (error) {
-        toast.error(`${error.response.data.message}`);
+        toast.warning("Something went wrong while fetching the ranking!");
         console.log(handleError(error));
       }
     }

@@ -106,18 +106,10 @@ const Profile = () => {
             const userURL = "/users/" + localStorage.getItem("userId");
             await api.put(userURL, requestBody);
             
-
-            /****************************Said Change 2505****************************************************** */
-            
-             /****************************Said Change 2505****************************************************** */
-
-            
             window.location.reload();
         } catch (error) {
-            toast.error(`${error.response.data.message}`);
-            console.error(
-              `Something went wrong while updating your profile.\n${handleError(error)}`
-            );
+            toast.warning(`Something went wrong while updating your profile.`);
+            console.log(handleError(error));
         }
       }
 

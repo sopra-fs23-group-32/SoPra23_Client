@@ -29,15 +29,12 @@ const Lobby = () => {
       const response = await api.post(`/games/${gameId}/players/${userId}`);
       console.log("Player added:", response.data);
     } catch (error) {
-      toast.error(`${error.response.data.message}`);
+      // toast.error(`${error.response.data.message}`);
       console.log(handleError(error));
     }
   };
 
   const startGameSingleplayer = async (category, gameRounds, gameDuration) => {
-    if (gameRounds === 0) {
-      toast.error("The rounds should not be less than 1");
-    }
     if (isSurvivalMode) {
       gameRounds = 10000;
     }
@@ -62,7 +59,7 @@ const Lobby = () => {
       await new Promise((resolve) => setTimeout(resolve, 1000));
       history.push(`/SinglegamePage/${gameId}/RoundCountPage`);
     } catch (error) {
-      toast.error(`${error.response.data.message}`);
+      toast.warning(`Failed in creating game.\n${error.response.data.message}`);
       console.log(handleError(error));
     }
   };
@@ -161,7 +158,7 @@ const Lobby = () => {
                 style={{ width: "150px" }}
                 inputProps={{
                   style: { textAlign: "center", height: "10px" },
-                  min: 15,
+                  min: 12,
                   type: "number",
                 }}
                 value={countdownTime}

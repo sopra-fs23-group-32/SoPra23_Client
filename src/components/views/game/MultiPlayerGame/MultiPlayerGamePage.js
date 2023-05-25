@@ -63,9 +63,10 @@ const MultiPlayerGamePage = () => {
         setIsLose(true);
       }
       setScore(score_new);
+      toast.info(`You got ${score_new} points.`)
       localStorage.setItem("myScore", score_new);
     } catch (error) {
-      toast.error( `Failed in submitting answer: \n${error.respond.data.message}`);
+      toast.warning( `Failed in submitting answer: \n${error.respond.data.message}`);
       console.log(handleError(error));
     }
   };
@@ -147,11 +148,11 @@ const MultiPlayerGamePage = () => {
     try {
       const response = await api.put(`games/${gameId}/refresh`);
       setImageUrl(response.data);
-      console.log("New Image URL.");
+      console.log("New Image URL: ", response.data);
       await new Promise((resolve) => setTimeout(resolve, 1000));
       toast.info(`Image refreshed.`);
     } catch (error) {
-      toast.error(`${error.response.data.message}`);
+      // toast.error(`${error.response.data.message}`);
       console.log(handleError(error));
     }
   }

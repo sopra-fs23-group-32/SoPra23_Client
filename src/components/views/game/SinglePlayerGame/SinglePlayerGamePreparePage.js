@@ -57,7 +57,7 @@ const RoundCountdown = () => {
         setQuestionReady(true);
       }
       catch (error) {
-        toast.error(`${error.response.data.message}`);
+        toast.warning(`${error.response.data.message}`);
         console.log(handleError(error));
       }
     }
