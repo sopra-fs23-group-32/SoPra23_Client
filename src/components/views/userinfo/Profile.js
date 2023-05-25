@@ -96,17 +96,19 @@ const Profile = () => {
             let requestBody;
             if(username === null) {
               let username = localStorage.getItem("username");
+              localStorage.setItem("username", username);
               requestBody = JSON.stringify({ username, password, birthDay });
             }
             else{
               requestBody = JSON.stringify({ username, password, birthDay });
+              localStorage.setItem("username", username);
             }
             const userURL = "/users/" + localStorage.getItem("userId");
             await api.put(userURL, requestBody);
             
 
             /****************************Said Change 2505****************************************************** */
-            localStorage.setItem("username", username);
+            
              /****************************Said Change 2505****************************************************** */
 
             
