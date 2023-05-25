@@ -4,7 +4,6 @@
 	<img src="https://img.shields.io/github/issues-raw/sopra-fs23-group-32/SoPra23_Client"/>
 	<img src="https://img.shields.io/github/milestones/progress/sopra-fs23-group-32/SoPra23_Client/1"/>
 	<img src="https://img.shields.io/github/milestones/progress/sopra-fs23-group-32/SoPra23_Client/2"/>
-	<img src="https://sonarcloud.io/api/project_badges/measure?project=sopra-fs23-group-32_SoPra23_Client&metric=bugs"/>
 	<img src="https://sonarcloud.io/api/project_badges/measure?project=sopra-fs23-group-32_SoPra23_Client&metric=vulnerabilities"/>
 	<img src="https://sonarcloud.io/api/project_badges/measure?project=sopra-fs23-group-32_SoPra23_Client&metric=code_smells"/>
 	<img src="https://img.shields.io/github/license/sopra-fs23-group-32/SoPra23_Client"/>
@@ -23,6 +22,8 @@ The Multiplayer Mode provides a platform for friendly competition, where players
 - [npm](https://www.npmjs.com/) - Package manger for the JavaScript programming language
 - [Google Cloud Platform](https://cloud.google.com/) - Depolyment Service
 - [SonarCloud](https://sonarcloud.io/welcome) - Cloud-based code quality and security service
+
+**<span style="color:red">Note: Please use the "https" protocol for correct connection!</span>**
 
 ## High-level Components
 ### [Dashboard](https://github.com/sopra-fs23-group-32/SoPra23_Client/blob/main/src/components/views/home/Home.js)
@@ -133,7 +134,7 @@ See the section about [deployment](https://facebook.github.io/create-react-app/d
    4. Wait for the game to start and check the updated leaderboard after each round.
       ![image](.//images/illustrations/multi_prepare.png)
    5. Enter the final page, where the final leaderboard and the winner(s) are displayed.
-      ![image](.//images/illustrations/multi_final.png)
+      ![image](.//images/illustrations/multi_finish.png)
 5. Access the Leaderboard to obtain the general or specific player ranking by selecting the city category. The player profile can be accessed by clicking the player.
    ![image](.//images/illustrations/leaderboard.png)
 6. Access the Game History to obtain the statistics for each game played by the player. Click the triangle to unfold detailed information.
