@@ -235,7 +235,7 @@ const MultiPlayerGamePage = () => {
               <div className="city-button-container">
                 {cityNameButtons}
                 <form onSubmit={handleSubmit} className="submit-form">
-                  <button type="submit" className="submit-button" disabled={isAnswerSubmitted}>
+                  <button type="submit" className="submit-button" disabled={isAnswerSubmitted || selectedCityName==null}>
                   {submitButtonContent}
                 </button>
                 </form>
