@@ -278,7 +278,7 @@ const MultiModeRoundCountdown = () => {
                         key={entry.id}
                         style={{
                           transform: `translateY(${position})`,
-                          backgroundColor: entry.playerName === username ? 'rgba(200, 0, 0, 0.5)' : 'rgba(128, 128, 128, 0.5)',
+                          backgroundColor: entry.playerName === username ? 'rgba(94,93,240,1.0)' : 'rgba(128, 128, 128, 0.5)',
                          }}
                       >
                         <td>{entry.rank}</td>
