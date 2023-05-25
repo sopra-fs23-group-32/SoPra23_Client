@@ -12,7 +12,8 @@ import Stomp from "stompjs";
 import { getDomain } from "helpers/getDomain";
 import WebSocketType from "models/WebSocketType";
 
-import {toast } from "react-toastify";
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 import "styles/views/game/WaitingPage.scss";
 
 const CreatedGamePage = () => {
