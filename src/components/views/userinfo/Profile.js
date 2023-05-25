@@ -103,6 +103,13 @@ const Profile = () => {
             }
             const userURL = "/users/" + localStorage.getItem("userId");
             await api.put(userURL, requestBody);
+            
+
+            /****************************Said Change 2505****************************************************** */
+            localStorage.setItem("username", username);
+             /****************************Said Change 2505****************************************************** */
+
+            
             window.location.reload();
         } catch (error) {
             toast.error(`${error.response.data.message}`);
