@@ -117,7 +117,6 @@ const Lobby = () => {
               <div className="survival-switch">
                 <Switch
                   checked={isSurvivalMode}
-                  disabled
                   onChange={() => setIsSurvivalMode(!isSurvivalMode)}
                   offColor="#000000"
                   onColor="#1979b8"

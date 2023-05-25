@@ -55,6 +55,11 @@ const CreatedGamePage = () => {
     return () => clearInterval(interval);
   }, []);
 
+  const startGameMultiplayer = async (gameId) => {
+    localStorage.setItem("myScore", 0);
+    localStorage.setItem("roundNumber", 1);
+    history.push(`/MultiGamePage/${gameId}/RoundCountPage/`);
+  };
 
   useEffect(() => {
     const Socket = new SockJS(getDomain() + "/socket");
@@ -98,14 +103,14 @@ const CreatedGamePage = () => {
   const leaveGame = async () => {
     try{
       if (isServer === "true") {
-      await api.delete(`/games/${gameId}`);
-      await new Promise((resolve) => setTimeout(resolve, 500));
-      console.log(`Game ${gameId} deleted.`);
+        await api.delete(`/games/${gameId}`);
+        await new Promise((resolve) => setTimeout(resolve, 500));
+        console.log(`Game ${gameId} deleted.`);
       }
       else {
-      await api.delete(`/games/${gameId}/players/${userId}`);
-      await new Promise((resolve) => setTimeout(resolve, 500));
-      console.log(`Player ${userId} deleted from Game ${gameId}`);
+        await api.delete(`/games/${gameId}/players/${userId}`);
+        await new Promise((resolve) => setTimeout(resolve, 500));
+        console.log(`Player ${userId} deleted from Game ${gameId}`);
       }
     } catch (error) {
       toast.error(`Failed to fetch player in game(ID ${gameId})\n
@@ -128,12 +133,6 @@ const CreatedGamePage = () => {
   const backToHome = () => {
     leaveGame();
     history.push("/home");
-  };
-
-  const startGameMultiplayer = async (gameId) => {
-    localStorage.setItem("myScore", 0);
-    localStorage.setItem("roundNumber", 1);
-    history.push(`/MultiGamePage/${gameId}/RoundCountPage/`);
   };
 
   const Player = ({ players }) => (
@@ -218,10 +217,14 @@ const CreatedGamePage = () => {
               You can't start a multiplayer game by yourself!
             </div>
           )}
-
           {isServer === "false" && (
             <div style={{ textAlign: "center" }}>
               Only the host can start a game.
+            </div>
+          )}
+          {isServer === "true" && (
+            <div style={{ textAlign: "center" }}>
+              If you leave the game, all players will be kicked out.
             </div>
           )}
           
