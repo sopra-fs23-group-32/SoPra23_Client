@@ -6,7 +6,7 @@ import InformationContainer from "components/ui/BaseContainer";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 
-import "styles/views/game/FinalPage.scss";
+import "styles/views/game/FinalPage_Single.scss";
 
 const GameFinishPage = () => {
   const gameId = localStorage.getItem("gameId");
