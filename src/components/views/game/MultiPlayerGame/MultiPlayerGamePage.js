@@ -24,7 +24,7 @@ const MultiPlayerGamePage = () => {
   // control the flow
   const [isWaiting, setIsWaiting] = useState(true);
   const [imageUrl, setImageUrl] = useState(localStorage.getItem("PictureUrl"));
-  const [isLose, setIsLose] = useState(0);
+  const [isLose, setIsLose] = useState(false);
 
   const gameId = localStorage.getItem("gameId");
   const isSurvivalMode = localStorage.getItem("isSurvivalMode");
@@ -39,11 +39,13 @@ const MultiPlayerGamePage = () => {
 
   const endRound = () => {
     console.log("Lose", isLose);
-    if (isLose === 1) {
+    if (isLose) {
       history.push(`/MultiGamePage/${gameId}/GameFinish`);
-    } else if (roundNumber === totalRounds) {
+    }
+    else if (roundNumber===totalRounds) {
       history.push(`/MultiGamePage/${gameId}/GameFinish`);
-    } else {
+    }
+    else {
       localStorage.setItem("roundNumber", Number(roundNumber) + 1);
       history.push(`/MultiGamePage/${gameId}/RoundCountPage`);
     }
@@ -57,7 +59,9 @@ const MultiPlayerGamePage = () => {
         { answer: cityName, timeTaken: time }
       );
       const score_new = parseInt(score) + response.data;
-      if(response.data===0 && isSurvivalMode==="true") {setIsLose(1);}
+      if(response.data===0 && isSurvivalMode==="true") {
+        setIsLose(true);
+      }
       setScore(score_new);
       localStorage.setItem("myScore", score_new);
     } catch (error) {
@@ -143,7 +147,7 @@ const MultiPlayerGamePage = () => {
     try {
       const response = await api.put(`games/${gameId}/refresh`);
       setImageUrl(response.data);
-      console.log("New Image URL got.");
+      console.log("New Image URL.");
       await new Promise((resolve) => setTimeout(resolve, 1000));
       toast.info(`Image refreshed.`);
     } catch (error) {

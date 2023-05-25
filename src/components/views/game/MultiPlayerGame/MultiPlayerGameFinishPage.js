@@ -27,28 +27,11 @@ const MultiPlayerGameFinishPage = () => {
       const responseGameInfo = await api.post(`/gameInfo/${gameId}`);
       console.log("Game Info: ", responseGameInfo.data);
       toast.info(`Game's information saved.`);  
+      await new Promise((resolve) => setTimeout(resolve, 500));
     } catch (error) {
-      toast.error("Something went wrong while fetching the ranking!");
+      toast.error("Something went wrong while saving the gameInfo!");
       console.log(handleError(error));
     }
-  }
-
-  const saveGameHistory = async () => {
-    try{
-      const response = await api.post(`/users/${playerId}/gameHistories/${gameId}`);
-      console.log("Game History: ", response.data);
-      toast.info(`Player's game history saved.`);
-      //await new Promise((resolve) => setTimeout(resolve, 500));
-    } catch (error) {
-      toast.error(`Failed to fetch player in gamexx(ID ${gameId})\n //change this
-        ${error.response.data.message}`);
-      console.log(handleError(error));
-    }
-  }
-
-  async function deleteSurvivalPlayer() {
-    await api.delete(`games/${gameId}/players/${playerId}?check=0`);
-    console.log(`You leave Game ${gameId}.`)
   }
     
   useEffect(() => {
@@ -62,14 +45,34 @@ const MultiPlayerGameFinishPage = () => {
         console.log(handleError(error));
       }
     }
-    saveGameHistory();
-    if (isSurvivalMode==="false") {
-      saveGameInfo();
-    }
-    else {
-      deleteSurvivalPlayer();
-    }
     fetchRanking();
+  }, []);
+
+  useEffect(() => {
+    async function saveGameLog() {
+      try {
+        const response = await api.post(`/users/${playerId}/gameHistories/${gameId}`);
+        console.log("Game History: ", response.data);
+        toast.info(`Player's game history saved.`);
+        await new Promise((resolve) => setTimeout(resolve, 500));
+
+        if (isSurvivalMode==="true") {
+          await api.delete(`games/${gameId}/players/${playerId}?check=0`);
+          await new Promise((resolve) => setTimeout(resolve, 500));
+          console.log(`You leave Game ${gameId}.`)
+        }
+        else {
+          const responseGameInfo = await api.post(`/gameInfo/${gameId}`);
+          console.log("Game Info saved: ", responseGameInfo.data);
+          toast.info("Game's Info saved.")
+          await new Promise((resolve) => setTimeout(resolve, 500));
+        }
+      } catch (error) {
+        toast.error("Something went wrong while saving the gameLog!");
+        console.log(handleError(error));
+      }
+    }
+    saveGameLog();
   }, []);
 
   const groupedPlayers = playerRanking.reduce((groups, player) => {
