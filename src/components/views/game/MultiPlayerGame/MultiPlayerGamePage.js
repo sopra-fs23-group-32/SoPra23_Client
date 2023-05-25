@@ -207,7 +207,7 @@ const MultiPlayerGamePage = () => {
           Exit Game
         </Button>
       </div>
-      <div className="disclaimer">Please do not leave during the game!</div>
+      <div className="disclaimer">Please do not close the page during the game!</div>
         <div className="guess-the-city main">
           <Container>
             <Grid container spacing={4}>
