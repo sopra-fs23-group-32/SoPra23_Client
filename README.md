@@ -13,7 +13,7 @@
 ## Introduction
 This app is a game called “Guess the City”. It is a captivating game that invites players to discover the cityscapes around the world by identifying corresponding city name from multiple-choice options.
 The game not only serves as a source of entertainment but also offers an opportunity for players to enhance their geography knowledge. As players immerse themselves in the game, they embark on a virtual journey across continents, exploring the diverse landscapes and architectual marvels that cities have to offer.
-To cater to different preferences and gaming experiences, the game offers two modes: Single Player Mode and Multiplayer Mode. The Single Player Mode is for practice, enabling players to improve their accuracy in identifying cities without the pressure of competition.
+To cater to different preferences and gaming experiences, the game offers two modes: Singleplayer Mode and Multiplayer Mode. The Singleplayer Mode is for practice, enabling players to improve their accuracy in identifying cities without the pressure of competition.
 The Multiplayer Mode provides a platform for friendly competition, where players have the opportunity to challenge their friends and compete against each other.
 
 ## Technologies
@@ -28,21 +28,54 @@ The Multiplayer Mode provides a platform for friendly competition, where players
 ### [Dashboard](https://github.com/sopra-fs23-group-32/SoPra23_Client/blob/main/src/components/views/home/Home.js)
 The dashboard contains the menu that guides players to the main services provided by the game. The buttons within the menu include:
 
-- [Start Game](https://github.com/sopra-fs23-group-32/SoPra23_Client/blob/main/src/components/views/game/Lobby.js) - The player will be guided to the game lobby, where the play mode and game setting is set.
-- [Leaderboard](https://github.com/sopra-fs23-group-32/SoPra23_Client/blob/main/src/components/views/home/ScoreBoard.js) - The player will be guided to the leader board, where the player rankings are displayed.
-- [Game History](https://github.com/sopra-fs23-group-32/SoPra23_Client/blob/main/src/components/views/home/History.js) - The player will be guided to the game history, where the detailed game information can be accessed.
-- [My Profile](https://github.com/sopra-fs23-group-32/SoPra23_Client/blob/main/src/components/views/home/Profile.js) - The player will be guided the profile, where the profile can be viewed and edited.
-- [About](https://github.com/sopra-fs23-group-32/SoPra23_Client/blob/main/src/components/views/home/About.js) - The player will be guided to the about page, where the introduction and rule of the game are displayed.
+- **[Start Singlplayer Game](https://github.com/sopra-fs23-group-32/SoPra23_Client/blob/main/src/components/views/game/SinglePlayerGame/SinglePlayerGameLobby.js)**
+
+   The player will be guided to the singleplayer game lobby to configure the game setting.
+
+- **[Create Multiplayer Game](https://github.com/sopra-fs23-group-32/SoPra23_Client/blob/main/src/components/views/game/MultiPlayerGame/MultiPlayerGameLobby.js)**
+  
+   The player will be guided to the multiplayer game lobby to configure the game setting.
+
+- **[Join Multiplayer Game](https://github.com/sopra-fs23-group-32/SoPra23_Client/blob/main/src/components/views/game/JoinGame.js)**
+
+   The player will be guided to the page where a list of game rooms is displayed, and the player can choose a game to join.
+
+- **[Leaderboard](https://github.com/sopra-fs23-group-32/SoPra23_Client/blob/main/src/components/views/home/ScoreBoard.js)**
+
+  The player will be guided to the leader board, where the player rankings are displayed, and the player can specify the city category to show ranking at different continents.
+
+- **[Game History](https://github.com/sopra-fs23-group-32/SoPra23_Client/blob/main/src/components/views/userinfo/History.js)**
+  
+  The player will be guided to the game history, where the detailed game information, such correct rate and previous answers, can be accessed.
+
+- **[My Profile](https://github.com/sopra-fs23-group-32/SoPra23_Client/blob/main/src/components/views/userinfo/Profile.js)**
+
+  The player will be guided the profile, where the profile can be viewed and edited.
+
+- **[About](https://github.com/sopra-fs23-group-32/SoPra23_Client/blob/main/src/components/views/home/About.js)**
+
+  The player will be guided to the about page, where the introduction and rule of the game are displayed.
 
 ### [Multiplayer Game](https://github.com/sopra-fs23-group-32/SoPra23_Client/tree/main/src/components/views/game/MultiPlayerGame)
 The multiplayer game provides a battle mode for players. The main components of this mode include:
-- [CreatedGamePage](https://github.com/sopra-fs23-group-32/SoPra23_Client/blob/main/src/components/views/game/MultiPlayerGame/CreatedGamePage.js) - The player can configure the game setting and wait other players to join the game.
-- [MultiplayerGamePage](https://github.com/sopra-fs23-group-32/SoPra23_Client/blob/main/src/components/views/game/MultiPlayerGame/MultiPlayerGamePage.js) - The main component for players to play the game in the multiplayer mode, the players can choose the city name based on the city image.
-- [MultiPlayerGamePreparePage](https://github.com/sopra-fs23-group-32/SoPra23_Client/blob/main/src/components/views/game/MultiPlayerGame/MultiPlayerGamePreparePage.js) - The player is displayed with the player ranking and countdown time after each round.
-- [GameFinishPage](https://github.com/sopra-fs23-group-32/SoPra23_Client/blob/main/src/components/views/game/MultiPlayerGame/MultiPlayerGameFinishPage.js) - The player is displayed with final player ranking, and the winner is announced.
+- **[CreatedGamePage](https://github.com/sopra-fs23-group-32/SoPra23_Client/blob/main/src/components/views/game/MultiPlayerGame/CreatedGamePage.js)**
+  
+  The player can wait other players to join the game.
+
+- **[MultiplayerGamePage](https://github.com/sopra-fs23-group-32/SoPra23_Client/blob/main/src/components/views/game/MultiPlayerGame/MultiPlayerGamePage.js)**
+
+  The main component for players to play the game in the multiplayer mode, the players can choose the city name based on the city image.
+
+- **[MultiPlayerGamePreparePage](https://github.com/sopra-fs23-group-32/SoPra23_Client/blob/main/src/components/views/game/MultiPlayerGame/MultiPlayerGamePreparePage.js)**
+
+  The player is displayed with the player ranking and countdown time after each round.
+
+- **[GameFinishPage](https://github.com/sopra-fs23-group-32/SoPra23_Client/blob/main/src/components/views/game/MultiPlayerGame/MultiPlayerGameFinishPage.js)**
+
+  The player is displayed with final player ranking, and the winner is announced.
 
 ### [LeaderBoard](https://github.com/sopra-fs23-group-32/SoPra23_Client/blob/main/src/components/views/home/ScoreBoard.js)
-The player can check the player ranking. With a dropdown field, the player can choose the general or specific continent to access player ranking. Moreover, the profiles of other players can be accessed by clicking the corresponding player row.
+The player can check the player ranking. With a dropdown field, the player can choose the general or specific continent in a dropdown field to access player ranking. Moreover, the profiles of other players can be accessed by clicking the corresponding player row.
 
 
 ## Launch & Deployment
@@ -84,35 +117,55 @@ See the section about [deployment](https://facebook.github.io/create-react-app/d
    ![image](.//images/illustrations/registration.png)
 2. Enter the dashboard upon successful login/registration.
    ![image](.//images/illustrations/dashboard.png)
-3. Start the game by completing the game settings in the lobby (game mode, continent category of city images, game rounds).
-   ![image](.//images/illustrations/lobby.png)
-   1. In the Singleplayer mode, the player can practice, but the scores won by the player will not be stored.
-      ![image](.//images/illustrations/finish_single.png)
-   2. In the MultiPlayer mode, multiple players need to create or join the game.
+3. Start the Singleplayer game by completing the game setting in the lobby.
+   ![image](.//images/illustrations/single_lobby.png)
+   1. Wait for the game to start in the prepare page.
+      ![image](.//images/illustrations/single_prepare.png)
+   2. Enter the final page, where the final score is shown. Note: In the Singleplayer mode, the player can practice, but the scores won by the player will not be stored.
+      ![image](.//images/illustrations/single_finish.png)
+4. Start Multiplayer game by creating or joining the game.
+   1. Create Multiplayer game in the lobby.
+      ![image](.//images/illustrations/multi_lobby.png)
+   2. Join Multiplayer game in the joining room.
       ![image](.//images/illustrations/join_game.png)
-      Players can wait other players to join the game
-      ![image](.//images/illustrations/start_game.png)
-      play the game. Players need to select the correct city name from four options to win scores.
+   3. Play the game. Players need to select the correct city name from four options within 15 secs to win scores.
       ![image](.//images/illustrations/game_page.png)
-      Players need to choose the right city from four options based on the city image within 15 secs in each round. After each round, the player ranking will be updated.
-      ![image](.//images/illustrations/aaa.png)
-      When the game ends, the final player ranking will be displayed and the winner(s) will be announced.
-      ![image](.//images/illustrations/aaa.png)
-4. Access the Leader Board to obtain the general or specific player ranking by selecting the city category. The player profile can be accessed by clicking the player.
+   4. Wait for the game to start and check the updated leaderboard after each round.
+      ![image](.//images/illustrations/multi_prepare.png)
+   5. Enter the final page, where the final leaderboard and the winner(s) are displayed.
+      ![image](.//images/illustrations/multi_final.png)
+5. Access the Leaderboard to obtain the general or specific player ranking by selecting the city category. The player profile can be accessed by clicking the player.
    ![image](.//images/illustrations/leaderboard.png)
-5. Access the Game History to obtain the statistics for each game played by the player. Click the triangle to unfold detailed information.
+6. Access the Game History to obtain the statistics for each game played by the player. Click the triangle to unfold detailed information.
    ![image](.//images/illustrations/history.png)
-6. Edit the profile.
+7. Edit the profile.
    ![image](.//images/illustrations/profile.png)
-7. Check the game instruction and rule.
+8. Check the game instruction and rule.
    ![image](.//images/illustrations/about.png)
 
 ## Roadmap
 ![image](.//images/illustrations/roadmap.png)
-- Difficulty Level - Implement difficulty levels that offer varying levels of challenge to players. For example, there can be easy, medium, and hard modes where the hints of images are progressively more limited. This feature would require designing new image sets and adjusting scoring mechanisms.
-- Social Integration - Allow players to connect their social media accounts to the game. This feature would require new developers to integrate social media sharing APIs.
-- Unlockable Content - Add a progressive map where players can unlock new cities. This feature involves tracking player achievements, integrating the global map and providing rewards for new milestones.
+- **Difficulty Level**
 
+   Implement difficulty levels that offer varying levels of challenge to players. For example, there can be easy, medium, and hard modes where the hints of images are progressively more limited. This feature would require designing new image sets and adjusting scoring mechanisms.
+
+- **Social Integration**
+
+  Allow players to connect their social media accounts to the game. This feature would require new developers to integrate social media sharing APIs.
+
+- **Unlockable Content**
+
+   Add a progressive map where players can unlock new cities. This feature involves tracking player achievements, integrating the global map and providing rewards for new milestones.
+
+- **Game Booster**
+
+  Allow players to use a certain number of boosters to get hints during the game. This feature requires to add an endpoint to provide hints for city images in the server side and design of boosters in the client side.
+
+- **More Game Modes**
+
+   Add game modes like Time Attack mode where players have to guess as many cities as possible within a given time limit. This feature involves 
+
+Please check [Sprint 3 (Future Work) User Stories](https://github.com/orgs/sopra-fs23-group-32/projects/1/views/18) and [Sprint 3 (Future Work) Tasks](https://github.com/orgs/sopra-fs23-group-32/projects/1/views/17) for detailed information.
 
 ## Authors and Acknowledgment
 ### Authors
